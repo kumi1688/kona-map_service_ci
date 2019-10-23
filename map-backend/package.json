@@ -12,10 +12,13 @@
     "koa-bodyparser": "^4.2.1",
     "koa-parser": "^1.0.8",
     "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
     "mongoose": "^5.7.5",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-scripts": "3.2.0"
+    "react-scripts": "3.2.0",
+    "sanitize-html": "^1.20.1",
+    "koa-send": "latest"
   },
   "scripts": {
     "start": "node -r esm src",

@@ -16,7 +16,7 @@ const buttonStyle = css`
    background: ${palette.cyan[5]};
    }
    
-   ${props=> props.fullWidth && 
+   ${props=> props.fullWidth &&
     css`
         padding-top: 0.75rem;
         padding-bottom: 0.75rem;
@@ -40,10 +40,10 @@ ${buttonStyle}
 `;
 
 
-const Button = props => {
+const MapButton = props => {
     return props.to ? ( <StyledLink {...props} cyan={props.cyan ? 1:0} /> )
-            : ( <StyledButton {...props}/> );
+        : ( <StyledButton {...props}/> );
 };
 
 
-export default Button;
+export default MapButton;

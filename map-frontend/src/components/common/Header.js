@@ -42,7 +42,7 @@ const Header = ({user, onLogout }) => {
         <>
             <HeaderBlock>
                 <Wrapper>
-                    <Link to="/" className="logo">리액트</Link>
+                    <Link to="/" className="logo">KONA MAP SERVICE</Link>
                     {user ?
                         ( <div className="right">
                             <UserInfo>{user.username}</UserInfo>
