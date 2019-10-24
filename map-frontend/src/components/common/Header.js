@@ -28,7 +28,7 @@ const Wrapper = styled(Responsive)`
     letter-spacing: 2px;
     }
     .right{
-    display:flx;
+    display:flex;
     align-items: center;
     }
 `;

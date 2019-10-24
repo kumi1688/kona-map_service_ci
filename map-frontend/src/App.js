@@ -15,12 +15,12 @@ const App = () => {
             <Helmet>
                 <title>KSH</title>
             </Helmet>
-            <Route component={PostListPage} path={[`/@:username`, '/']} exact/>
+            <Route component={PostListPage} path={[`/@:username`]} exact/>
             <Route component={LoginPage} path="/login"/>
             <Route component={RegisterPage} path="/register"/>
             <Route component={WritePage} path="/write"/>
             <Route component={PostPage} path="/@:username/:postId"/>
-            <Route component={MapPage} path="/map"/>
+            <Route component={MapPage} path={["/map", '/']} />
         </>
     );
 };

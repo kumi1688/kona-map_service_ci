@@ -11,9 +11,9 @@ const buttonStyle = css`
    color: white;
    cursor: pointer;
    
-   background: ${palette.cyan[7]};
+   background: ${palette.gray[7]};
    &:hover{
-   background: ${palette.cyan[5]};
+   background: ${palette.gray[5]};
    }
    
    ${props=> props.fullWidth &&
@@ -41,7 +41,7 @@ ${buttonStyle}
 
 
 const MapButton = props => {
-    return props.to ? ( <StyledLink {...props} cyan={props.cyan ? 1:0} /> )
+    return props.to ? ( <StyledLink {...props} gray={props.gray ? 1:0} /> )
         : ( <StyledButton {...props}/> );
 };
 
