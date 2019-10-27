@@ -1,36 +1,15 @@
 import React, {useState, useCallback} from 'react';
-import MapButton from "../../components/map/MapButton";
-
-const TagItem = React.memo(({tag}) => (
-    <div>#{tag}</div>
-));
-
-const TagList = React.memo(({tags}) => (
-        <div>{tags.map(tag => <TagItem key={tag} tag={tag}/>)}</div>
-));
+import MapTagBox from "./MapTagBox";
+import {Form, Card, Row, Col} from 'react-bootstrap';
 
 const MarkerInfo = ({position}) => {
     const [input, setInput] = useState('');
-    const [localTags, setLocalTags] = useState([]);
     const [markerInfo, setMarkerInfo] = useState({
         name: null,
         description: null,
         tags: [],
         position: {lat: null, lng: null},
     });
-
-    const insertTag = useCallback(
-        tag => {
-            if (!tag) return;
-            if (localTags.includes(tag)) return;
-            const nextTags = [...localTags, tag];
-            setLocalTags(nextTags);
-        }, [localTags],
-    );
-
-    const onChange = useCallback(e => {
-        setInput(e.target.value);
-    }, []);
 
     const onSubmit = useCallback(
         e => {
@@ -44,32 +23,31 @@ const MarkerInfo = ({position}) => {
         }, [markerInfo]
     );
 
-    const onTagSubmit = useCallback(
+    const onChange = useCallback(
         e => {
-            e.preventDefault();
-            insertTag(input.trim());
-            setInput('');
-        }, [input, insertTag]
+            setInput(e.target.value);
+        }, []
     );
 
     return (
-
         <div>
-            <form onSubmit={onSubmit} onChange={onChange}>
-                <input placeholder="이름 입력"/>
-                <input placeholder="설명 입력"/>
-                <MapButton type="submit">제출</MapButton>
-            </form>
-            <h2>위도 : {markerInfo.position.lat} </h2>
-            <h2>경도 : {markerInfo.position.lng} </h2>
-            <h2>이름 : {markerInfo.name}</h2>
-            <h2>설명 : {markerInfo.description}</h2>
-            <h4>태그</h4>
-            <form onSubmit={onTagSubmit}>
-                <input placeholder="태그를 입력해주세요" value={input} onChange={onChange}/>
-                <button type="submit">추가</button>
-            </form>
-            <TagList tags={localTags}/>
+            <>
+                <h2> 위도 : {position.lat} </h2>
+                <h2> 경도 : {position.lng} </h2>
+                <Form>
+                    <Form.Row>
+                        <Form.Group as={Col} controlId="userPlaceName">
+                            <Form.Label>위치 이름</Form.Label>
+                            <Form.Control type="text" placeholder="위치의 이름을 입력해주세요"/>
+                        </Form.Group>
+                        <Form.Group as={Col} controlId="userPlaceDescription">
+                            <Form.Label>위치 설명</Form.Label>
+                            <Form.Control type="email" placeholder="위치에 대한 설명을 입력해주세요"/>
+                        </Form.Group>
+                    </Form.Row>
+                </Form>
+            </>
+            <MapTagBox/>
         </div>
     );
 };
