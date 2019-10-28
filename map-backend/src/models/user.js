@@ -5,7 +5,13 @@ import jwt from 'jsonwebtoken';
 const UserSchema = new Schema({
     username: String,
     hashedPassword: String,
-});
+    livingArea: String,
+    gender: String,
+    age: Number,
+    job: String,
+    wanted: [String],
+    providingInfo: Boolean,
+        });
 
 UserSchema.methods.setPassword = async function(password){
     const hash = await bcrypt.hash(password, 10);
@@ -40,6 +46,17 @@ UserSchema.statics.findByUsername = function(username){
     return this.findOne({username});
 };
 
+UserSchema.statics.findByAge = function(age){
+    return this.find({age});
+};
+
+UserSchema.statics.findByGender = function(gender){
+    return this.find({gender});
+};
+
+UserSchema.statics.findByJob = function(job){
+    return this.find({job});
+};
 
 const User = mongoose.model('User', UserSchema);
 export default User;

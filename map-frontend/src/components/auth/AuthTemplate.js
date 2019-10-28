@@ -12,7 +12,7 @@ const AuthTemplateBlock = styled.div`
     top:0;
     right: 0;
     bottom: 0;
-    background: ${palette.green[2]};
+    background: ${palette.gray[5]};
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -40,7 +40,7 @@ const AuthTemplate = ({children}) => {
         <AuthTemplateBlock>
             <WhiteBox>
                 <div className="logo-area">
-                    <Link to="/">리액트</Link>
+                    <Link to="/">메인 화면으로</Link>
                 </div>
                 {children}
             </WhiteBox>

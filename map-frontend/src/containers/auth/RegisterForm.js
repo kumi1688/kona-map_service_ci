@@ -9,7 +9,7 @@ const RegisterForm = ({history}) => {
     const [error, setError] = useState(null);
 
     const dispatch = useDispatch();
-    const { form, auth, authError, user} = useSelector(({auth, user}) => ({
+    const { form, auth, authError, user } = useSelector(({auth, user}) => ({
         form: auth.register,
         auth: auth.auth,
         authError: auth.authError,
@@ -32,7 +32,8 @@ const RegisterForm = ({history}) => {
     // 폼 등록 이벤트 핸들러
     const onSubmit = e => {
         e.preventDefault();
-        const { username, password, passwordConfirm } = form;
+        const { username, password, passwordConfirm, livingArea, gender, age,
+            job, wanted,  } = form;
         if([username, password, passwordConfirm].includes('')){
             setError('빈 칸을 모두 입력하세요');
             return;
@@ -44,7 +45,7 @@ const RegisterForm = ({history}) => {
             return;
         }
         if( password !== passwordConfirm) {return;}
-        dispatch(register({username, password}));
+        dispatch(register({username, password, livingArea, gender, age, job, wanted, }));
     };
 
 
@@ -56,6 +57,7 @@ const RegisterForm = ({history}) => {
     //회원가입 성공/실패 처리
     useEffect(() => {
         if(authError) {
+
             console.log('오류 발생');
             console.log(authError);
             if(authError.response.status === 409 ){

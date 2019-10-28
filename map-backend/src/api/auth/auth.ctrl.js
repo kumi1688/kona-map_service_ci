@@ -9,6 +9,12 @@ export const register = async ctx => {
             .max(20)
             .required(),
         password: Joi.string().required(),
+        livingArea: Joi.string(),
+        gender: Joi.string(),
+        age: Joi.string(),
+        job: Joi.string(),
+        wanted: Joi.string(),
+        providingInfo: Joi.bool(),
     });
 
     const result = Joi.validate(ctx.request.body, schema);
@@ -18,7 +24,7 @@ export const register = async ctx => {
         return;
     }
 
-    const { username, password } = ctx.request.body;
+    const { username, password, livingArea, gender, age, job, wanted, providingInfo } = ctx.request.body;
     try{
         const exists = await User.findByUsername(username);
         if( exists ) {
@@ -27,7 +33,7 @@ export const register = async ctx => {
         }
 
         const user = new User({
-            username,
+            username, livingArea, gender, age, job, wanted, providingInfo
         });
         await user.setPassword(password);
         await user.save();

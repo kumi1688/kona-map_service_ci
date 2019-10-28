@@ -1,14 +1,17 @@
-import React from 'react';
+import React, {useState, useCallback} from 'react';
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
 import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
+import {FormGroup, InputGroup, Form} from 'react-bootstrap';
+import UserInfoForm from "./UserInfoForm";
 
 //회원가입 or 로그인
 
+
 const ButtonWithMarginTop = styled(Button)`
 margin-top: 1rem;
-`
+`;
 
 const AuthFormBlock = styled.div`
     h3 {
@@ -45,35 +48,54 @@ const ErrorMessage = styled.div`
 
 
 const textMap = {
-    login : '로그인',
+    login: '로그인',
     register: '회원가입',
 };
 
 
-const AuthForm = ({type, form, onChange, onSubmit, error }) => {
+const AuthForm = ({type, form, onChange, onSubmit, error}) => {
+    const [agree, setAgree] = useState(false);
     const text = textMap[type];
-    return(
+
+    const onClick = useCallback(
+        () => {
+            if(!agree) setAgree(true);
+            else setAgree(false);
+        }, [agree]
+    );
+
+    return (
         <AuthFormBlock>
             <h3>{text}</h3>
             <form onSubmit={onSubmit}>
                 <StyledInput autoComplete="username" name="username" placeholder="아이디"
-                onChange={onChange} value={form.username}/>
+                             onChange={onChange} value={form.username}/>
                 <StyledInput
                     autoComplete="new-password" name="password" placeholder="비밀번호"
                     type="password" onChange={onChange} value={form.password}/>
-                {type=== 'register' && (
+                {type === 'register' && (
                     <StyledInput
-                    autoComplete="new-password" name="passwordConfirm" placeholder="비밀번호 확인"
-                    type="password" onChange={onChange} value={form.passwordConfirm}/>
+                        autoComplete="new-password" name="passwordConfirm" placeholder="비밀번호 확인"
+                        type="password" onChange={onChange} value={form.passwordConfirm}/>
                 )}
+                {type === 'register' && (
+                    <FormGroup>
+                        <Form.Check
+                            name="providingInfoConfirm"
+                            label="정보제공동의"
+                            onClick={onClick}
+                        />
+                    </FormGroup>
+                )}
+                {agree && <UserInfoForm form={form} onChange={onChange} />}
                 {error && <ErrorMessage>{error}</ErrorMessage>}
                 <ButtonWithMarginTop fullWidth>{text}</ButtonWithMarginTop>
             </form>
             <Footer>
                 {type === 'login' ?
-                    (<Link to="/register">회원가입</Link> ) :
+                    (<Link to="/register">회원가입</Link>) :
                     (<Link to="/login">로그인</Link>)
-                               }
+                }
             </Footer>
         </AuthFormBlock>
     );

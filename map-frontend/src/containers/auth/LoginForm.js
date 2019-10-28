@@ -7,7 +7,7 @@ import {check } from '../../modules/user';
 
 
 const LoginForm = ( {history}) => {
-    const [error, setError] = useState('아직은 오류 없음');
+    const [error, setError] = useState('로그인 해주세요!');
     const dispatch = useDispatch();
     const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
         form: auth.login,
