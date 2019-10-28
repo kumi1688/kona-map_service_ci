@@ -4,13 +4,13 @@ import {Row, Col, Button} from 'react-bootstrap';
 import UserMarker from "../../components/map/UserMarker";
 import MarkerInfo from "../../components/map/MarkerInfo";
 import MapCircle, {MapCircleInfo} from "../../components/map/MapCircle";
-import MapPage from "../../pages/MapPage";
-
+import UserInfoBox from "../../components/map/UserInfoBox";
 
 const MapContainer = () => {
     const [marker, setMarker] = useState(null);
     const [circle, setCircle] = useState(null);
     const [radius, setRadius] = useState(null);
+    const [infoBox, setInfoBox] = useState(null);
     const initialPosition = {lat:37.284315, lng: 127.044504};
     const [userPosition, setUserPosition] = useState({lat: null, lng: null});
 
@@ -22,6 +22,11 @@ const MapContainer = () => {
     const onCircleButtonClick = () => {
         if(!circle) setCircle(true);
         else setCircle(false);
+    };
+
+    const onInfoButtonClick = () => {
+        if(!infoBox) setInfoBox(true);
+        else setInfoBox(false);
     };
 
     const addMarker = (e) => {
@@ -52,16 +57,20 @@ const MapContainer = () => {
                         center={initialPosition}
                         onClick={addMarker}>
                         {marker && <UserMarker position={userPosition}/>}
-                        {circle && <MapCircle position={userPosition} radius={radius}/>}
+                        {circle && <MapCircle position={userPosition} radius={radius}/> }
+                        {circle && <UserMarker position={userPosition}/> }
+
                     </GoogleMap>
                 </LoadScript>
-                <Button variant="outline-info" onClick={onMarkerButtonClick}>마커 추가</Button>
+                <Button variant="outline-info" onClick={onMarkerButtonClick} >마커 추가</Button>
                 <Button variant="outline-info" onClick={onCircleButtonClick} >일정 범위 조회</Button>
+                <Button variant="outline-info" onClick={onInfoButtonClick} >정보 박스 추가</Button>
             </Col>
 
             <Col>
                 {marker && <MarkerInfo position={userPosition}/>}
                 {circle && <MapCircleInfo position={userPosition} onKeyPress={onKeyPress}/>}
+                {infoBox && <UserInfoBox position={userPosition}/>}
             </Col>
 
         </Row>

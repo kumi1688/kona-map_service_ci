@@ -7,7 +7,7 @@ import RegisterPage from "./pages/RegisterPage";
 import WritePage from "./pages/WritePage";
 import MapPage from "./pages/MapPage";
 import {Helmet} from 'react-helmet-async';
-
+import {Row, Col} from 'react-bootstrap';
 
 const App = () => {
     return (
@@ -20,7 +20,7 @@ const App = () => {
             <Route component={RegisterPage} path="/register"/>
             <Route component={WritePage} path="/write"/>
             <Route component={PostPage} path="/@:username/:postId"/>
-            <Route component={MapPage} path={["/map", '/']} />
+            <Route component={MapPage} path={["/map"]} />
         </>
     );
 };

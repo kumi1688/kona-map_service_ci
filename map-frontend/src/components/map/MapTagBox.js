@@ -2,7 +2,6 @@ import React, {useState, useCallback, useEffect} from 'react';
 import {Row, Col, Button, InputGroup, FormControl, Alert} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
 const TagItem = React.memo(({tag, onRemove}) => (
     <Alert variant="danger" onClick={() => onRemove(tag)} dismissible>#{tag}</Alert>
 ));
@@ -13,7 +12,7 @@ const TagList = React.memo(({tags, onRemove}) => (
     </Row>
 ));
 
-const MapTagBox = () => {
+const MapTagBox = ({updateTags}) => {
     const [input, setInput] = useState('');
     const [localTags, setLocalTags] = useState([]);
 
@@ -39,6 +38,7 @@ const MapTagBox = () => {
         e => {
             e.preventDefault();
             insertTag(input.trim());
+            updateTags(localTags);
             setInput('');
         }, [input, insertTag]
     );
