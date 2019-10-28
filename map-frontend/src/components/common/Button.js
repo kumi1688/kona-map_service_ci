@@ -8,6 +8,8 @@ const buttonStyle = css`
     font-size: 1rem;
     font-weight: bold;
    padding: 0.1rem 1rem;
+   margin-right: 0.2rem;
+   margin-left: 0.2rem;
    color: white;
    cursor: pointer;
    

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {GoogleMap, LoadScript} from '@react-google-maps/api'
-import HeaderContainer from "../containers/common/headerContainer";
+import HeaderContainer from "../containers/common/HeaderContainer";
 import MapContainer from "../containers/map/MapContainer";
 import MapEditor from "../components/map/MapEditor";
 import MapTagBox from "../components/map/MapTagBox";
