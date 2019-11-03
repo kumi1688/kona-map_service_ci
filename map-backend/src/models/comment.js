@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const PostSchema = new Schema({
+const CommentSchema = new Schema({
     title: String,
     body: String,
-    tags: [String],
+    recommend: Boolean,
     publishingDate: { type : Date, default: Date.now },
     user: {
         _id: mongoose.Types.ObjectId,
@@ -13,6 +13,6 @@ const PostSchema = new Schema({
     },
 });
 
-const Post = mongoose.model('Post', PostSchema);
+const Comment = mongoose.model('Comment', CommentSchema);
 
-export default Post;
+export default Comment;

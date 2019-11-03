@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from 'react';
 import MapTagBox from "./MapTagBox";
-import {Form, Card, Row, Col} from 'react-bootstrap';
+import {Form, Card, Row, Col, Button} from 'react-bootstrap';
 
 const MarkerInfo = ({position}) => {
     const [input, setInput] = useState('');
@@ -29,12 +29,13 @@ const MarkerInfo = ({position}) => {
         }, []
     );
 
+
     return (
         <div>
             <>
                 <h2> 위도 : {position.lat} </h2>
                 <h2> 경도 : {position.lng} </h2>
-                <Form>
+                <Form onSubmit={onSubmit}>
                     <Form.Row>
                         <Form.Group as={Col} controlId="userPlaceName">
                             <Form.Label>위치 이름</Form.Label>
@@ -48,6 +49,7 @@ const MarkerInfo = ({position}) => {
                 </Form>
             </>
             <MapTagBox/>
+            <Button variant="outline-info" onClick={onSubmit}>제출</Button>
         </div>
     );
 };

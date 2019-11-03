@@ -14,7 +14,7 @@ const StyledInput = styled.input`
   }
 `;
 
-const UserInfoForm = ({form, onChange}) => {
+const UserInfoInsertForm = ({form, onChange}) => {
     return(
         <>
             <StyledInput name="livingArea" placeholder="사는 지역" value={form.livingArea} onChange={onChange}/>
@@ -22,9 +22,8 @@ const UserInfoForm = ({form, onChange}) => {
             <StyledInput name="age" placeholder="나이" value={form.age} onChange={onChange}/>
             <StyledInput name="job" placeholder="직업" value={form.job} onChange={onChange}/>
             <StyledInput name="wanted" placeholder="이 앱으로 원하는 것" value={form.wanted} onChange={onChange}/>
-
         </>
     )
 };
 
-export default UserInfoForm;
+export default UserInfoInsertForm;

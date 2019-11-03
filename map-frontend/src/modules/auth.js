@@ -9,6 +9,7 @@ const INITIALIZE_FORM = 'auth/INITIALIZE_FORM';
 
 const [REGISTER, REGISTER_SUCCESS, REGISTER_FAILURE] =  createRequestActionTypes('auth/REGISTER',);
 const [LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE] = createRequestActionTypes('auth/LOGIN');
+const [FETCH_USER_DATA, FETCH_USER_DATA_SUCCESS, FETCH_USER_DATA_FAILURE] = createRequestActionTypes('auth/FETCH_USER_DATA');
 
 export const changeField = createAction(
     CHANGE_FIELD,
@@ -25,14 +26,20 @@ export const register = createAction(REGISTER, ({ username, password, livingArea
 export const login = createAction(LOGIN, ({username, password}) => ({
     username, password,
 }));
+export const fetchUserData = createAction(FETCH_USER_DATA, (
+    {username, livingArea, gender, age, job, wanted, providingInfo }) =>
+    ({username, livingArea, gender, age, job, wanted, providingInfo
+    }));
 
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
 const loginSaga = createRequestSaga(LOGIN, authAPI.login);
+const fetchUserDataSaga = createRequestSaga(FETCH_USER_DATA, authAPI.fetchUserData);
+
 export function* authSaga(){
     yield takeLatest(REGISTER, registerSaga);
     yield takeLatest(LOGIN, loginSaga);
+    yield takeLatest(FETCH_USER_DATA, fetchUserData);
 }
-
 
 const initialState = {
     register: {
@@ -41,7 +48,7 @@ const initialState = {
         passwordConfirm: '',
         livingArea: '',
         gender: '',
-        age: 0,
+        age: '',
         job: '',
         wanted : [],
         providingInfo : true

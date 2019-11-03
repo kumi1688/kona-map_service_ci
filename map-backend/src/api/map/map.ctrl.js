@@ -1,13 +1,36 @@
 import UserPlace from "../../models/userPlace"
+import Post from "../../models/post";
 
-const userPlaceList = [
+const post = new Post([
+    {
+        title: "title1",
+        body: "body1",
+        tags: ["tags1", "tags2", "tags3"],
+        publishingDate: { type : Date, default: Date.now },
+        user: {
+            username: "user1",
+        }
+    },
+    {
+        title: "title2",
+        body: "body2",
+        tags: ["tags4", "tags5", "tags6"],
+        publishingDate: { type : Date, default: Date.now },
+        user: {
+            username: "user2",
+        },
+    },
+]);
+
+const userPlaceList = new UserPlace([
     {
         name: "첫번쨰 이름",
         description: "첫번째 설명",
         tags: ["태그1", "태그2"],
-        position: {lat: 30, lng: 123}
+        position: {lat: 30, lng: 123},
+        posts: post,
     },
-];
+]);
 
 exports.makeUserPlace = async ctx => {
     const { name, description, tags, position } = ctx.request.body;

@@ -1,10 +1,6 @@
 import React, {useState} from 'react'
-import {GoogleMap, LoadScript} from '@react-google-maps/api'
 import HeaderContainer from "../containers/common/HeaderContainer";
 import MapContainer from "../containers/map/MapContainer";
-import MapEditor from "../components/map/MapEditor";
-import MapTagBox from "../components/map/MapTagBox";
-import MapActionButtons from "../components/map/MapActionButton";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';

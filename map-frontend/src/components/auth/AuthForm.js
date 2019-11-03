@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
 import {FormGroup, InputGroup, Form} from 'react-bootstrap';
-import UserInfoForm from "./UserInfoForm";
+import UserInfoInsertForm from "./UserInfoInsertForm";
 
 //회원가입 or 로그인
 
@@ -78,7 +78,7 @@ const AuthForm = ({type, form, onChange, onSubmit, error}) => {
                         autoComplete="new-password" name="passwordConfirm" placeholder="비밀번호 확인"
                         type="password" onChange={onChange} value={form.passwordConfirm}/>
                 )}
-                {type === 'register' && (
+                {(type === 'register' && !agree) && (
                     <FormGroup>
                         <Form.Check
                             name="providingInfoConfirm"
@@ -87,7 +87,7 @@ const AuthForm = ({type, form, onChange, onSubmit, error}) => {
                         />
                     </FormGroup>
                 )}
-                {agree && <UserInfoForm form={form} onChange={onChange} />}
+                {agree && <UserInfoInsertForm form={form} onChange={onChange} />}
                 {error && <ErrorMessage>{error}</ErrorMessage>}
                 <ButtonWithMarginTop fullWidth>{text}</ButtonWithMarginTop>
             </form>

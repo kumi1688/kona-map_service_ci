@@ -45,6 +45,7 @@ const RegisterForm = ({history}) => {
             return;
         }
         if( password !== passwordConfirm) {return;}
+        console.dir(user);
         dispatch(register({username, password, livingArea, gender, age, job, wanted, }));
     };
 
@@ -79,7 +80,7 @@ const RegisterForm = ({history}) => {
         if (user) {
             console.log('check API 성공');
             console.log(user);
-            history.push('/');
+            history.push('/map');
             try{
                 localStorage.setItem('user', JSON.stringify(user));
             } catch (e) {
