@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {withRouter} from 'react-router-dom';
 import { list } from "../../lib/api/map";
 import {unloadUserInfo} from "../../modules/map";
 
@@ -19,7 +18,7 @@ const UserInfoContainer = ({match}) => {
             dispatch(unloadUserInfo());
         };
     }, [dispatch]);
-    
+
 };
 
 export default UserInfoContainer;

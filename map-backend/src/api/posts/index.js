@@ -4,6 +4,19 @@ import checkLoggedIn from "../../lib/checkLoggedIn";
 
 const posts = new Router();
 
+const printInfo = ctx => {
+    ctx.body = {
+        method: ctx.method,
+        path: ctx.path,
+        params: ctx.params,
+    };
+};
+
+posts.get('/printInfo', printInfo);
+posts.get('/printInfo/:name?', printInfo);
+posts.get('/printInfo/:id', printInfo);
+
+
 posts.get('/', postsCtrl.list);
 posts.post('/', checkLoggedIn, postsCtrl.write);
 

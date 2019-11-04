@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import palette from "../../lib/styles/palette";
 import {Link} from 'react-router-dom';
+import {Button, ListGroupItem} from "react-bootstrap";
 
 // 회원가입/로그인 레이아웃
-
 
 const AuthTemplateBlock = styled.div`
     position: absolute;

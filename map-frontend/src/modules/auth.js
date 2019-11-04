@@ -20,15 +20,14 @@ export const changeField = createAction(
 
 export const initializeForm = createAction(INITIALIZE_FORM, form => form);
 export const register = createAction(REGISTER, ({ username, password, livingArea,
-                                                    gender, age, job, wanted, providingInfo}) => ({
+                                                    gender, age, job, wanted, providingInfo }) => ({
     username, password, livingArea, gender, age, job, wanted, providingInfo
 }));
 export const login = createAction(LOGIN, ({username, password}) => ({
     username, password,
 }));
-export const fetchUserData = createAction(FETCH_USER_DATA, (
-    {username, livingArea, gender, age, job, wanted, providingInfo }) =>
-    ({username, livingArea, gender, age, job, wanted, providingInfo
+export const fetchUserData = createAction(FETCH_USER_DATA, ({username, livingArea, gender, age, job, wanted, providingInfo}) => ({
+    username, livingArea, gender, age, job, wanted, providingInfo
     }));
 
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
@@ -38,7 +37,7 @@ const fetchUserDataSaga = createRequestSaga(FETCH_USER_DATA, authAPI.fetchUserDa
 export function* authSaga(){
     yield takeLatest(REGISTER, registerSaga);
     yield takeLatest(LOGIN, loginSaga);
-    yield takeLatest(FETCH_USER_DATA, fetchUserData);
+    yield takeLatest(FETCH_USER_DATA, fetchUserDataSaga);
 }
 
 const initialState = {
@@ -59,6 +58,14 @@ const initialState = {
     },
     auth: null,
     authError: null,
+    userInfo: {
+        username: '',
+        livingArea: '',
+        gender: '',
+        age: '',
+        job: '',
+        wanted : [],
+    },
 };
 
 const auth = handleActions(
@@ -87,6 +94,15 @@ const auth = handleActions(
             auth,
         }),
         [LOGIN_FAILURE]: (state, {payload: error}) => ({
+            ...state,
+            authError: error,
+        }),
+        [FETCH_USER_DATA_SUCCESS]: (state, {payload: userInfo}) => ({
+            ...state,
+            authError:null,
+            userInfo,
+        }),
+        [FETCH_USER_DATA_FAILURE]: (state, {payload: error}) => ({
             ...state,
             authError: error,
         }),

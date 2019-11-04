@@ -12,15 +12,18 @@ const TagList = React.memo(({tags, onRemove}) => (
     </Row>
 ));
 
-const MapTagBox = ({updateTags, form} ) => {
+const RegisterTagBox = ({updateTags, form} ) => {
     const [input, setInput] = useState('');
     const [localTags, setLocalTags] = useState([]);
 
     const insertTag = useCallback(
         tag => {
-            if (!tag) return;
-            if (localTags.includes(tag)) return;
-            setLocalTags([...localTags, tag]);
+            let str_tag = tag.toString();
+            if (!str_tag) return;
+            if (localTags.includes(str_tag)) return;
+            setLocalTags([...localTags, str_tag]);
+            form.wanted = [...localTags, str_tag];
+            console.dir(form);
         }, [localTags],
     );
 
@@ -36,9 +39,8 @@ const MapTagBox = ({updateTags, form} ) => {
 
     const onSubmit = useCallback(
         e => {
-            e.preventDefault();
             insertTag(input.trim());
-            updateTags(localTags);
+            //updateTags(localTags);
             setInput('');
         }, [input, insertTag]
     );
@@ -54,10 +56,11 @@ const MapTagBox = ({updateTags, form} ) => {
     return (
         <>
             <Row >
-                <Col xs={6}>
+                <Col xs={12}>
                     <InputGroup className="mb-3">
-                        <FormControl placeholder="태그를 입력해주세요" value={input} onChange={onChange}
-                                     onSubmit={onSubmit} onKeyPress={onKeyPress}/>
+                        <InputGroup.Prepend>원하는 것</InputGroup.Prepend>
+                        <FormControl placeholder="원하는 것을 입력해주세요" value={input} onChange={onChange}
+                                     onSubmit={onSubmit} onKeyPress={onKeyPress} />
                         <InputGroup.Append>
                             <Button variant="outline-secondary" onClick={onSubmit}>추가</Button>
                         </InputGroup.Append>
@@ -69,4 +72,4 @@ const MapTagBox = ({updateTags, form} ) => {
     );
 };
 
-export default MapTagBox;
+export default RegisterTagBox;

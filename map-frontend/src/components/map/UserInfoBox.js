@@ -1,6 +1,5 @@
 import React, {useCallback, useState, useReducer} from 'react';
 import {Col, Row, Button, Form, ListGroup} from 'react-bootstrap';
-import {InfoBox} from '@react-google-maps/api';
 import MapTagBox from "./MapTagBox";
 
 const initialState = {
@@ -29,7 +28,6 @@ const infoReducer = (state, action) => {
             return { ...state, gridPosition: {lat:action.gridPosition.lat, lng: action.gridPosition.lng}}
         }
         case 'updateTags': {
-            console.dir(action.tags);
             return { ...state, tags: action.tags}
         }
         default: {
@@ -61,7 +59,7 @@ const UserInfoBox = ({position}) => {
             <Form.Row>
                 <Form.Group as={Col} controlId="name" >
                     <Form.Label>이름</Form.Label>
-                    <Form.Control placeholder="이름을 입력해주세요" onChange={updateName}/>
+                    <Form.Control placeholder="이름을 입력해주세요" name="updateName" onChange={updateName}/>
                 </Form.Group>
 
                 <Form.Group as={Col} controlId="description">

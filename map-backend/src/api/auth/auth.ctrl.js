@@ -13,7 +13,8 @@ export const register = async ctx => {
         gender: Joi.string(),
         age: Joi.string(),
         job: Joi.string(),
-        wanted: Joi.string(),
+        //tags: Joi.array().items(Joi.string()).required(),
+        wanted: Joi.array().items(Joi.string()),
         providingInfo: Joi.bool(),
     });
 
@@ -94,12 +95,29 @@ export const logout = async ctx => {
     ctx.status = 204;
 };
 
+/*
+username: String,
+    hashedPassword: String,
+    livingArea: String,
+    gender: String,
+    age: Number,
+    job: String,
+    wanted: [String],
+    providingInfo: Boolean,
+
+ */
+
 export const userInfo = async ctx => {
-    const { user } = ctx.state;
-    console.dir(user);
-    if(!user) {
-        ctx.status = 401;
-        return;
+    const { username } = ctx.params;
+
+    try{
+        const userInfo = await User.findByUsername(username).exec();
+        if(!userInfo){
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = userInfo;
+    } catch(e){
+        ctx.throw(500, e);
     }
-    ctx.body = user;
 };

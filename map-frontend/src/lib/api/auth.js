@@ -8,7 +8,7 @@ export const register = ({username, password, livingArea, gender, age, job, want
     client.post('/api/auth/register', {username, password, livingArea,
         gender, age, job, wanted, providingInfo});
 
-export const fetchUserData = ({username, id}) => client.get(`/api/auth/userInfo/${id}`);
+export const fetchUserData = ({username}) => client.get(`/api/auth/userInfo/${username}`);
 
 export const check = () => client.get('/api/auth/check');
 

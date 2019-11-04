@@ -42,11 +42,11 @@ const Header = ({user, onLogout }) => {
         <>
             <HeaderBlock>
                 <Wrapper>
-                    <Link to="/" className="logo">KONA MAP SERVICE</Link>
+                    <Link to="/map" className="logo">KONA MAP SERVICE</Link>
                     {user ?
                         ( <div className="right">
                             <UserInfo>{user.username}</UserInfo>
-                                <Button to="/userInfo">유저정보</Button>
+                                <Button to='/userInfo'>유저정보</Button>
                             <Button onClick={onLogout}>로그아웃</Button>
                         </div>
                         ):

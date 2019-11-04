@@ -9,7 +9,7 @@ import posts, {postsSaga} from "./posts";
 import map, {mapSaga} from "./map";
 
 const rootReducer = combineReducers({
-    auth, loading, user, write, post, posts, map
+    auth, loading, user, write, post, posts, map,
 });
 
 export function* rootSaga() {

@@ -33,7 +33,7 @@ const RegisterForm = ({history}) => {
     const onSubmit = e => {
         e.preventDefault();
         const { username, password, passwordConfirm, livingArea, gender, age,
-            job, wanted,  } = form;
+            job, wanted  } = form;
         if([username, password, passwordConfirm].includes('')){
             setError('빈 칸을 모두 입력하세요');
             return;
@@ -46,7 +46,7 @@ const RegisterForm = ({history}) => {
         }
         if( password !== passwordConfirm) {return;}
         console.dir(user);
-        dispatch(register({username, password, livingArea, gender, age, job, wanted, }));
+        dispatch(register({username, password, livingArea, gender, age, job, wanted }));
     };
 
 

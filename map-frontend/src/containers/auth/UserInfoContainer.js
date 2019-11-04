@@ -1,25 +1,23 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {login} from "../../modules/auth";
 import {fetchUserData} from "../../modules/auth";
 import UserInfoShowForm from "../../components/auth/UserInfoShowForm";
 
 const UserInfoContainer = () => {
     const dispatch = useDispatch();
-    const {loading, user} = useSelector(({loading, user}) => ({
+    const {loading, auth, userInfo, user } = useSelector(({loading, auth, user}) => ({
         loading: loading['auth/FETCH_USER_DATA'],
-        user: user,
+        auth: auth,
+        userInfo: auth.userInfo,
+        user: user.user,
     }));
 
-    const onLoad = useCallback( (e) =>{
-        dispatch(fetchUserData);
-            const {form, user} = form;
-            console.dir(form);
-            console.dir(user);
+    const onLoad = useEffect( (e) =>{
+        dispatch(fetchUserData(user));
         }, []);
 
     return (
-        <UserInfoShowForm user={user} onLoad={onLoad}/>
+        <UserInfoShowForm userInfo={userInfo} onLoad={onLoad} user={user} />
     )
 };
 
