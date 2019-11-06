@@ -33,9 +33,9 @@ const userPlaceList = new UserPlace([
 ]);
 
 exports.makeUserPlace = async ctx => {
-    const { name, description, tags, position } = ctx.request.body;
+    const { name, description, tags, position, detailedAddress } = ctx.request.body;
     const userPlace = new UserPlace({
-        name, description, tags, position
+        name, description, tags, position, detailedAddress,
     });
     try{
         await userPlace.save();
@@ -45,8 +45,17 @@ exports.makeUserPlace = async ctx => {
     }
 };
 
-exports.listUserPlace = ctx => {
-    ctx.body = userPlaceList;
+exports.listUserPlace = async ctx => {
+    try{
+        const userplace = await UserPlace.find().exec();
+        if(!userplace) {
+            ctx.status = 404;
+            return;
+        }
+       ctx.body = userplace;
+    } catch(e){
+        ctx.throw(500, e);
+    }
 };
 
 exports.findUserPlace = async ctx => {

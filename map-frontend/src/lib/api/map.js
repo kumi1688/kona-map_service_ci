@@ -1,5 +1,3 @@
 import client from "./client";
 
-export const list = () => {
-    client.get('/api/map');
-};
+export const list = () => client.get('/api/map');

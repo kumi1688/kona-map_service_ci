@@ -1,10 +1,12 @@
 import React, {useCallback, useState} from 'react'
-import {GoogleMap, LoadScript, DrawingManager, InfoWindow} from '@react-google-maps/api'
+import {GoogleMap, LoadScript, DrawingManager, InfoWindow, DrawingManagerProps} from '@react-google-maps/api'
 import {Row, Col, Button, Container, Image} from 'react-bootstrap';
 import UserMarker from "../../components/map/UserMarker";
 import MarkerInfo from "../../components/map/MarkerInfo";
 import MapCircle, {MapCircleInfo} from "../../components/map/MapCircle";
 import UserInfoBox from "../../components/map/UserInfoBox";
+import UserPlacePage from "../../pages/UserPlacePage";
+import UserPlaceContainer from "./UserPlaceContainer";
 
 const MapContainer = () => {
     const [marker, setMarker] = useState(null);
@@ -12,6 +14,7 @@ const MapContainer = () => {
     const [radius, setRadius] = useState(null);
     const [infoBox, setInfoBox] = useState(null);
     const [photo, setPhoto] = useState(null);
+    const [userPlaceList, setUserPlaceList] = useState(null);
     const initialPosition = {lat:37.284315, lng: 127.044504};
     const [userPosition, setUserPosition] = useState({lat: null, lng: null});
 
@@ -33,6 +36,11 @@ const MapContainer = () => {
     const onPhotoClick = () => {
         if(!photo) setPhoto(true);
         else setPhoto(false);
+    };
+
+    const onUserPlaceListClick = () => {
+        if(!userPlaceList) setUserPlaceList(true);
+        else setUserPlaceList(false);
     };
 
     const addMarker = (e) => {
@@ -72,6 +80,7 @@ const MapContainer = () => {
                 <Button variant="outline-info" onClick={onCircleButtonClick} >일정 범위 조회</Button>
                 <Button variant="outline-info" onClick={onInfoButtonClick} >정보 박스 추가</Button>
                 <Button variant="outline-info" onClick={onPhotoClick} >사진 테스트</Button>
+                <Button variant="outline-info" onClick={onUserPlaceListClick}>유저 위치 리스트</Button>
             </Col>
 
             <Col>
@@ -87,6 +96,7 @@ const MapContainer = () => {
                     </Row>
                 </Container>
                 )}
+                {userPlaceList && <UserPlaceContainer/>}
             </Col>
 
 

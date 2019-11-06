@@ -5,20 +5,23 @@ import UserInfoShowForm from "../../components/auth/UserInfoShowForm";
 
 const UserInfoContainer = () => {
     const dispatch = useDispatch();
-    const {loading, auth, userInfo, user } = useSelector(({loading, auth, user}) => ({
+    const { userInfo, user } = useSelector(({loading, auth, user}) => ({
         loading: loading['auth/FETCH_USER_DATA'],
         auth: auth,
         userInfo: auth.userInfo,
         user: user.user,
     }));
 
-    const onLoad = useEffect( (e) =>{
-        dispatch(fetchUserData(user));
-        }, []);
+    useEffect( ( ) => {
+        const fetchData = async () => {
+            await dispatch(fetchUserData(user));
+        }
+        fetchData();
+    }, []);
 
     return (
-        <UserInfoShowForm userInfo={userInfo} onLoad={onLoad} user={user} />
-    )
+        <UserInfoShowForm userInfo={userInfo} user={user} />
+    );
 };
 
 export default UserInfoContainer;

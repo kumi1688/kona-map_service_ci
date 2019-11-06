@@ -9,6 +9,7 @@ import MapPage from "./pages/MapPage";
 import {Helmet} from 'react-helmet-async';
 import {Row, Col} from 'react-bootstrap';
 import UserInfoPage from "./pages/UserInfoPage";
+import UserPlacePage from "./pages/UserPlacePage";
 
 const App = () => {
     return (
@@ -23,6 +24,7 @@ const App = () => {
             <Route component={PostPage} path="/@:username/:postId"/>
             <Route component={MapPage} path={["/map"]} />
             <Route component={UserInfoPage} path={"/userInfo"}/>
+            <Route component={UserPlacePage} path={"/userplace"}/>
         </>
     );
 };

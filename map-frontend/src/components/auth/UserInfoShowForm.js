@@ -1,11 +1,10 @@
 import React from 'react';
 import {Table} from 'react-bootstrap';
 
-const UserInfoShowForm = ({userInfo, onLoad}) => {
-    console.dir(userInfo);
+const UserInfoShowForm = ({userInfo}) => {
     return(
         <>
-            <Table striped bordered hover variant="dark" onLoad={onLoad}>
+            <Table striped bordered hover variant="dark" >
                 <thead>
                 <tr>
                     <th>아이디</th>
@@ -25,7 +24,7 @@ const UserInfoShowForm = ({userInfo, onLoad}) => {
                     <td>{userInfo.job}</td>
                     <td>
                         <ul>
-                            {userInfo.wanted.map(info => (<li key={info.index}>{info}</li>))}
+                            {userInfo.wanted.map((info,index) => (<li key={index}>{info}</li>))}
                         </ul>
                     </td>
                 </tr>
