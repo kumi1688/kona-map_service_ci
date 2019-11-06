@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import HeaderContainer from "../containers/common/HeaderContainer";
 import MapContainer from "../containers/map/MapContainer";
 import 'bootstrap/dist/css/bootstrap.min.css';

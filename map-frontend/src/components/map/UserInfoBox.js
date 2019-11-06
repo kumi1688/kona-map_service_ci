@@ -2,8 +2,6 @@ import React, {useCallback, useState, useReducer, useEffect} from 'react';
 import {Col, Row, Button, Form, ListGroup} from 'react-bootstrap';
 import MapTagBox from "./MapTagBox";
 import client from "../../lib/api/client";
-import {post} from '../../modules/map';
-import {useDispatch, useSelector} from "react-redux";
 import ImageUpload from "../common/ImageUpload";
 import BootStrapModal from "../common/BootStrapModal";
 

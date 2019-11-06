@@ -7,10 +7,9 @@ import {finishLoading, startLoading} from "../../modules/loading";
 
 const UserPlaceContainer = () => {
     const [localInfo, setLocalInfo] = useState(null);
-    const [temp, setTemp] = useState(null);
 
     const dispatch = useDispatch();
-    const {map, info, loading} = useSelector(({map, loading}) => ({
+    const {info, loading} = useSelector(({map, loading}) => ({
         map: map,
         info: map.info,
         loading: loading['map/LIST'],

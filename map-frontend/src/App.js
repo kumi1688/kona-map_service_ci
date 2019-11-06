@@ -7,7 +7,6 @@ import RegisterPage from "./pages/RegisterPage";
 import WritePage from "./pages/WritePage";
 import MapPage from "./pages/MapPage";
 import {Helmet} from 'react-helmet-async';
-import {Row, Col} from 'react-bootstrap';
 import UserInfoPage from "./pages/UserInfoPage";
 import UserPlacePage from "./pages/UserPlacePage";
 
