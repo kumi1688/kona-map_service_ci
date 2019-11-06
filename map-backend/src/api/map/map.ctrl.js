@@ -33,9 +33,9 @@ const userPlaceList = new UserPlace([
 ]);
 
 exports.makeUserPlace = async ctx => {
-    const { name, description, tags, position, detailedAddress } = ctx.request.body;
+    const { name, description, tags, position, detailedPosition, publishingDate } = ctx.request.body;
     const userPlace = new UserPlace({
-        name, description, tags, position, detailedAddress,
+        name, description, tags, position, detailedPosition, publishingDate
     });
     try{
         await userPlace.save();

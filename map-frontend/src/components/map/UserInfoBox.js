@@ -1,11 +1,16 @@
-import React, {useCallback, useState, useReducer} from 'react';
+import React, {useCallback, useState, useReducer, useEffect} from 'react';
 import {Col, Row, Button, Form, ListGroup} from 'react-bootstrap';
 import MapTagBox from "./MapTagBox";
+import client from "../../lib/api/client";
+import {post} from '../../modules/map';
+import {useDispatch, useSelector} from "react-redux";
+import ImageUpload from "../common/ImageUpload";
+import BootStrapModal from "../common/BootStrapModal";
 
 const initialState = {
     name: '',
     description: '',
-    gridPosition: {lat:null, lng:null},
+    gridPosition: {lat:0, lng:0},
     detailedPosition: '',
     tags: [],
 };
@@ -21,11 +26,13 @@ const infoReducer = (state, action) => {
         case 'updateDescription': {
             return { ...state, description: action.description }
         }
-        case 'updateDetailedDescription': {
+        case 'updateDetailedPosition': {
+            console.dir(action.detailedPosition);
             return { ...state,  detailedPosition: action.detailedPosition }
         }
         case 'updateGridPosition': {
-            return { ...state, gridPosition: {lat:action.gridPosition.lat, lng: action.gridPosition.lng}}
+            return { ...state, gridPosition: {lat: parseFloat(action.gridPosition.lat),
+                    lng: parseFloat(action.gridPosition.lng)}}
         }
         case 'updateTags': {
             return { ...state, tags: action.tags}
@@ -36,22 +43,39 @@ const infoReducer = (state, action) => {
     }
 };
 
-const UserInfoBox = ({position}) => {
-    const [info, dispatchInfo] = useReducer(infoReducer, initialState);
+const UserInfoBox = ({position, form}) => {
+    const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
 
-    const reset = () => dispatchInfo({ type: 'reset' });
-    const updateName = (e) => dispatchInfo({ type: 'updateName', name: e.target.value });
-    const updateDescription = e => dispatchInfo({ type: 'updateDescription', description: e.target.value });
-    const updateDetailedDescription = e => dispatchInfo({ type: 'updateDetailedDescription', detailedPosition: e.target.value });
-    const updateGridPosition = position => dispatchInfo({ type: 'updateGridPosition', gridPosition: position});
-    const updateTags = newtag => dispatchInfo({type: 'updateTags', tags: newtag});
+    const reset = () => setLocalInfo({ type: 'reset' });
+    const updateName = (e) => setLocalInfo({ type: 'updateName', name: e.target.value });
+    const updateDescription = e => setLocalInfo({ type: 'updateDescription', description: e.target.value });
+    const updateDetailedDescription = e => setLocalInfo({ type: 'updateDetailedPosition', detailedPosition: e.target.value });
+    const updateGridPosition = position => setLocalInfo({ type: 'updateGridPosition',
+        gridPosition: position});
+    const updateTags = newtag => setLocalInfo({type: 'updateTags', tags: newtag});
+
+    useEffect( ( ) => {
+        updateGridPosition(position);
+    },[position]);
 
     const onSubmit= useCallback(
         e => {
             e.preventDefault();
-            updateGridPosition(position);
-            console.dir(info);
-        }
+            //updateGridPosition(position);
+            console.dir(localInfo);
+
+                const saveData = async () => {
+                    await client.post('/api/map', ({
+                            name: localInfo.name,
+                            description: localInfo.description,
+                            position: localInfo.gridPosition,
+                            tags: localInfo.tags,
+                            detailedPosition: localInfo.detailedPosition,
+                    }));
+                };
+                saveData();
+
+        }, [localInfo, position]
     );
 
     return(
@@ -83,9 +107,15 @@ const UserInfoBox = ({position}) => {
                               onChange={updateDetailedDescription}/>
             </Form.Group>
 
+            <Form.Group controlId="photo">
+                <Form.Label>사진</Form.Label>
+                <ImageUpload/>
+            </Form.Group>
+
             <MapTagBox updateTags={updateTags}/>
 
-            <Button variant="primary" type="submit" onClick={onSubmit}>등록</Button>
+            {/*<Button variant="primary" type="submit" onClick={onSubmit}>등록</Button>*/}
+            <BootStrapModal text="정말 등록하시겠습니까?" info={localInfo} onSubmit={onSubmit}/>
         </Form>
     );
 };

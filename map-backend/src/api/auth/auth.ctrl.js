@@ -95,18 +95,6 @@ export const logout = async ctx => {
     ctx.status = 204;
 };
 
-/*
-username: String,
-    hashedPassword: String,
-    livingArea: String,
-    gender: String,
-    age: Number,
-    job: String,
-    wanted: [String],
-    providingInfo: Boolean,
-
- */
-
 export const userInfo = async ctx => {
     const { username } = ctx.params;
 

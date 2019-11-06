@@ -6,7 +6,7 @@ const { Schema } = mongoose;
 const UserPlaceSchema = new Schema({
     name: String,
     description: String,
-    detailedAddress: String,
+    detailedPosition: String,
     tags: [String],
     position: {lat: Number, lng: Number},
     publishingDate: { type : Date, default: Date.now },

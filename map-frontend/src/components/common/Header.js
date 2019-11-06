@@ -8,10 +8,12 @@ import Button from "./Button";
 const UserInfo = styled.div`
     font-weight: 800;
     margin-right: 1rem;
+    
 `;
 
 const HeaderBlock = styled.div`
       position: fixed;
+      z-index : 30;
       width: 100%;
       background: white;
       box-shadow: 0px 2px 4px rgba(0,0,0,0.08);
@@ -20,6 +22,7 @@ const HeaderBlock = styled.div`
 const Wrapper = styled(Responsive)`
     height: 4rem;
     display: flex;
+    z-index : 30;
     align-items: center;
     justify-content : space-between;
     .logo{

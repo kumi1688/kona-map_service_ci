@@ -15,11 +15,6 @@ const UserPlaceContainer = () => {
         info: map.info,
         loading: loading['map/LIST'],
     }));
-    const data1 = [
-        {title: "123"},
-        {title: "234"},
-        {title: "345"},
-    ];
 
     useEffect( () => {
         const fetchData = async () => {

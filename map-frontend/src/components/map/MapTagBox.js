@@ -12,9 +12,13 @@ const TagList = React.memo(({tags, onRemove}) => (
     </Row>
 ));
 
-const MapTagBox = ({updateTags, form} ) => {
+const MapTagBox = ({updateTags} ) => {
     const [input, setInput] = useState('');
     const [localTags, setLocalTags] = useState([]);
+
+    useEffect(( ) =>{
+        updateTags(localTags);
+    }, [localTags]);
 
     const insertTag = useCallback(
         tag => {
@@ -40,7 +44,7 @@ const MapTagBox = ({updateTags, form} ) => {
             insertTag(input.trim());
             updateTags(localTags);
             setInput('');
-        }, [input, insertTag]
+        }, [input, localTags]
     );
 
     const onKeyPress = useCallback(
@@ -57,7 +61,7 @@ const MapTagBox = ({updateTags, form} ) => {
                 <Col xs={6}>
                     <InputGroup className="mb-3">
                         <FormControl placeholder="태그를 입력해주세요" value={input} onChange={onChange}
-                                     onSubmit={onSubmit} onKeyPress={onKeyPress}/>
+                                     onKeyPress={onKeyPress}/>
                         <InputGroup.Append>
                             <Button variant="outline-secondary" onClick={onSubmit}>추가</Button>
                         </InputGroup.Append>
