@@ -3,7 +3,7 @@ import React, {useState, useCallback} from "react";
 import {Row, Col, Form, FormGroup, ListGroup} from 'react-bootstrap';
 import InputBar from "../common/InputBar";
 
-export const MapCircleInfo = ( {position, onKeyPress}) => {
+export const MapCircleInfo = ( {position, onKeyPress, setRadius}) => {
     const [input, setInput] = useState('');
 
     const onChange = useCallback(e => {
@@ -13,6 +13,13 @@ export const MapCircleInfo = ( {position, onKeyPress}) => {
             setInput('');
         }
     }, );
+
+    const onRadiusChange = useCallback(e => {
+        setRadius(e);
+       return () => {
+           setInput('');
+       }
+    });
 
     return (
         <Row>
@@ -28,7 +35,7 @@ export const MapCircleInfo = ( {position, onKeyPress}) => {
                 </Form.Group>
 
                 <Form.Group as={Col} controlId="circleRadiusBar" >
-                    <InputBar onChange={onChange} name={input}/>
+                    <InputBar onRadiusChange={onRadiusChange}/>
                 </Form.Group>
             </Form>
         </Row>

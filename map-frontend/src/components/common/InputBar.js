@@ -1,29 +1,26 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import InputRange from 'react-input-range';
 import index from 'react-input-range/lib/css/index.css'
 
-class InputBar extends React.Component {
-    constructor(props) {
-        super(props);
-        console.dir(props);
-        this.state = {
-            value: {min: 0, max: 250},
-        };
-    }
+const InputBar = ({onRadiusChange}) => {
+    const [value, setValue] = useState({min: 0, max: 250});
 
+    const onChange = (e)=>{
+        onRadiusChange(e.max);
+        setValue(e);
+    };
 
-    render() {
-        return (
-            <div style={index.inputRange}>
-                <InputRange
-                    maxValue={500}
-                    minValue={0}
-                    value={this.state.value}
-                    onChange={value => this.setState({value})}/>
-            </div>
+    return (
+        <div style={index.inputRange}>
+            <InputRange
+                maxValue={1500}
+                minValue={0}
+                value={value}
+                formatLabel={value=>`${value}m`}
+                onChange={onChange}/>
+        </div>
 
-        );
-    }
-}
+    );
+};
 
 export default InputBar;

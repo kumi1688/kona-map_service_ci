@@ -91,6 +91,7 @@ const MapContainer = () => {
         const onKeyPress = useCallback(
             e => {
                 if (e.key === 'Enter') {
+                    console.dir(e);
                     e.preventDefault();
                     setRadius(parseInt(e.target.value, 10));
                 }
@@ -134,7 +135,7 @@ const MapContainer = () => {
 
                 <Col>
                     {marker && <MarkerInfo position={userPosition}/>}
-                    {circle && <MapCircleInfo position={userPosition} onKeyPress={onKeyPress}/>}
+                    {circle && <MapCircleInfo position={userPosition} onKeyPress={onKeyPress} setRadius={setRadius}/>}
                     {infoBox && <UserInfoBox position={userPosition} form={form}/>}
                     {photo && (
                         <Container>
