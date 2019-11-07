@@ -1,17 +1,18 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {
     GoogleMap, LoadScript, DrawingManager, InfoWindow, DrawingManagerProps
-    , Rectangle
+    , Rectangle, InfoBox
 } from '@react-google-maps/api'
 import {Row, Col, Button, Container, Image, OverlayTrigger} from 'react-bootstrap';
 import UserMarker from "../../components/map/UserMarker";
 import MarkerInfo from "../../components/map/MarkerInfo";
 import MapCircle, {MapCircleInfo} from "../../components/map/MapCircle";
-import UserInfoBox from "../../components/map/UserInfoBox";
+import UserInfoInsertBox from "../../components/map/UserInfoInsertBox";
 import UserPlaceContainer from "./UserPlaceContainer";
 import {useSelector, useDispatch} from "react-redux";
 import RectangleContainer from "./RectangleContainer";
 import PopOverButton from "../../components/common/PopOverButton";
+import UserInfoOnMapContainer from "./UserInfoOnMapContainer";
 
 const MapContainer = () => {
         const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const MapContainer = () => {
         const [circle, setCircle] = useState(null);
         const [radius, setRadius] = useState(null);
         const [infoBox, setInfoBox] = useState(null);
+        const [infoInsertBox, setInsertInfoBox] = useState(null);
         const [photo, setPhoto] = useState(null);
         const [rectangle, setRectangle] = useState(null);
         const [leftUpperPoint, setleftUpperPoint] = useState(null);
@@ -31,7 +33,6 @@ const MapContainer = () => {
         const [userPlaceList, setUserPlaceList] = useState(null);
         const [userPosition, setUserPosition] = useState({lat: null, lng: null});
         const initialPosition = {lat: 37.284315, lng: 127.044504};
-
 
         const onMapClick = useCallback(e => {
             if (rectangle) {
@@ -47,14 +48,14 @@ const MapContainer = () => {
                     setleftUpperPoint(null);
                 }
             }
-             if(circle){
+             if(circle || infoInsertBox ){
                  addMarker(e);
              }
         },);
 
-        const onMarkerButtonClick = useCallback(() => {
-            if (!marker) setMarker(true);
-            else setMarker(false);
+        const onInfoButtonClick = useCallback(() => {
+              if(!infoBox) setInfoBox(true);
+              else setInfoBox(false);
         });
 
         const onCircleButtonClick = useCallback(() => {
@@ -62,9 +63,9 @@ const MapContainer = () => {
             else setCircle(false);
         });
 
-        const onInfoButtonClick = useCallback(() => {
-            if (!infoBox) setInfoBox(true);
-            else setInfoBox(false);
+        const onInfoInsertButtonClick = useCallback(() => {
+            if (!infoInsertBox) setInsertInfoBox(true);
+            else setInsertInfoBox(false);
         });
 
         const onPhotoClick = useCallback(() => {
@@ -112,19 +113,18 @@ const MapContainer = () => {
                             zoom={15}
                             center={initialPosition}
                             onClick={onMapClick}>
-
-                            {marker && <UserMarker position={userPosition}/>}
                             {circle && <MapCircle position={userPosition} radius={radius}/>}
                             {circle && <UserMarker position={userPosition}/>}
-                            {infoBox && <UserMarker position={userPosition}/>}
+                            {infoInsertBox && <UserMarker position={userPosition}/>}
                             {leftUpperPoint && rightDownPoint && <RectangleContainer
                                 leftUpper={leftUpperPoint} rightDown={rightDownPoint}/>}
+                            {infoBox && <UserInfoOnMapContainer position={initialPosition}/>}
                         </GoogleMap>
                     </LoadScript>
-                    <Button variant="outline-info" onClick={onMarkerButtonClick}>마커 추가</Button>
+                    <Button variant="outline-info" onClick={onInfoButtonClick}>유저 위치(지도)</Button>
                     <Button variant="outline-info" onClick={onCircleButtonClick}>일정 범위 조회</Button>
-                    <Button variant="outline-info" onClick={onInfoButtonClick}>유저 위치 추가</Button>
-                    <Button variant="outline-info" onClick={onUserPlaceListClick}>유저 위치 리스트</Button>
+                    <Button variant="outline-info" onClick={onInfoInsertButtonClick}>유저 위치 추가</Button>
+                    <Button variant="outline-info" onClick={onUserPlaceListClick}>유저 위치(리스트)</Button>
                     <Button variant="outline-info" onClick={onPhotoClick}>사진 테스트</Button>
                     <PopOverButton contentMessage="사각형을 그리기 위해 맵에서 사각형의 좌측 상단에 해당하는 부분을 클릭 후
                 맵에서 사각형의 우측 하단에 해당하는 부분을 클릭해주세요"
@@ -136,7 +136,7 @@ const MapContainer = () => {
                 <Col>
                     {marker && <MarkerInfo position={userPosition}/>}
                     {circle && <MapCircleInfo position={userPosition} onKeyPress={onKeyPress} setRadius={setRadius}/>}
-                    {infoBox && <UserInfoBox position={userPosition} form={form}/>}
+                    {infoInsertBox && <UserInfoInsertBox position={userPosition} form={form}/>}
                     {photo && (
                         <Container>
                             <Row>
@@ -147,6 +147,7 @@ const MapContainer = () => {
                         </Container>
                     )}
                     {userPlaceList && <UserPlaceContainer/>}
+
                 </Col>
             </Row>
         );

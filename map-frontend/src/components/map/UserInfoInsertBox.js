@@ -41,7 +41,7 @@ const infoReducer = (state, action) => {
     }
 };
 
-const UserInfoBox = ({position, form}) => {
+const UserInfoInsertBox = ({position, form}) => {
     const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
 
     const reset = () => setLocalInfo({ type: 'reset' });
@@ -118,4 +118,4 @@ const UserInfoBox = ({position, form}) => {
     );
 };
 
-export default UserInfoBox;
+export default UserInfoInsertBox;

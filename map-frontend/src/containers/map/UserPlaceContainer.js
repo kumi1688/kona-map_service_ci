@@ -20,7 +20,7 @@ const UserPlaceContainer = () => {
             dispatch(startLoading());
             try{
                 const response = await client.get('/api/map');
-                dispatch(list());
+                //dispatch(list());
                 setLocalInfo(response.data);
             } catch(e){
                 console.log(e);
@@ -28,6 +28,7 @@ const UserPlaceContainer = () => {
             dispatch(finishLoading());
         };
         fetchData();
+        console.dir(localInfo);
     }, []);
 
     if (!info || loading ) return null;
