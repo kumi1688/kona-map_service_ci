@@ -1,16 +1,18 @@
 import {Circle} from '@react-google-maps/api'
 import React, {useState, useCallback} from "react";
 import {Row, Col, Form, FormGroup, ListGroup} from 'react-bootstrap';
+import InputBar from "../common/InputBar";
 
 export const MapCircleInfo = ( {position, onKeyPress}) => {
     const [input, setInput] = useState('');
 
     const onChange = useCallback(e => {
         setInput(e.target.value);
+        console.dir(input);
         return () =>{
             setInput('');
         }
-    }, [input]);
+    }, );
 
     return (
         <Row>
@@ -23,6 +25,10 @@ export const MapCircleInfo = ( {position, onKeyPress}) => {
                     <Form.Label>찾고 싶은 범위를 입력해주세요</Form.Label>
                     <Form.Control placeholder="찾고 싶은 범위를 입력해주세요" name={input}
                                   onChange={onChange} onKeyPress={onKeyPress}/>
+                </Form.Group>
+
+                <Form.Group as={Col} controlId="circleRadiusBar" >
+                    <InputBar onChange={onChange} name={input}/>
                 </Form.Group>
             </Form>
         </Row>

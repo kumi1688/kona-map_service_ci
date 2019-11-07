@@ -5,8 +5,8 @@ const UserMarker = ({position}) => {
     return (
         <Marker
             position={{
-                lat: position.lat,
-                lng: position.lng,
+                lat: parseFloat(position.lat),
+                lng: parseFloat(position.lng),
             }}
         />
     );

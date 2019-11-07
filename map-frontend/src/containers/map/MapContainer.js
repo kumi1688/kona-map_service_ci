@@ -10,7 +10,6 @@ import MapCircle, {MapCircleInfo} from "../../components/map/MapCircle";
 import UserInfoBox from "../../components/map/UserInfoBox";
 import UserPlaceContainer from "./UserPlaceContainer";
 import {useSelector, useDispatch} from "react-redux";
-import {changeField} from "../../modules/auth";
 import RectangleContainer from "./RectangleContainer";
 import PopOverButton from "../../components/common/PopOverButton";
 
@@ -30,60 +29,64 @@ const MapContainer = () => {
         const [leftUpperPoint, setleftUpperPoint] = useState(null);
         const [rightDownPoint, setRightDownPoint] = useState(null);
         const [userPlaceList, setUserPlaceList] = useState(null);
-        const initialPosition = {lat: 37.284315, lng: 127.044504};
         const [userPosition, setUserPosition] = useState({lat: null, lng: null});
+        const initialPosition = {lat: 37.284315, lng: 127.044504};
 
-        const onMapClick = useCallback( e => {
-            if(!leftUpperPoint) {
-                setleftUpperPoint({lat: e.latLng.lat(), lng: e.latLng.lng()});
-                return;
+
+        const onMapClick = useCallback(e => {
+            if (rectangle) {
+                if (!leftUpperPoint) {
+                    setleftUpperPoint({lat: e.latLng.lat(), lng: e.latLng.lng()});
+                    return;
+                }
+                if (leftUpperPoint && !rightDownPoint) {
+                    setRightDownPoint({lat: e.latLng.lat(), lng: e.latLng.lng()});
+                    return;
+                } else {
+                    setRightDownPoint(null);
+                    setleftUpperPoint(null);
+                }
             }
-             if(leftUpperPoint && !rightDownPoint ){
-                 setRightDownPoint({lat:e.latLng.lat(), lng:e.latLng.lng()});
-                 return;
+             if(circle){
+                 addMarker(e);
              }
-             else {
-                 setRightDownPoint(null);
-                 setleftUpperPoint(null);
-             }
-        }, );
+        },);
 
-
-        const onMarkerButtonClick = () => {
+        const onMarkerButtonClick = useCallback(() => {
             if (!marker) setMarker(true);
             else setMarker(false);
-        };
+        });
 
-        const onCircleButtonClick = () => {
+        const onCircleButtonClick = useCallback(() => {
             if (!circle) setCircle(true);
             else setCircle(false);
-        };
+        });
 
-        const onInfoButtonClick = () => {
+        const onInfoButtonClick = useCallback(() => {
             if (!infoBox) setInfoBox(true);
             else setInfoBox(false);
-        };
+        });
 
-        const onPhotoClick = () => {
+        const onPhotoClick = useCallback(() => {
             if (!photo) setPhoto(true);
             else setPhoto(false);
-        };
+        });
 
-        const onUserPlaceListClick = () => {
+        const onUserPlaceListClick = useCallback(() => {
             if (!userPlaceList) setUserPlaceList(true);
             else setUserPlaceList(false);
-        };
+        });
 
-        const onRectangleClick = () => {
+        const onRectangleClick = useCallback(() => {
             if (!rectangle) {
                 setRectangle(true);
             } else setRectangle(false);
-        };
+        }, [rectangle]);
 
 
-        const addMarker = (e) => {
+        const addMarker = useCallback((e) => {
             setUserPosition({lat: e.latLng.lat(), lng: e.latLng.lng()});
-        };
+        }, [userPosition]);
 
         const onKeyPress = useCallback(
             e => {
@@ -93,17 +96,6 @@ const MapContainer = () => {
                 }
             }, [radius]
         );
-
-        const onFormChange = e => {
-            const {value, name} = e.target;
-            dispatch(
-                changeField({
-                    form: 'userPlace',
-                    key: name,
-                    value,
-                }),
-            );
-        };
 
         return (
             <Row>
