@@ -18,6 +18,7 @@ const RegisterTagBox = ({updateTags, form} ) => {
 
     const insertTag = useCallback(
         tag => {
+            console.dir(tag);
             let str_tag = tag.toString();
             if (!str_tag) return;
             if (localTags.includes(str_tag)) return;
@@ -60,7 +61,7 @@ const RegisterTagBox = ({updateTags, form} ) => {
                     <InputGroup className="mb-3">
                         <InputGroup.Prepend>원하는 것</InputGroup.Prepend>
                         <FormControl placeholder="원하는 것을 입력해주세요" value={input} onChange={onChange}
-                                     onSubmit={onSubmit} onKeyPress={onKeyPress} />
+                                     onKeyPress={onKeyPress} />
                         <InputGroup.Append>
                             <Button variant="outline-secondary" onClick={onSubmit}>추가</Button>
                         </InputGroup.Append>

@@ -8,20 +8,19 @@ const InfoWindowList = ({info}) => {
 
     return (
         <>
-            {info.map((inf, index) => (<InfoWindowItem position={inf.position} key={inf._id} info={inf}/>))}
+            {info.map((inf) => (<InfoWindowItem position={inf.position} key={inf._id} info={inf}/>))}
         </>
     );
 };
 
-
 const InfoWindowItem = ({position, info}) => {
     const [visible, setVisible] = useState(null);
-    useEffect( () =>{
+    useEffect(() => {
         console.dir(info);
     });
 
-    const onClick = () =>{
-        if(!visible) setVisible(true);
+    const onClick = () => {
+        if (!visible) setVisible(true);
         else setVisible(false);
     }
 
@@ -29,12 +28,14 @@ const InfoWindowItem = ({position, info}) => {
         <>
             <Marker position={position} onClick={onClick}/>
             {visible && <InfoWindow position={position}>
-                <div>
-                    <p>이름 : {info.name}</p>
-                    <p>설명 : {info.description}</p>
-                    <p>자세한 설명 : {info.detailedPosition}</p>
-                    <p>태그 : {info.tags.map((tag, index) => (<li key={index}>{tag}</li>))}</p>
-                </div>
+                <>
+                    <h3>이름 : {info.name}</h3>
+                    <h3>설명 : {info.description}</h3>
+                    <h3>자세한 설명 : {info.detailedPosition}</h3>
+                    <h3>위치 타입 : {info.primaryPositionType}, {info.secondaryPositionType}</h3>
+                    <h3>태그 : {info.tags.map((tag, index) => (<li key={index}>{tag}</li>))}</h3>
+                    <p>등록일 : {info.publishingDate}</p>
+                </>
             </InfoWindow>
             }
         </>

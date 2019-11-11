@@ -1,14 +1,29 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Table} from 'react-bootstrap';
+
+const translatePrimary = (primaryPositionType) => {
+    let translated;
+    switch(primaryPositionType){
+        case "education": translated = "교육"; break;
+        case "excercise": translated = "운동"; break;
+        case "entertainment": translated = "오락"; break;
+        case "transport": translated = "교통"; break;
+        case "food": translated = "음식"; break;
+        default : translated = "없음";
+    }
+
+    return translated;
+}
 
 const LocalTableItem = ({data}) => (
     <>
         <td>{data.name}</td>
         <td>{data.description}</td>
-        <td></td>
+        <td>{data.detailedPosition}</td>
         <td>{data.position.lat}<br/>{data.position.lng}</td>
         <td>{data.publishingDate}</td>
         <td>{data.tags.map((tag, index) => <li key={index}>{tag}</li>)}</td>
+        <td>{translatePrimary(data.primaryPositionType)}<br/>{data.secondaryPositionType}</td>
     </>
 );
 
@@ -22,6 +37,7 @@ const LocalTable = ({dataList}) => (
             <th>위치</th>
             <th>등록일</th>
             <th>태그</th>
+            <th>위치타입</th>
         </tr>
         </thead>
         <tbody>
@@ -37,6 +53,10 @@ const UserInfoViewer = ({info, loading}) => {
         if (!visible) setVisible(true);
         else setVisible(false);
     };
+
+    useEffect(()=>{
+        console.dir(info);
+    });
 
     return (
         <>

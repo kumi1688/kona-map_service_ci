@@ -33,9 +33,12 @@ const userPlaceList = new UserPlace([
 ]);
 
 exports.makeUserPlace = async ctx => {
-    const { name, description, tags, position, detailedPosition, publishingDate } = ctx.request.body;
+    const { name, description, tags, position, detailedPosition, publishingDate,
+    primaryPositionType, secondaryPositionType, radius } = ctx.request.body;
+    console.dir(ctx.request.body);
     const userPlace = new UserPlace({
-        name, description, tags, position, detailedPosition, publishingDate
+        name, description, tags, position, detailedPosition, publishingDate,
+        primaryPositionType, secondaryPositionType, radius
     });
     try{
         await userPlace.save();
@@ -62,6 +65,20 @@ exports.findUserPlace = async ctx => {
     const { id } = ctx.params;
     try{
         const userplace = await UserPlace.findById(id).exec();
+        if(!userplace){
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = userplace;
+    } catch(e){
+        ctx.throw(500, e);
+    }
+};
+
+exports.findUserPlaceByType = async ctx => {
+    const { type }  = ctx.params;
+    try{
+        const userplace = await UserPlace.findByType(type).exec();
         if(!userplace){
             ctx.status = 404;
             return;

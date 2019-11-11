@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import Post from "./post";
 
 const { Schema } = mongoose;
 
@@ -10,7 +9,14 @@ const UserPlaceSchema = new Schema({
     tags: [String],
     position: {lat: Number, lng: Number},
     publishingDate: { type : Date, default: Date.now },
+    primaryPositionType: String,
+    secondaryPositionType: String,
+    radius: Number,
 });
+
+UserPlaceSchema.statics.findByType = function(type){
+    return this.find({type});
+};
 
 const UserPlace = mongoose.model('userMarker', UserPlaceSchema);
 

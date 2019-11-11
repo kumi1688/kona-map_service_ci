@@ -60,7 +60,7 @@ const MapTagBox = ({updateTags} ) => {
             <Row >
                 <Col xs={6}>
                     <InputGroup className="mb-3">
-                        <FormControl placeholder="태그를 입력해주세요" value={input} onChange={onChange}
+                        <FormControl placeholder="태그를 입력해주세요(검색에 활용됩니다)" value={input} onChange={onChange}
                                      onKeyPress={onKeyPress}/>
                         <InputGroup.Append>
                             <Button variant="outline-secondary" onClick={onSubmit}>추가</Button>

@@ -5,7 +5,7 @@ import UserInfoViewer from "../../components/map/UserInfoViewer";
 import client from "../../lib/api/client";
 import {finishLoading, startLoading} from "../../modules/loading";
 
-const UserPlaceContainer = () => {
+const UserPlaceContainer = ( {onRightClick}) => {
     const [localInfo, setLocalInfo] = useState(null);
 
     const dispatch = useDispatch();
