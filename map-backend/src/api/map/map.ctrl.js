@@ -76,9 +76,9 @@ exports.findUserPlace = async ctx => {
 };
 
 exports.findUserPlaceByType = async ctx => {
-    const { type }  = ctx.params;
+    const { primary}  = ctx.params;
     try{
-        const userplace = await UserPlace.findByType(type).exec();
+        const userplace = await UserPlace.findByType(primary).exec();
         if(!userplace){
             ctx.status = 404;
             return;

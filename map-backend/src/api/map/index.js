@@ -5,7 +5,7 @@ const map = new Router();
 
 map.get('/:id', mapCtrl.findUserPlace);
 map.get('/', mapCtrl.listUserPlace);
-map.get('/:type', mapCtrl.findUserPlaceByType);
+map.get('/find/:primary', mapCtrl.findUserPlaceByType);
 map.post('/', mapCtrl.makeUserPlace);
 
 export default map;

@@ -14,8 +14,8 @@ const UserPlaceSchema = new Schema({
     radius: Number,
 });
 
-UserPlaceSchema.statics.findByType = function(type){
-    return this.find({type});
+UserPlaceSchema.statics.findByType = function(primary){
+    return this.find({primaryPositionType: primary});
 };
 
 const UserPlace = mongoose.model('userMarker', UserPlaceSchema);

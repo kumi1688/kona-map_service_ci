@@ -1,5 +1,15 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {GoogleMap, InfoWindow, LoadScript, StandaloneSearchBox} from '@react-google-maps/api'
+import {
+    GoogleMap,
+    InfoWindow,
+    LoadScript,
+    DirectionsRenderer,
+    DirectionsService,
+    Polyline,
+    Polygon,
+    DrawingManager,
+    LoadScriptNext,
+} from '@react-google-maps/api'
 import {Row, Col, Button, Container, Image} from 'react-bootstrap';
 import UserMarker from "../../components/map/UserMarker";
 import MarkerInfo from "../../components/map/MarkerInfo";
@@ -12,7 +22,6 @@ import PopOverButton from "../../components/common/PopOverButton";
 import UserInfoOnMapContainer from "./UserInfoOnMapContainer";
 import {GiSoccerBall} from 'react-icons/gi';
 
-
 const MapContainer = () => {
         const dispatch = useDispatch();
         const {loading, form} = useSelector(({map, loading}) => ({
@@ -20,7 +29,7 @@ const MapContainer = () => {
             form: map.info,
         }));
 
-        const [zoom, setZoom] = useState(15);
+        const [drawingMode, setDrawingMode] = useState('rectangle');
         const [marker, setMarker] = useState(null);
         const [circle, setCircle] = useState(null);
         const [radius, setRadius] = useState(null);
@@ -32,16 +41,20 @@ const MapContainer = () => {
         const [userPlaceList, setUserPlaceList] = useState(null);
         const [userPosition, setUserPosition] = useState({lat: null, lng: null});
 
+
         const initialPosition = {lat: 37.284315, lng: 127.044504};
 
         const onMapClick = useCallback(e => {
             if (rectangle) {
+                console.dir(leftUpperPoint);
                 if (!leftUpperPoint) {
                     setLeftUpperPoint({lat: e.latLng.lat(), lng: e.latLng.lng()});
+                    console.dir(leftUpperPoint);
                     return;
                 }
                 if (leftUpperPoint && !rightDownPoint) {
                     setRightDownPoint({lat: e.latLng.lat(), lng: e.latLng.lng()});
+                    console.dir(rightDownPoint);
                     return;
                 } else {
                     setRightDownPoint(null);
@@ -51,7 +64,7 @@ const MapContainer = () => {
             if (circle || insertInfoBox) {
                 addMarker(e);
             }
-        }, [circle, insertInfoBox, leftUpperPoint, rightDownPoint]);
+        }, [circle, insertInfoBox]);
 
         const onInfoButtonClick = useCallback(() => {
             if (!infoBox) setInfoBox(true);
@@ -67,7 +80,6 @@ const MapContainer = () => {
             if (!insertInfoBox) setInsertInfoBox(true);
             else setInsertInfoBox(false);
         }, [insertInfoBox]);
-
 
         const onUserPlaceListClick = useCallback(() => {
             if (!userPlaceList) setUserPlaceList(true);
@@ -87,58 +99,66 @@ const MapContainer = () => {
         const onKeyPress = useCallback(
             e => {
                 if (e.key === 'Enter') {
-                    //console.dir(e);
                     e.preventDefault();
                     setRadius(parseInt(e.target.value, 10));
                 }
             }, [radius]
         );
 
-        const onZoomChanged = useCallback( e => {
-            console.dir(e);
-        }, [zoom]);
+        useEffect( () => {
+            if(!drawingMode) setDrawingMode(true);
+        }, [drawingMode]);
+
+        const onCompleteRectangleInDrawingManager = useCallback(
+            e => {
+                console.dir(e);
+                setLeftUpperPoint({lng: parseFloat(e.bounds.ka.g), lat: parseFloat(e.bounds.pa.h)});
+                setRightDownPoint({lng: parseFloat(e.bounds.ka.h), lat: parseFloat(e.bounds.pa.g)});
+                setDrawingMode(null);
+            }, [leftUpperPoint, rightDownPoint]
+        );
 
         return (
             <Row>
                 <Col>
-                    <LoadScript
+                    {drawingMode && <LoadScriptNext
                         id="script-loader"
                         googleMapsApiKey="AIzaSyBoLaZLcIzTtGb0Ogg23GTiPkuXs0R-JwE"
-                        >
+                        libraries={[`drawing`]}
+                    >
+
                         <GoogleMap
                             mapContainerStyle={{
                                 height: '500px',
                                 width: '1500px'
                             }}
-                            zoom={zoom}
+                            zoom={15}
                             center={initialPosition}
                             onClick={onMapClick}
-                            onZoomChanged={onZoomChanged}
-                            >
+                        >
 
+                            {drawingMode && <DrawingManager onRectangleComplete={onCompleteRectangleInDrawingManager}
+                                                            drawingMode={drawingMode}/>}
                             {circle && <MapCircle position={userPosition} radius={radius}/>}
                             {circle && <UserMarker position={userPosition}/>}
                             {insertInfoBox && <UserMarker position={userPosition}/>}
-                            {leftUpperPoint && rightDownPoint && <RectangleContainer
+                            {rectangle && <RectangleContainer
                                 leftUpper={leftUpperPoint} rightDown={rightDownPoint}/>}
                             {infoBox && <UserInfoOnMapContainer position={initialPosition}/>}
                         </GoogleMap>
-                    </LoadScript>
+                    </LoadScriptNext>
+                    }
                     <Button variant="outline-info" onClick={onInfoButtonClick}>유저 위치(지도)</Button>
                     <Button variant="outline-info" onClick={onInfoInsertButtonClick}>유저 위치 추가</Button>
                     <Button variant="outline-info" onClick={onUserPlaceListClick}>유저 위치(리스트)</Button>
-                    <PopOverButton contentMessage="사각형을 그리기 위해 맵에서 사각형의 좌측 상단에 해당하는 부분을 클릭 후
-                맵에서 사각형의 우측 하단에 해당하는 부분을 클릭해주세요"
-                                   titleMessage="사각형 그리는 방법" ButtonLabel="구역 추가하기"
-                                   onClick={onRectangleClick}/>
-
-                </Col>
+                    <Button variant="outline-info" onClick={onRectangleClick}>사각형 조회</Button>
+                 </Col>
 
                 <Col>
                     {marker && <MarkerInfo position={userPosition}/>}
                     {insertInfoBox && <UserInfoInsertBox position={userPosition} circle={circle}
                                                          setCircle={setCircle} onKeyPress={onKeyPress} setRadius={setRadius}
-                                                            radius={radius}/>}
+                                                         radius={radius}/>}
                     {userPlaceList && <UserPlaceContainer/>}
                     {rectangle && <h2>rectangle<GiSoccerBall/></h2>}
 

@@ -148,6 +148,7 @@ const UserInfoInsertBox = ({position, onKeyPress, setRadius, setCircle, circle, 
             };
             saveData();
             reset();
+            setCircle(false);
         }, [localInfo, position]
     );
 
