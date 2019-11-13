@@ -1,19 +1,31 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Button, Table} from 'react-bootstrap';
+import MapSearchBox from "./MapSearchBox";
 
 const translatePrimary = (primaryPositionType) => {
     let translated;
-    switch(primaryPositionType){
-        case "education": translated = "교육"; break;
-        case "excercise": translated = "운동"; break;
-        case "entertainment": translated = "오락"; break;
-        case "transport": translated = "교통"; break;
-        case "food": translated = "음식"; break;
-        default : translated = "없음";
+    switch (primaryPositionType) {
+        case "education":
+            translated = "교육";
+            break;
+        case "excercise":
+            translated = "운동";
+            break;
+        case "entertainment":
+            translated = "오락";
+            break;
+        case "transport":
+            translated = "교통";
+            break;
+        case "food":
+            translated = "음식";
+            break;
+        default :
+            translated = "없음";
     }
 
     return translated;
-}
+};
 
 const LocalTableItem = ({data}) => (
     <>
@@ -27,41 +39,56 @@ const LocalTableItem = ({data}) => (
     </>
 );
 
-const LocalTable = ({dataList}) => (
-    <Table striped bordered hover variant="dark">
-        <thead>
-        <tr>
-            <th>이름</th>
-            <th>설명</th>
-            <th>상세한 설명</th>
-            <th>위치</th>
-            <th>등록일</th>
-            <th>태그</th>
-            <th>위치타입</th>
-        </tr>
-        </thead>
-        <tbody>
-        {dataList.map(data => (<tr key={data._id}><LocalTableItem data={data}/></tr>))}
-        </tbody>
-    </Table>
-);
+const LocalTable = ({dataList, searchQuery}) => {
+        const [localDataList, setLocalDataList] = useState(dataList);
 
-const UserInfoViewer = ({info, loading}) => {
-    const [visible, setVisible] = useState(false);
-    const onClick = () => {
-        console.dir(info);
-        if (!visible) setVisible(true);
-        else setVisible(false);
-    };
+        useEffect(
+            () => {
+                console.dir(searchQuery);
+                setLocalDataList(dataList.filter(data => (
+                    data.name.indexOf(searchQuery)) !== -1 ? data : null));
+            }, [searchQuery]);
 
-    useEffect(()=>{
-        console.dir(info);
-    });
+        return (
+            <Table striped bordered hover variant="dark">
+                <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>설명</th>
+                    <th>상세한 설명</th>
+                    <th>위치</th>
+                    <th>등록일</th>
+                    <th>태그</th>
+                    <th>위치타입</th>
+                </tr>
+                </thead>
+                <tbody>
+                {localDataList.map(data => (<tr key={data._id}><LocalTableItem data={data}/></tr>))}
+                </tbody>
+            </Table>
+        );
+    }
+;
+
+const UserInfoViewer = ({info}) => {
+    const [visible, setVisible] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const onSearchQuerySubmit = useCallback(
+        (value) => {
+            setSearchQuery(value);
+            toggleVisible();
+        }, [searchQuery]);
+
+    const toggleVisible = useCallback(() => {
+        setVisible(false);
+        setVisible(true);
+    }, [searchQuery]);
 
     return (
         <>
-            {visible && (<LocalTable dataList={info}/>)}
-            <Button variant="outline-primary" onClick={onClick}>불러오기</Button>
+            <MapSearchBox setSearchQuery={setSearchQuery} onSearchQuerySubmit={onSearchQuerySubmit}/>
+            { visible && <LocalTable dataList={info} searchQuery={searchQuery}/> }
         </>
     );
 };

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import InputRange from 'react-input-range';
 import index from 'react-input-range/lib/css/index.css'
 
-const InputBar = ({onRadiusChange}) => {
+const InputBar = ({onRadiusChange, radius}) => {
     const [value, setValue] = useState({min: 0, max: 250});
 
     const onChange = (e)=>{

@@ -21,15 +21,16 @@ import RectangleContainer from "./RectangleContainer";
 import PopOverButton from "../../components/common/PopOverButton";
 import UserInfoOnMapContainer from "./UserInfoOnMapContainer";
 import {GiSoccerBall} from 'react-icons/gi';
+import MapSearchBox from "../../components/map/MapSearchBox";
 
-const MapContainer = () => {
+const MapContainer = ({onPopUpClick}) => {
         const dispatch = useDispatch();
         const {loading, form} = useSelector(({map, loading}) => ({
             loading: loading,
             form: map.info,
         }));
 
-        const [drawingMode, setDrawingMode] = useState('rectangle');
+        const [drawingMode, setDrawingMode] = useState('');
         const [marker, setMarker] = useState(null);
         const [circle, setCircle] = useState(null);
         const [radius, setRadius] = useState(null);
@@ -40,7 +41,6 @@ const MapContainer = () => {
         const [rightDownPoint, setRightDownPoint] = useState(null);
         const [userPlaceList, setUserPlaceList] = useState(null);
         const [userPosition, setUserPosition] = useState({lat: null, lng: null});
-
 
         const initialPosition = {lat: 37.284315, lng: 127.044504};
 
@@ -96,7 +96,7 @@ const MapContainer = () => {
             setUserPosition({lat: e.latLng.lat(), lng: e.latLng.lng()});
         }, [userPosition]);
 
-        const onKeyPress = useCallback(
+        const onKeyPressForRadius = useCallback(
             e => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -135,13 +135,16 @@ const MapContainer = () => {
                             zoom={15}
                             center={initialPosition}
                             onClick={onMapClick}
+                            onRightClick={onPopUpClick}
                         >
 
                             {drawingMode && <DrawingManager onRectangleComplete={onCompleteRectangleInDrawingManager}
                                                             drawingMode={drawingMode}/>}
                             {circle && <MapCircle position={userPosition} radius={radius}/>}
-                            {circle && <UserMarker position={userPosition}/>}
-                            {insertInfoBox && <UserMarker position={userPosition}/>}
+                            {insertInfoBox && <UserMarker position={userPosition} circle={circle}
+                                                          setCircle={setCircle} onKeyPress={onKeyPressForRadius}
+                                                          setRadius={setRadius} radius={radius}
+                            />}
                             {rectangle && <RectangleContainer
                                 leftUpper={leftUpperPoint} rightDown={rightDownPoint}/>}
                             {infoBox && <UserInfoOnMapContainer position={initialPosition}/>}
@@ -156,12 +159,10 @@ const MapContainer = () => {
 
                 <Col>
                     {marker && <MarkerInfo position={userPosition}/>}
-                    {insertInfoBox && <UserInfoInsertBox position={userPosition} circle={circle}
-                                                         setCircle={setCircle} onKeyPress={onKeyPress} setRadius={setRadius}
-                                                         radius={radius}/>}
                     {userPlaceList && <UserPlaceContainer/>}
                     {rectangle && <h2>rectangle<GiSoccerBall/></h2>}
-
+                    { circle && <MapCircleInfo setRadius={setRadius} onKeyPress={onKeyPressForRadius}
+                                    radius={radius}/> }
                 </Col>
             </Row>
         );
