@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import Responsive from "./Responsive";
 import {Link} from 'react-router-dom';
 import Button from "./Button";
+import {Navbar, Nav, Form, FormControl} from "react-bootstrap";
+import UserInfoOnMapContainer from "../../containers/map/UserInfoOnMapContainer";
 
 
 const UserInfo = styled.div`
@@ -40,8 +42,28 @@ const Spacer = styled.div`
 height: 4rem;
 `;
 
-const Header = ({user, onLogout }) => {
+const Header = ({user, onLogout}) => {
     return (
+        <>
+            <Navbar bg="dark" variant="dark">
+                <Navbar.Brand href="#home">KONA MAP SERVICE</Navbar.Brand>
+                <Nav className="mr-auto">
+                    <Nav.Link href="/map">Home</Nav.Link>
+                    {user && <Nav.Link href="/userInfo">유저 정보</Nav.Link>}
+                    {user && <Nav.Link onClick={onLogout} >로그아웃</Nav.Link>}
+                    {!user && <Nav.Link href="/login">로그인</Nav.Link>}
+
+                </Nav>
+                <Form inline>
+                    <FormControl type="text" placeholder="Search" className="mr-sm-2"/>
+                    <Button variant="outline-info">Search</Button>
+                </Form>
+            </Navbar>
+        </>
+    );
+};
+
+/*
         <>
             <HeaderBlock>
                 <Wrapper>
@@ -61,8 +83,7 @@ const Header = ({user, onLogout }) => {
             </HeaderBlock>
             <Spacer/>
         </>
-    );
-};
+        */
 
 export default Header;
 

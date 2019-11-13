@@ -7,7 +7,6 @@ const UserInfoContainer = () => {
     const dispatch = useDispatch();
     const { userInfo, user } = useSelector(({loading, auth, user}) => ({
         loading: loading['auth/FETCH_USER_DATA'],
-        auth: auth,
         userInfo: auth.userInfo,
         user: user.user,
     }));
@@ -17,10 +16,10 @@ const UserInfoContainer = () => {
             await dispatch(fetchUserData(user));
         }
         fetchData();
-    }, []);
+    }, [user]);
 
     return (
-        <UserInfoShowForm userInfo={userInfo} user={user} />
+        <UserInfoShowForm userInfo={userInfo} />
     );
 };
 

@@ -20,7 +20,7 @@ const InfoWindowItem = ({position, info}) => {
     return (
         <>
             <Marker position={position} onClick={onClick}/>
-            { info.radius != undefined && visible && <Circle center={position} radius={info.radius}/> }
+            {info.radius != undefined && visible && <Circle center={position} radius={info.radius}/> }
             {visible && <InfoWindow position={position}>
                 <>
                     <h3>이름 : {info.name}</h3>

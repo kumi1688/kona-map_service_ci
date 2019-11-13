@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Table} from 'react-bootstrap';
 
 const UserInfoShowForm = ({userInfo}) => {
+    useEffect(() =>{
+        console.dir(userInfo);
+    }, [userInfo]);
     return(
         <>
             <Table striped bordered hover variant="dark" >

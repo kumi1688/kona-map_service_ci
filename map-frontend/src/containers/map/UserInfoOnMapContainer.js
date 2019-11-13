@@ -6,7 +6,7 @@ import InfoWindowList from "../../components/map/InfoWindowList";
 import {finishLoading, startLoading} from "../../modules/loading";
 
 
-const UserInfoOnMapContainer = ({position}) => {
+const UserInfoOnMapContainer = () => {
     const [localInfo, setLocalInfo] = useState(null);
     const [visible, setVisible] = useState(null);
     const dispatch = useDispatch();
@@ -23,7 +23,6 @@ const UserInfoOnMapContainer = ({position}) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            dispatch(startLoading());
             try {
                 const response = await client.get('/api/map');
                 setLocalInfo(response.data);
@@ -31,14 +30,12 @@ const UserInfoOnMapContainer = ({position}) => {
             } catch (e) {
                 console.dir(e);
             }
-            dispatch(finishLoading());
         };
         fetchData();
     }, []);
 
-    if (!localInfo || loading ) return null;
+    if (!localInfo) return null;
 
-    //position={{lat: 37.284315, lng: 127.044504}}
     return (
         <>
             <InfoWindowList info={localInfo}/>

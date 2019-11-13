@@ -147,7 +147,7 @@ const MapContainer = ({onPopUpClick}) => {
                             />}
                             {rectangle && <RectangleContainer
                                 leftUpper={leftUpperPoint} rightDown={rightDownPoint}/>}
-                            {infoBox && <UserInfoOnMapContainer position={initialPosition}/>}
+                            {infoBox && <UserInfoOnMapContainer />}
                         </GoogleMap>
                     </LoadScriptNext>
                     }
@@ -161,7 +161,7 @@ const MapContainer = ({onPopUpClick}) => {
                     {marker && <MarkerInfo position={userPosition}/>}
                     {userPlaceList && <UserPlaceContainer/>}
                     {rectangle && <h2>rectangle<GiSoccerBall/></h2>}
-                    { circle && <MapCircleInfo setRadius={setRadius} onKeyPress={onKeyPressForRadius}
+                    {circle && <MapCircleInfo setRadius={setRadius} onKeyPress={onKeyPressForRadius}
                                     radius={radius}/> }
                 </Col>
             </Row>
