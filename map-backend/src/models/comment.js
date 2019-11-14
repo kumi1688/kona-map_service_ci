@@ -5,13 +5,13 @@ const { Schema } = mongoose;
 const CommentSchema = new Schema({
     title: String,
     body: String,
-    recommend: Boolean,
     publishingDate: { type : Date, default: Date.now },
-    user: {
-        _id: mongoose.Types.ObjectId,
-        username: String,
-    },
+    username: String
 });
+
+CommentSchema.statics.findByUsername = function(username){
+    return this.find({username});
+};
 
 const Comment = mongoose.model('Comment', CommentSchema);
 

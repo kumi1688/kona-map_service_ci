@@ -46,17 +46,23 @@ const Header = ({user, onLogout}) => {
     return (
         <>
             <Navbar bg="dark" variant="dark">
-                <Navbar.Brand href="#home">KONA MAP SERVICE</Navbar.Brand>
+                <Navbar.Brand href="/map">KONA MAP SERVICE</Navbar.Brand>
                 <Nav className="mr-auto">
-                    <Nav.Link href="/map">Home</Nav.Link>
                     {user && <Nav.Link href="/userInfo">유저 정보</Nav.Link>}
-                    {user && <Nav.Link onClick={onLogout} >로그아웃</Nav.Link>}
+                    {user && <Nav.Link onClick={onLogout}>로그아웃</Nav.Link>}
                     {!user && <Nav.Link href="/login">로그인</Nav.Link>}
-
                 </Nav>
                 <Form inline>
-                    <FormControl type="text" placeholder="Search" className="mr-sm-2"/>
-                    <Button variant="outline-info">Search</Button>
+                    <Form.Group>
+                        <FormControl type="text" placeholder="Search" className="mr-sm-2"/>
+                        <Form.Control as="select">
+                            <option>이름</option>
+                            <option>태그</option>
+                            <option>설명</option>
+                            <option>위치</option>
+                        </Form.Control>
+                        <Button variant="outline-info" size="sm" block>검색</Button>
+                    </Form.Group>
                 </Form>
             </Navbar>
         </>

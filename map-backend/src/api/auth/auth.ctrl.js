@@ -97,7 +97,6 @@ export const logout = async ctx => {
 
 export const userInfo = async ctx => {
     const { username } = ctx.params;
-    console.dir(ctx.params);
 
     try{
         const userInfo = await User.findByUsername(username).exec();

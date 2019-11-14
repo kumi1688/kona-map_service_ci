@@ -1,5 +1,6 @@
+import Comment from "../../models/comment";
+import User from '../../models/user';
 import Joi from "joi";
-import User from "../../models/user";
 
 export const register = async ctx => {
     const schema = Joi.object().keys({
@@ -8,15 +9,11 @@ export const register = async ctx => {
             .min(3)
             .max(20)
             .required(),
-        password: Joi.string().required(),
-        livingArea: Joi.string(),
-        gender: Joi.string(),
-        age: Joi.string(),
-        job: Joi.string(),
-        wanted: Joi.string(),
-        providingInfo: Joi.bool(),
+        title: Joi.string(),
+        body: Joi.string(),
     });
 
+    console.dir(ctx.request.body);
     const result = Joi.validate(ctx.request.body, schema);
     if(result.error){
         ctx.status = 400;
@@ -24,72 +21,42 @@ export const register = async ctx => {
         return;
     }
 
-    const { username, password, livingArea, gender, age, job, wanted, providingInfo } = ctx.request.body;
-    try{
-        const exists = await User.findByUsername(username);
-        if( exists ) {
+    const {title, body, username} = ctx.request.body;
+    console.dir(ctx.request.body);
+
+    try {
+        const result = await User.findByUsername(username);
+        console.dir(result);
+        if (!result) {
             ctx.status = 409;
             return;
         }
-
-        const user = new User({
-            username, livingArea, gender, age, job, wanted, providingInfo
-        });
-        await user.setPassword(password);
-        await user.save();
-
-        ctx.body = user.serialize();
-
-        const token = user.generateToken();
-        ctx.cookies.set('access_token', token, {
-            maxAge: 1000* 60*60*24*7,
-            httpOnly: true,
-        });
-    } catch(e) {
+    } catch (e) {
         ctx.throw(500, e);
-    }
-};
-
-export const login = async ctx => {
-    const { username, password } = ctx.request.body;
-
-    if(!username || !password ) {
-        ctx.status = 401;
-        return;
     }
 
     try{
-        const user = await User.findByUsername(username);
-        if(!user){
-            ctx.staus = 401;
-            return;
-        }
-
-        const valid = await user.checkPassword(password);
-        if(!valid){
-            ctx.status = 401;
-            return;
-        }
-
-        ctx.body = user.serialize();
-        const token = user.generateToken();
-        ctx.cookies.set('access_token', token, {
-            maxAge: 1000*60*60*24*7,
-            httpOnly: true,
+        const comment = new Comment({
+            title, body, username
         });
-    } catch(e){
+        await comment.save();
+        ctx.body = comment;
+    }catch(e){
         ctx.throw(500, e);
     }
 };
-export const check = async ctx => {
-    const { user } = ctx.state;
-    if(!user){
-        ctx.status = 401;
-        return;
+
+export const findByUsername = async ctx => {
+    const {username} = ctx.params;
+    console.dir(ctx.params);
+    try{
+        const comment = await Comment.findByUsername(username).exec();
+        if(!comment){
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = comment;
+    } catch(e){
+        ctx.throw(500, e);
     }
-    ctx.body = user;
-};
-export const logout = async ctx => {
-    ctx.cookies.set('access_token');
-    ctx.status = 204;
 };

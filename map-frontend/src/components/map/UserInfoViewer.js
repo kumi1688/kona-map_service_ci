@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Button, Table} from 'react-bootstrap';
 import MapSearchBox from "./MapSearchBox";
+import {useDispatch, useSelector} from "react-redux";
+import {setSearchQuery} from "../../modules/map";
 
 const translatePrimary = (primaryPositionType) => {
     let translated;
@@ -72,22 +74,29 @@ const LocalTable = ({dataList, searchQuery}) => {
 
 const UserInfoViewer = ({info}) => {
     const [visible, setVisible] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [localSearchQuery, setLocalSearchQuery] = useState('');
+    const dispatch = useDispatch();
+    const {searchQuery} = useSelector(({map}) => ({
+        searchQuery : map.searchQuery,
+    }));
+
+    useEffect(() =>{
+        console.dir(searchQuery);
+    }, [searchQuery]);
 
     const onSearchQuerySubmit = useCallback(
-        (value) => {
-            setSearchQuery(value);
+        () => {
             toggleVisible();
-        }, [searchQuery]);
+        }, [visible]);
 
     const toggleVisible = useCallback(() => {
         setVisible(false);
         setVisible(true);
-    }, [searchQuery]);
+    }, [visible]);
 
     return (
         <>
-            <MapSearchBox setSearchQuery={setSearchQuery} onSearchQuerySubmit={onSearchQuerySubmit}/>
+            <MapSearchBox onSearchQuerySubmit={onSearchQuerySubmit}/>
             { visible && <LocalTable dataList={info} searchQuery={searchQuery}/> }
         </>
     );

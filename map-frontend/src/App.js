@@ -9,6 +9,7 @@ import MapPage from "./pages/MapPage";
 import {Helmet} from 'react-helmet-async';
 import UserInfoPage from "./pages/UserInfoPage";
 import UserPlacePage from "./pages/UserPlacePage";
+import CommentContainer from "./components/map/CommentContainer";
 
 const App = () => {
     return (
@@ -24,6 +25,7 @@ const App = () => {
             <Route component={MapPage} path={["/map"]} />
             <Route component={UserInfoPage} path={"/userInfo"}/>
             <Route component={UserPlacePage} path={"/userplace"}/>
+            <Route component={CommentContainer} path={"/comment"}/>
         </>
     );
 };

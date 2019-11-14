@@ -14,14 +14,11 @@ import {Row, Col, Button, Container, Image} from 'react-bootstrap';
 import UserMarker from "../../components/map/UserMarker";
 import MarkerInfo from "../../components/map/MarkerInfo";
 import MapCircle, {MapCircleInfo} from "../../components/map/MapCircle";
-import UserInfoInsertBox from "../../components/map/UserInfoInsertBox";
 import UserPlaceContainer from "./UserPlaceContainer";
 import {useSelector, useDispatch} from "react-redux";
 import RectangleContainer from "./RectangleContainer";
-import PopOverButton from "../../components/common/PopOverButton";
 import UserInfoOnMapContainer from "./UserInfoOnMapContainer";
 import {GiSoccerBall} from 'react-icons/gi';
-import MapSearchBox from "../../components/map/MapSearchBox";
 
 const MapContainer = ({onPopUpClick}) => {
         const dispatch = useDispatch();
@@ -30,6 +27,8 @@ const MapContainer = ({onPopUpClick}) => {
             form: map.info,
         }));
 
+        const [map, setMap] = useState(null);
+        const [zoom, setZoom] =  useState(15);
         const [drawingMode, setDrawingMode] = useState('');
         const [marker, setMarker] = useState(null);
         const [circle, setCircle] = useState(null);
@@ -105,9 +104,37 @@ const MapContainer = ({onPopUpClick}) => {
             }, [radius]
         );
 
+        const onZoomChanged = useCallback( e => {
+            const fetchZoom = async () => {
+                try {
+                    const response = await map.getZoom();
+                    setZoom(response);
+                } catch(e) {
+                    console.dir(e);
+                }
+            };
+            fetchZoom();
+        }, [map]);
+
+        const onDblClick = useCallback( e =>{
+            console.dir(e);
+        }, []);
+
+        const onRightClick = useCallback( e => {
+            console.dir(e);
+        },[]);
+
+        const onMouseMove = useCallback( (e) => {
+            console.dir(e);
+        },[]);
+
         useEffect( () => {
             if(!drawingMode) setDrawingMode(true);
         }, [drawingMode]);
+
+        useEffect(() => {
+            console.dir(zoom);
+        }, [zoom]);
 
         const onCompleteRectangleInDrawingManager = useCallback(
             e => {
@@ -117,6 +144,10 @@ const MapContainer = ({onPopUpClick}) => {
                 setDrawingMode(null);
             }, [leftUpperPoint, rightDownPoint]
         );
+
+        const getMapObject = useCallback(e => {
+            setMap(e);
+        }, [map]);
 
         return (
             <Row>
@@ -130,12 +161,21 @@ const MapContainer = ({onPopUpClick}) => {
                         <GoogleMap
                             mapContainerStyle={{
                                 height: '500px',
-                                width: '1500px'
+                                width: '1400px'
                             }}
-                            zoom={15}
+                            zoom={zoom}
                             center={initialPosition}
                             onClick={onMapClick}
                             onRightClick={onPopUpClick}
+                            onDblClick={onDblClick}
+                            onLoad={getMapObject}
+                            options={{
+                                zoomControl: true,
+                                panControl: true,
+                                fullscreenControl: true,
+                                gestureHandling: "cooperative"
+                                }}
+                            onZoomChanged={onZoomChanged}
                         >
 
                             {drawingMode && <DrawingManager onRectangleComplete={onCompleteRectangleInDrawingManager}
@@ -147,7 +187,7 @@ const MapContainer = ({onPopUpClick}) => {
                             />}
                             {rectangle && <RectangleContainer
                                 leftUpper={leftUpperPoint} rightDown={rightDownPoint}/>}
-                            {infoBox && <UserInfoOnMapContainer />}
+                            {infoBox && <UserInfoOnMapContainer zoom={zoom}/>}
                         </GoogleMap>
                     </LoadScriptNext>
                     }

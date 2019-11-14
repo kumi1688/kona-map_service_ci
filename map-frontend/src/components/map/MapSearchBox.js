@@ -1,9 +1,11 @@
 import React, {useCallback, useState} from 'react';
 import {Form, Row, Col, InputGroup, FormControl, Button} from "react-bootstrap";
 import {FaSearchengin} from "react-icons/fa";
+import {setSearchQuery} from "../../modules/map";
+import {useDispatch} from "react-redux";
 
-
-const MapSearchBox = ({setSearchQuery, onSearchQuerySubmit}) => {
+const MapSearchBox = ({onSearchQuerySubmit}) => {
+    const dispatch = useDispatch();
     const [value, setValue] = useState('');
 
     const onChange = useCallback(
@@ -16,8 +18,8 @@ const MapSearchBox = ({setSearchQuery, onSearchQuerySubmit}) => {
         e => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                setSearchQuery(value);
-                onSearchQuerySubmit(value);
+                dispatch(setSearchQuery(value));
+                onSearchQuerySubmit();
             }
         }, [value]
     );
