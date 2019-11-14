@@ -22,13 +22,14 @@ import {GiSoccerBall} from 'react-icons/gi';
 
 const MapContainer = ({onPopUpClick}) => {
         const dispatch = useDispatch();
-        const {loading, form} = useSelector(({map, loading}) => ({
-            loading: loading,
-            form: map.info,
+        const {searchQueryOnMap, currentUserLocation} = useSelector(({map}) => ({
+            searchQueryOnMap: map.searchQuery.searchQueryOnMap,
+            currentUserLocation: map.currentUserLocaction
         }));
 
+        const [userLocOnMap, setUserLocOnMap] = useState(null);
         const [map, setMap] = useState(null);
-        const [zoom, setZoom] =  useState(15);
+        const [zoom, setZoom] = useState(15);
         const [drawingMode, setDrawingMode] = useState('');
         const [marker, setMarker] = useState(null);
         const [circle, setCircle] = useState(null);
@@ -65,11 +66,6 @@ const MapContainer = ({onPopUpClick}) => {
             }
         }, [circle, insertInfoBox]);
 
-        const onInfoButtonClick = useCallback(() => {
-            if (!infoBox) setInfoBox(true);
-            else setInfoBox(false);
-        }, [infoBox]);
-
         const onCircleButtonClick = useCallback(() => {
             if (!circle) setCircle(true);
             else setCircle(false);
@@ -104,28 +100,23 @@ const MapContainer = ({onPopUpClick}) => {
             }, [radius]
         );
 
-        const onZoomChanged = useCallback( e => {
-            const fetchZoom = async () => {
-                try {
-                    const response = await map.getZoom();
-                    setZoom(response);
-                } catch(e) {
-                    console.dir(e);
-                }
-            };
-            fetchZoom();
-        }, [map]);
 
-        const onDblClick = useCallback( e =>{
+        const onDblClick = useCallback(e => {
             console.dir(e);
         }, []);
 
-        const onRightClick = useCallback( e => {
+        const onRightClick = useCallback(e => {
             console.dir(e);
-        },[]);
+        }, []);
 
-        useEffect( () => {
-            if(!drawingMode) setDrawingMode(true);
+        const onUserLocationClick = useCallback(
+            () => {
+                if (!userLocOnMap) setUserLocOnMap(true);
+                else setUserLocOnMap(false);
+            }, [currentUserLocation]);
+
+        useEffect(() => {
+            if (!drawingMode) setDrawingMode(true);
         }, [drawingMode]);
 
         useEffect(() => {
@@ -142,7 +133,30 @@ const MapContainer = ({onPopUpClick}) => {
 
         const getMapObject = useCallback(e => {
             setMap(e);
+            console.dir(e.getZoom());
         }, [map]);
+
+        useEffect(() => {
+            console.dir(map);
+            //const response = map.getZoom();
+            //console.dir(map.getZoom());
+        }, [map]);
+
+        const onZoomChanged = useCallback(e => {
+            const fetchZoom = async () => {
+                try {
+                    const response = await map.getZoom();
+                    setZoom(response);
+                } catch (e) {
+                    console.dir(e);
+                }
+            };
+            fetchZoom();
+        }, [map]);
+
+        useEffect(() => {
+            console.dir(currentUserLocation);
+        }, [currentUserLocation]);
 
         return (
             <Row>
@@ -164,13 +178,13 @@ const MapContainer = ({onPopUpClick}) => {
                             onRightClick={onPopUpClick}
                             onDblClick={onDblClick}
                             onLoad={getMapObject}
+                            onZoomChanged={onZoomChanged}
                             options={{
                                 zoomControl: true,
                                 panControl: true,
                                 fullscreenControl: true,
                                 gestureHandling: "cooperative"
-                                }}
-                            onZoomChanged={onZoomChanged}
+                            }}
                         >
 
                             {drawingMode && <DrawingManager onRectangleComplete={onCompleteRectangleInDrawingManager}
@@ -182,22 +196,23 @@ const MapContainer = ({onPopUpClick}) => {
                             />}
                             {rectangle && <RectangleContainer
                                 leftUpper={leftUpperPoint} rightDown={rightDownPoint}/>}
-                            {infoBox && <UserInfoOnMapContainer zoom={zoom}/>}
+                            {searchQueryOnMap && <UserInfoOnMapContainer zoom={zoom}/>}
+                            {userLocOnMap && <UserMarker position={currentUserLocation} circle={-1}/>}
                         </GoogleMap>
                     </LoadScriptNext>
                     }
-                    <Button variant="outline-info" onClick={onInfoButtonClick}>유저 위치(지도)</Button>
+                    <Button vraiant="outline-info" onClick={onUserLocationClick}>현재 내 위치 찾기</Button>
                     <Button variant="outline-info" onClick={onInfoInsertButtonClick}>유저 위치 추가</Button>
                     <Button variant="outline-info" onClick={onUserPlaceListClick}>유저 위치(리스트)</Button>
                     <Button variant="outline-info" onClick={onRectangleClick}>사각형 조회</Button>
-                 </Col>
+                </Col>
 
                 <Col>
                     {marker && <MarkerInfo position={userPosition}/>}
                     {userPlaceList && <UserPlaceContainer/>}
                     {rectangle && <h2>rectangle<GiSoccerBall/></h2>}
                     {circle && <MapCircleInfo setRadius={setRadius} onKeyPress={onKeyPressForRadius}
-                                    radius={radius}/> }
+                                              radius={radius}/>}
                 </Col>
             </Row>
         );

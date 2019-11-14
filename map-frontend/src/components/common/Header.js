@@ -46,9 +46,8 @@ height: 4rem;
 
 const Header = ({user, onLogout}) => {
     const dispatch = useDispatch();
-    const {searchQuery, searchQueryType} = useSelector(({map}) => ({
-        searchQuery: map.searchQuery,
-        searchQueryType: map.searchQueryType
+    const {searchQueryOnMap} = useSelector(({map}) => ({
+        searchQueryOnMap: map.searchQuery.searchQueryOnMap
     }));
 
     const [value, setValue] = useState('');
@@ -67,16 +66,12 @@ const Header = ({user, onLogout}) => {
     const onSubmit = useCallback(
         e => {
             e.preventDefault();
-            dispatch(setSearchQuery({searchQuery: value, searchQueryType: option}));
+            dispatch(setSearchQuery({
+                searchQuery: value,
+                searchQueryType: option,
+                searchQueryOnMap: true
+                }));
         }, [dispatch, value, option]);
-
-    useEffect(() => {
-        console.dir(searchQuery);
-    }, [searchQuery]);
-
-    useEffect(() => {
-        console.dir(option);
-    }, [option]);
 
     return (
         <>

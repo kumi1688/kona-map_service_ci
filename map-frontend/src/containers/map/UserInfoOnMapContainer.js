@@ -21,10 +21,6 @@ const UserInfoOnMapContainer = ({zoom}) => {
     };
 
     useEffect(() => {
-        console.dir(info);
-    }, [info]);
-
-    useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await client.get('/api/map');
@@ -34,7 +30,6 @@ const UserInfoOnMapContainer = ({zoom}) => {
             }
         };
         fetchData();
-        console.dir(info);
         return() => {
             setLocalInfo(null);
             console.log('clean');

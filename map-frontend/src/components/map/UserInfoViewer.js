@@ -77,7 +77,7 @@ const UserInfoViewer = ({info}) => {
     const [localSearchQuery, setLocalSearchQuery] = useState('');
     const dispatch = useDispatch();
     const {searchQuery} = useSelector(({map}) => ({
-        searchQuery : map.searchQuery,
+        searchQuery : map.searchQuery.searchQuery,
     }));
 
     useEffect(() =>{

@@ -4,18 +4,41 @@ import {Nav} from 'react-bootstrap';
 import CommentContainer from "./CommentContainer";
 import schoolIcon from '../../lib/styles/MarkerImage/icons/school.svg';
 import stdiumIcon from '../../lib/styles/MarkerImage/icons/stadium.svg';
+import smokeIcon from '../../lib/styles/MarkerImage/icons/smoke.png';
+import {useSelector} from "react-redux";
+import EstimateContainer from "../../containers/map/EstimateContainer";
 
 
 
 const InfoWindowList = ({info, zoom}) => {
+    const {searchQuery, searchQueryType} = useSelector(({map}) => ({
+        searchQueryType: map.searchQuery.searchQueryType,
+        searchQuery: map.searchQuery.searchQuery,
+    }));
+    const [filteredData, setFilteredData] = useState(null);
+
+    useEffect(() => {
+        switch(searchQueryType){
+            case "name": setFilteredData(info.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null)); break;
+            case "tag": setFilteredData(info.filter(inf => (inf.tags.indexOf(searchQuery)) !== -1 ? inf : null)); break;
+            case "description": setFilteredData(info.filter(inf => (inf.description.indexOf(searchQuery)) !== -1 ? inf : null)); break;
+            case "position": setFilteredData(info.filter(inf => (inf.detailedPosition.indexOf(searchQuery)) !== -1 ? inf : null)); break;
+            default: setFilteredData(info.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+        }
+        console.dir(filteredData);
+    }, [searchQuery, searchQueryType]);
+
+    if(!filteredData) return null;
+
     return (
         <>
-            {info.map((inf) => (<InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}
+            {filteredData.map((inf) => (<InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}
         </>
     );
 };
 
 const InfoWindowItem = ({info, zoom}) => {
+
     const [visible, setVisible] = useState(null);
     const [visiblePositionInfo, setVisiblePositionInfo] = useState(true);
     const [visibleEstimate, setVisibleEstimate] = useState(null);
@@ -53,7 +76,7 @@ const InfoWindowItem = ({info, zoom}) => {
     return (
         <>
             <Marker position={info.position} onClick={onClick}
-            icon={zoom > 15 && info.primaryPositionType === 'education' ? schoolIcon : null}/>
+            icon={zoom > 15 && info.primaryPositionType === 'education' ? smokeIcon : null}/>
             {info.radius !== undefined && visible && <Circle center={info.position} radius={info.radius}/>}
             {visible && <InfoWindow position={info.position}>
                 <>
@@ -86,7 +109,7 @@ const InfoWindowItem = ({info, zoom}) => {
                             <p>등록일 : {info.publishingDate}</p>
                         </>
                     )}
-                    {visibleEstimate && <h2>estimate</h2>}
+                    {visibleEstimate && <EstimateContainer/>}
                     {visibleComment && <CommentContainer/>}
                 </>
             </InfoWindow>}

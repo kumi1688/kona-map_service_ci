@@ -14,9 +14,10 @@ const UserMarker = ({position, circle, setCircle, onKeyPressForRadius, setRadius
     return (
         <>
             {leftClick && <MarkerModal onLeftClick={onLeftClick} position={position} radius={radius}
-                                       setCircle={setCircle} circle={circle} />}
+                                       setCircle={setCircle} circle={circle === -1 ? null : circle} />}
             <Marker
                 onClick={onLeftClick}
+                animation={circle === -1 ? `BOUNCE` : null}
                 position={{
                     lat: parseFloat(position.lat),
                     lng: parseFloat(position.lng),
