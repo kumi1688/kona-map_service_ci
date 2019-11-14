@@ -124,10 +124,6 @@ const MapContainer = ({onPopUpClick}) => {
             console.dir(e);
         },[]);
 
-        const onMouseMove = useCallback( (e) => {
-            console.dir(e);
-        },[]);
-
         useEffect( () => {
             if(!drawingMode) setDrawingMode(true);
         }, [drawingMode]);
@@ -138,7 +134,6 @@ const MapContainer = ({onPopUpClick}) => {
 
         const onCompleteRectangleInDrawingManager = useCallback(
             e => {
-                console.dir(e);
                 setLeftUpperPoint({lng: parseFloat(e.bounds.ka.g), lat: parseFloat(e.bounds.pa.h)});
                 setRightDownPoint({lng: parseFloat(e.bounds.ka.h), lat: parseFloat(e.bounds.pa.g)});
                 setDrawingMode(null);

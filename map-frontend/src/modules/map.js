@@ -13,7 +13,9 @@ export const post = createAction(POST_USER_PLACE, ({name, description, tags, pos
     name, description, tags, position, detailedPosition,
 }));
 
-export const setSearchQuery = createAction(SET_SEARCH_QUERY, searchQuery => searchQuery);
+export const setSearchQuery = createAction(SET_SEARCH_QUERY, ({searchQuery, searchQueryType}) => ({
+    searchQuery, searchQueryType
+}));
 //{name, description, tags, position, detailedPosition, publishingDate}
 
 const listUserPlaceSaga = createRequestSaga(LIST, mapAPI.list);
@@ -26,6 +28,7 @@ export function* mapSaga() {
 
 const initialState = {
     searchQuery: '',
+    searchQueryType: '',
     info: {
         name: '',
         description: '',
@@ -64,7 +67,8 @@ const map = handleActions(
         }),
         [SET_SEARCH_QUERY]: (state, {payload: query}) => ({
             ...state,
-            searchQuery: query
+            searchQuery: query.searchQuery,
+            searchQueryType: query.searchQueryType,
         }),
     },
     initialState,

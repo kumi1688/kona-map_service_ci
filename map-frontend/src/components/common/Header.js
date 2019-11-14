@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components';
 import Responsive from "./Responsive";
 import {Link} from 'react-router-dom';
 import Button from "./Button";
 import {Navbar, Nav, Form, FormControl} from "react-bootstrap";
 import UserInfoOnMapContainer from "../../containers/map/UserInfoOnMapContainer";
+import {useDispatch, useSelector} from "react-redux";
+import {setSearchQuery} from "../../modules/map";
 
 
 const UserInfo = styled.div`
@@ -43,6 +45,39 @@ height: 4rem;
 `;
 
 const Header = ({user, onLogout}) => {
+    const dispatch = useDispatch();
+    const {searchQuery, searchQueryType} = useSelector(({map}) => ({
+        searchQuery: map.searchQuery,
+        searchQueryType: map.searchQueryType
+    }));
+
+    const [value, setValue] = useState('');
+    const [option, setOption] = useState('name');
+
+    const onChangeSearchQuery = useCallback(
+        e => {
+            setValue(e.target.value);
+        }, [value]);
+
+    const onChangeSearchOption = useCallback(
+        e => {
+            setOption(e.target.value);
+        }, [option]);
+
+    const onSubmit = useCallback(
+        e => {
+            e.preventDefault();
+            dispatch(setSearchQuery({searchQuery: value, searchQueryType: option}));
+        }, [dispatch, value, option]);
+
+    useEffect(() => {
+        console.dir(searchQuery);
+    }, [searchQuery]);
+
+    useEffect(() => {
+        console.dir(option);
+    }, [option]);
+
     return (
         <>
             <Navbar bg="dark" variant="dark">
@@ -54,14 +89,16 @@ const Header = ({user, onLogout}) => {
                 </Nav>
                 <Form inline>
                     <Form.Group>
-                        <FormControl type="text" placeholder="Search" className="mr-sm-2"/>
-                        <Form.Control as="select">
-                            <option>이름</option>
-                            <option>태그</option>
-                            <option>설명</option>
-                            <option>위치</option>
+                        <FormControl type="text" placeholder="Search" className="mr-sm-2"
+                        value={value} onChange={onChangeSearchQuery}/>
+                        <Form.Control as="select" value={option} onChange={onChangeSearchOption}>
+                            <option value="name">이름</option>
+                            <option value="tag">태그</option>
+                            <option value="description">설명</option>
+                            <option value="position">위치</option>
                         </Form.Control>
-                        <Button variant="outline-info" size="sm" block>검색</Button>
+                        <Button variant="outline-info" size="lg"
+                        onSubmit={onSubmit} onClick={onSubmit}>검색</Button>
                     </Form.Group>
                 </Form>
             </Navbar>
