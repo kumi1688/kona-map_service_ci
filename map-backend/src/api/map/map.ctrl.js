@@ -64,12 +64,13 @@ exports.listUserPlace = async ctx => {
 exports.findUserPlace = async ctx => {
     const { id } = ctx.params;
     try{
-        const userplace = await UserPlace.findById(id).exec();
+        const userplace = await UserPlace.findById({_id: id}).exec();
         if(!userplace){
             ctx.status = 404;
             return;
         }
         ctx.body = userplace;
+
     } catch(e){
         ctx.throw(500, e);
     }

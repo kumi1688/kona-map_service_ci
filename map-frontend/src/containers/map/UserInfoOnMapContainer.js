@@ -30,10 +30,6 @@ const UserInfoOnMapContainer = ({zoom}) => {
             }
         };
         fetchData();
-        return() => {
-            setLocalInfo(null);
-            console.log('clean');
-        }
     }, []);
 
     if (!localInfo) return null;

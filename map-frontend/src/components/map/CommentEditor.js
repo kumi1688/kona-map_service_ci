@@ -4,23 +4,30 @@ import client from "../../lib/api/client";
 import {GoPlus} from 'react-icons/go';
 import {useSelector} from "react-redux";
 
-const CommentEditor = ({info}) => {
+const CommentEditor = ({info, setLocalCommentList, isCloseBox}) => {
     const [input, setInput] = useState('');
-    const [localCommentList, setLocalCommentList] = useState(info.commentList);
-    let comment_id = 1;
+    const [localComment, setLocalComment] = useState(info.commentList);
 
     const {username} = useSelector(({user}) => ({
         username: user.user.username
     }));
 
     useEffect(() => {
+        if(isCloseBox && localComment !== info ) saveData();
+    }, [isCloseBox]);
+
+    useEffect(() => {
         console.dir(username);
     }, [username]);
 
-    useEffect(() => {
-        console.dir(localCommentList);
-    }, [localCommentList]);
+    useEffect( () => {
+        console.dir(localComment);
+        setLocalCommentList(localComment);
+    }, [localComment]);
 
+    useEffect(() => {
+        console.dir(info);
+    }, [info]);
 
     const onChange = useCallback(
         e => {
@@ -33,25 +40,32 @@ const CommentEditor = ({info}) => {
                 e.preventDefault();
                 onClick();
             }
-        }, []);
+        }, [input]);
 
     const onClick = useCallback(
-        e => {
+        () => {
+            setLocalComment(localComment.concat({
+                title: input,
+                body: input,
+                username: username,
+                objectID: info._id,
+            }));
+        }, [input]);
+
+    const saveData = useCallback(
+        () => {
             const uploadData = async () => {
                 try {
-                    const response = await client.post('/api/comment/:ItemObjectId', ({
-                        title: input,
-                        body: input,
-                        username: username,
-                        objectID: info._id,
-                    }));
+                    const response = await client.post(`api/comment/${info._id}`, (
+                            localComment
+                    ));
+                    console.dir(response.data);
                 } catch (e) {
                     console.dir(e);
                 }
             };
             uploadData();
-        }, [input]);
-
+        }, [localComment]);
 
     return (
         <Row>
@@ -59,8 +73,6 @@ const CommentEditor = ({info}) => {
                 <InputGroup className="mb-3">
                     <Form.Control
                         placeholder="댓글을 입력해주세요"
-                        aria-label="Recipient's username"
-                        aria-describedby="basic-addon2"
                         onKeyPress={onKeyPress}
                         onChange={onChange}
                         value={input}

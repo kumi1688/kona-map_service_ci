@@ -4,33 +4,33 @@ import client from "../../lib/api/client";
 import {useSelector} from "react-redux";
 import CommentEditor from "../../components/map/CommentEditor";
 
-const CommentList = ({info}) => {
+const CommentList = ({info, newComment}) => {
+    const [localCommentList, setLocalCommentList] = useState(info);
+
     return (
         <>
-            {info.map((inf, index) => (<li key={index}>{inf.title}</li>))}
+            { !newComment && info.commentList.map((inf) => (<li key={inf._id}>{inf.title}</li>))}
+            { newComment && newComment.map((inf, index) => (<li key={index}>{inf.title}</li>))}
             <hr/>
         </>
     )
 };
 
-const CommentContainer = ({info, isBoxClose}) => {
-    const [localcomment, setInfoBoxCommentList] = useState(null);
-    const [selectedUserPlace, setSelectedUserPlace] = useState(null);
-    const {username} = useSelector(({user}) => ({
-        username: user.user.username,
-    }));
+const CommentContainer = ({info, isCloseBox}) => {
+    const [localCommentList, setLocalCommentList] = useState(info.commentList);
 
     useEffect(() => {
-        if(!localcomment) setInfoBoxCommentList(info.commentList);
-        console.dir(localcomment);
-    }, [localcomment]);
+        console.dir(localCommentList);
+    }, [localCommentList]);
 
-    if (!localcomment) return null;
+    useEffect(() => {
+        console.dir(localCommentList);
+    }, [setLocalCommentList]);
 
     return (
         <>
-            <CommentList info={localcomment}/>
-            <CommentEditor info={info} setInfoBoxCommentList={setInfoBoxCommentList} isBoxClose={isBoxClose}/>
+            <CommentList info={info} newComment={localCommentList}/>
+            <CommentEditor info={info} setLocalCommentList={setLocalCommentList} isCloseBox={isCloseBox}/>
         </>
     );
 };
