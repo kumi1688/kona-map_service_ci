@@ -1,14 +1,12 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {Marker, InfoWindow, Circle} from "@react-google-maps/api";
 import {Nav} from 'react-bootstrap';
-import CommentContainer from "./CommentContainer";
+import CommentContainer from "../../containers/map/CommentContainer";
 import schoolIcon from '../../lib/styles/MarkerImage/icons/school.svg';
 import stdiumIcon from '../../lib/styles/MarkerImage/icons/stadium.svg';
 import smokeIcon from '../../lib/styles/MarkerImage/icons/smoke.png';
 import {useSelector} from "react-redux";
 import EstimateContainer from "../../containers/map/EstimateContainer";
-
-
 
 const InfoWindowList = ({info, zoom}) => {
     const {searchQuery, searchQueryType} = useSelector(({map}) => ({
@@ -25,7 +23,6 @@ const InfoWindowList = ({info, zoom}) => {
             case "position": setFilteredData(info.filter(inf => (inf.detailedPosition.indexOf(searchQuery)) !== -1 ? inf : null)); break;
             default: setFilteredData(info.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
         }
-        console.dir(filteredData);
     }, [searchQuery, searchQueryType]);
 
     if(!filteredData) return null;
@@ -38,14 +35,26 @@ const InfoWindowList = ({info, zoom}) => {
 };
 
 const InfoWindowItem = ({info, zoom}) => {
-
     const [visible, setVisible] = useState(null);
     const [visiblePositionInfo, setVisiblePositionInfo] = useState(true);
     const [visibleEstimate, setVisibleEstimate] = useState(null);
     const [visibleComment, setVisibleComment] = useState(null);
+    const [isBoxClose, setIsBoxClose] = useState(true);
+
+    const onLoad = useCallback(
+        () => {
+            setIsBoxClose(false);
+        }, []);
+
+    const onClose = useCallback(
+        () => {
+            setIsBoxClose(true);
+        }, []);
 
     const onClick = useCallback(() => {
-        if (!visible) setVisible(true);
+        if (!visible) {
+            setVisible(true);
+        }
         else setVisible(false);
     }, [visible]);
 
@@ -78,7 +87,7 @@ const InfoWindowItem = ({info, zoom}) => {
             <Marker position={info.position} onClick={onClick}
             icon={zoom > 15 && info.primaryPositionType === 'education' ? smokeIcon : null}/>
             {info.radius !== undefined && visible && <Circle center={info.position} radius={info.radius}/>}
-            {visible && <InfoWindow position={info.position}>
+            {visible && <InfoWindow onLoad={onLoad} onCloseClick={onClose} position={info.position}>
                 <>
                     <Nav fill justify variant="pills" defaultActiveKey="info-position">
                         <Nav.Item>
@@ -110,23 +119,9 @@ const InfoWindowItem = ({info, zoom}) => {
                         </>
                     )}
                     {visibleEstimate && <EstimateContainer/>}
-                    {visibleComment && <CommentContainer/>}
+                    {visibleComment && <CommentContainer info={info} isBoxClose={isBoxClose}/>}
                 </>
             </InfoWindow>}
-            {/*
-            {visible && <InfoWindow position={position}>
-                <>
-                    <h3>이름 : {info.name}</h3>
-                    <h3>설명 : {info.description}</h3>
-                    <h3>자세한 설명 : {info.detailedPosition}</h3>
-                    <h3>위치 타입 : {info.primaryPositionType}, {info.secondaryPositionType}</h3>
-                    <h3>태그 : {info.tags.map((tag, index) => (<li key={index}>{tag}</li>))}</h3>
-                    <h3>{info.radius === undefined ?  "반경 없음": `반경 ${info.radius} m`}</h3>
-                    <p>등록일 : {info.publishingDate}</p>
-                </>
-            </InfoWindow>
-            }
-            */}
         </>
     );
 };

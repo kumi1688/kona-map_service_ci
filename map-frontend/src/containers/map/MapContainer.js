@@ -7,7 +7,9 @@ import {
     DirectionsService,
     Polyline,
     Polygon,
+    Marker,
     DrawingManager,
+    MarkerClusterer,
     LoadScriptNext,
 } from '@react-google-maps/api'
 import {Row, Col, Button, Container, Image} from 'react-bootstrap';
@@ -198,6 +200,7 @@ const MapContainer = ({onPopUpClick}) => {
                                 leftUpper={leftUpperPoint} rightDown={rightDownPoint}/>}
                             {searchQueryOnMap && <UserInfoOnMapContainer zoom={zoom}/>}
                             {userLocOnMap && <UserMarker position={currentUserLocation} circle={-1}/>}
+
                         </GoogleMap>
                     </LoadScriptNext>
                     }

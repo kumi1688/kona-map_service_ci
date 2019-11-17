@@ -1,6 +1,8 @@
 import Comment from "../../models/comment";
+import UserPlace from "../../models/userPlace";
 import User from '../../models/user';
 import Joi from "joi";
+import sanitizeHtml from "sanitize-html";
 
 export const register = async ctx => {
     const schema = Joi.object().keys({
@@ -11,37 +13,49 @@ export const register = async ctx => {
             .required(),
         title: Joi.string(),
         body: Joi.string(),
+        objectID: Joi.string(),
     });
 
-    console.dir(ctx.request.body);
+    //console.dir(ctx.request.body);
     const result = Joi.validate(ctx.request.body, schema);
-    if(result.error){
+    if (result.error) {
         ctx.status = 400;
         ctx.body = result.error;
         return;
     }
 
-    const {title, body, username} = ctx.request.body;
-    console.dir(ctx.request.body);
+    const {title, body, username, objectID} = ctx.request.body;
+    //console.dir(ctx.request.body);
 
     try {
-        const result = await User.findByUsername(username);
-        console.dir(result);
+        const result = await UserPlace.findByObjectID(objectID);
+        //console.dir(result);
+        let commentList = result[0]._doc.commentList;
+
         if (!result) {
             ctx.status = 409;
             return;
         }
-    } catch (e) {
-        ctx.throw(500, e);
-    }
-
-    try{
         const comment = new Comment({
             title, body, username
         });
         await comment.save();
-        ctx.body = comment;
-    }catch(e){
+
+        if (!commentList) commentList = comment;
+        else commentList = commentList.concat(comment);
+
+        const nextData = {...result, commentList: commentList};
+
+
+        const result2 = UserPlace.findByIdAndUpdate(objectID, nextData, {
+            new: true
+        }).exec();
+        if (!result2) {
+            ctx.body = 404;
+            return;
+        }
+        ctx.body = result;
+    } catch (e) {
         ctx.throw(500, e);
     }
 };
@@ -49,14 +63,29 @@ export const register = async ctx => {
 export const findByUsername = async ctx => {
     const {username} = ctx.params;
     console.dir(ctx.params);
-    try{
+    try {
         const comment = await Comment.findByUsername(username).exec();
-        if(!comment){
+        if (!comment) {
             ctx.status = 404;
             return;
         }
         ctx.body = comment;
-    } catch(e){
+    } catch (e) {
+        ctx.throw(500, e);
+    }
+};
+
+export const findByObjectID = async ctx => {
+    const {objectId} = ctx.params;
+    console.dir(objectId);
+    try {
+        const userPlace = await Comment.findByObjectID(objectId).exec();
+        if (!userPlace) {
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = userPlace;
+    } catch (e) {
         ctx.throw(500, e);
     }
 };

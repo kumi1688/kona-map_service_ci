@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Form} from "react-bootstrap";
+import {Button, Form} from "react-bootstrap";
 import {number} from "prop-types";
 
 const CustomFormCheck = ({label, number}) => {
@@ -26,10 +26,26 @@ const CustomForm = ({label}) => {
 const EstimateContainer = () => {
     return (
         <>
-            <CustomForm label="신뢰도"/>
-            <CustomForm label="유용도"/>
-            <CustomForm label="신선도"/>
-            <CustomForm label="적절함"/>
+            <Form>
+                <CustomForm label="신뢰도"/>
+                <CustomForm label="유용도"/>
+                <CustomForm label="신선도"/>
+                <CustomForm label="적절함"/>
+                <Form.Group>
+                    <Form.Label>종합</Form.Label>
+                    <Form.Check custom
+                                inline
+                                label="좋아요"
+                                type="checkbox"
+                                id={`custom-inline-checkbox-good`}/>
+                    <Form.Check custom
+                                inline
+                                label="싫어요"
+                                type="checkbox"
+                                id={`custom-inline-checkbox-bad`}/>
+                </Form.Group>
+                <Button variant="outline-info">평가 등록</Button>
+            </Form>
         </>
     );
 };

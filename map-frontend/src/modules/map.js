@@ -7,6 +7,7 @@ const [LIST, LIST_SUCCESS, LIST_FAILURE] = createRequestActionTypes('map/LIST');
 const [POST_USER_PLACE, POST_USER_PLACE_SUCCESS, POST_USER_PLACE_FAILURE] = createRequestActionTypes('map/POST_USER_PLACE');
 const SET_SEARCH_QUERY = 'map/SET_SEARCH_QUERY';
 const SET_CURRENT_USER_LOCATION = 'map/SET_CURRENT_USER_LOCATION';
+const SET_COMMENT_PLCAE_ID = 'map/SET_COMMENT_PLACE_ID';
 
 // 액션에 할당된 파라미터의 값이 어떤것인지 알 수 없기 때문에 파라미터로 전달받은 값을 action의 payload로 설정함
 export const list = createAction(LIST, info => info);
@@ -18,6 +19,7 @@ export const setSearchQuery = createAction(SET_SEARCH_QUERY, ({searchQuery, sear
     searchQuery, searchQueryType, searchQueryOnMap
 }));
 export const setCurrentUserLocation = createAction(SET_CURRENT_USER_LOCATION, (location) => (location));
+
 //{name, description, tags, position, detailedPosition, publishingDate}
 
 const listUserPlaceSaga = createRequestSaga(LIST, mapAPI.list);
@@ -37,6 +39,9 @@ const initialState = {
     currentUserLocaction: {
         lat: '',
         lng: '',
+    },
+    comment: {
+        selectedPlaceId: '',
     },
     info: {
         name: '',

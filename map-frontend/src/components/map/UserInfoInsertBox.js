@@ -8,7 +8,7 @@ import {MapCircleInfo} from "./MapCircle";
 
 const selectOptions = {
     excercise: ["축구", "농구", "배구", "야구", "볼링"],
-    education: ["유치원", "초등학교", "중학교", "대학교", "대학원", "교육원"],
+    education: ["유치원", "초등학교", "중학교", "고등학교", "대학교", "대학원", "교육원"],
     entertainment: ["PC방", "오락실", "노래방", "당구장"],
     food: ["학생식당", "음식점", "매점", "취식가능지역"],
     transport: ["공공버스", "학교버스", "지하철", "택시", "카풀"],

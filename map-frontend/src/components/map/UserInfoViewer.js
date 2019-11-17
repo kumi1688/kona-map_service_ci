@@ -89,6 +89,10 @@ const UserInfoViewer = ({info}) => {
             toggleVisible();
         }, [visible]);
 
+    useEffect(() => {
+        console.dir(info);
+    }, [info]);
+
     const toggleVisible = useCallback(() => {
         setVisible(false);
         setVisible(true);

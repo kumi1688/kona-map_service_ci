@@ -1,6 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {list} from "../../modules/map";
 import UserInfoViewer from "../../components/map/UserInfoViewer";
 import client from "../../lib/api/client";
 import {finishLoading, startLoading} from "../../modules/loading";
@@ -18,7 +16,7 @@ const UserPlaceContainer = ( ) => {
                 console.log(e);
             }
         };
-        fetchData();
+        if(!localInfo) fetchData();
     }, [localInfo]);
 
     return(
