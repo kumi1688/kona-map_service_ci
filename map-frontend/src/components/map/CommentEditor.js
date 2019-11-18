@@ -4,7 +4,7 @@ import client from "../../lib/api/client";
 import {GoPlus} from 'react-icons/go';
 import {useSelector} from "react-redux";
 
-const CommentEditor = ({info, setLocalCommentList, isCloseBox}) => {
+const CommentEditor = ({info, setLocalCommentList, setUpdateCommentList, isCloseBox}) => {
     const [input, setInput] = useState('');
     const [localComment, setLocalComment] = useState(info.commentList);
 
@@ -13,7 +13,7 @@ const CommentEditor = ({info, setLocalCommentList, isCloseBox}) => {
     }));
 
     useEffect(() => {
-        console.log('comment editor'); console.dir(isCloseBox);
+        //console.log('comment editor'); console.dir(isCloseBox);
         if(isCloseBox) {
             console.log('저장되었습니다');
             saveData();
@@ -26,6 +26,7 @@ const CommentEditor = ({info, setLocalCommentList, isCloseBox}) => {
 
     useEffect( () => {
         //console.dir(localComment);
+        setUpdateCommentList(localComment);
         setLocalCommentList(localComment);
     }, [localComment]);
 
@@ -64,7 +65,7 @@ const CommentEditor = ({info, setLocalCommentList, isCloseBox}) => {
                     const response = await client.post(`api/comment/${info._id}`, (
                             localComment
                     ));
-                    console.dir(response.data);
+                    //console.dir(response.data);
                 } catch (e) {
                     console.dir(e);
                 }

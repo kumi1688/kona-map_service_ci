@@ -3,11 +3,22 @@ import {Marker, InfoWindow, Circle} from "@react-google-maps/api";
 import {Nav} from 'react-bootstrap';
 import CommentContainer from "../../containers/map/CommentContainer";
 import schoolIcon from '../../lib/styles/MarkerImage/icons/school.svg';
-import stdiumIcon from '../../lib/styles/MarkerImage/icons/stadium.svg';
+import stadiumIcon from '../../lib/styles/MarkerImage/icons/stadium.svg';
 import smokeIcon from '../../lib/styles/MarkerImage/icons/smoke.png';
 import {useSelector} from "react-redux";
 import EstimateContainer from "../../containers/map/EstimateContainer";
 import client from "../../lib/api/client";
+
+const findIcon = primaryType => {
+    let matchedIcon;
+    switch(primaryType){
+        case 'education': matchedIcon = smokeIcon; break;
+        case 'excercise': matchedIcon = stadiumIcon; break;
+        default : matchedIcon =schoolIcon;
+    };
+    return matchedIcon;
+};
+
 
 const InfoWindowList = ({info, zoom}) => {
     const {searchQuery, searchQueryType} = useSelector(({map}) => ({
@@ -17,7 +28,7 @@ const InfoWindowList = ({info, zoom}) => {
     const [filteredData, setFilteredData] = useState(null);
 
     useEffect(() => {
-        console.dir(info);
+        //console.dir(info);
         switch (searchQueryType) {
             case "name":
                 setFilteredData(info.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
@@ -46,6 +57,8 @@ const InfoWindowList = ({info, zoom}) => {
 };
 
 const InfoWindowItem = ({info, zoom}) => {
+    const [loading, setLoading] = useState(false);
+    const [updateCommentList, setUpdateCommentList] = useState(null);
     const [isCloseBox, setIsCloseBox] = useState(true);
     const [localInfo, setLocalInfo] = useState(null);
     const [visible, setVisible] = useState(null);
@@ -56,27 +69,27 @@ const InfoWindowItem = ({info, zoom}) => {
     const onClick = useCallback(() => {
         if (!visible) {
             setVisible(true);
-            setIsCloseBox(false);
-        }
-        else {
-            setVisible(false);
+            setIsCloseBox(null);
+        } else {
+            setVisible(null);
             setIsCloseBox(true);
         }
     }, [visible]);
 
     const onCloseClick = useCallback(() => {
-
         setVisibleEstimate(false);
         setVisibleComment(false);
         setVisiblePositionInfo(true);
-        if(!isCloseBox) setIsCloseBox(true);
-        else setIsCloseBox(false);
+        if (!isCloseBox) {
+            setIsCloseBox(true);
+            setVisible(null);
+            if(info.commentList !== updateCommentList) updateComment();
+        } else {
+            setIsCloseBox(false);
+            setVisible(null);
+        }
         //console.dir(isCloseBox);
-    }, [isCloseBox]);
-
-    useEffect(() => {
-        console.dir(isCloseBox);
-    }, [isCloseBox]);
+    }, [updateCommentList]);
 
     const onTabPosition = useCallback(
         () => {
@@ -102,19 +115,46 @@ const InfoWindowItem = ({info, zoom}) => {
             else setVisibleComment(false);
         }, [visibleComment]);
 
+    const onKeyPress = useCallback(
+        (e) => {
+            console.log('키 눌림');
+            if (e.key === 'Esc') {
+                console.log('esc 눌림');
+            }
+        }, []);
+
+    const updateComment = useCallback(
+        e => {
+            setLoading(true);
+            const saveData = async () => {
+                try{
+                    console.dir(updateCommentList);
+                     await client.post(`/api/comment/${info._id}`, (updateCommentList));
+                } catch(e){
+                    console.dir(e);
+                }
+            };
+            saveData();
+            setLoading(false);
+    }, [updateCommentList]);
+
     useEffect(() => {
-        if(!localInfo) setLocalInfo(info);
+        if (!localInfo) setLocalInfo(info);
     }, [info]);
+
+    useEffect(() => {
+        console.dir(updateCommentList);
+    }, [updateCommentList]);
 
     if (!localInfo) return null;
 
     return (
         <>
             <Marker position={localInfo.position} onClick={onClick}
-                    icon={zoom > 15 && localInfo.primaryPositionType === 'education' ? smokeIcon : null}/>
+                    icon={zoom > 13 ? findIcon(localInfo.primaryPositionType) : null}/>
             {localInfo.radius !== undefined && visible &&
             <Circle center={localInfo.position} radius={localInfo.radius}/>}
-            { visible && <InfoWindow position={localInfo.position} onCloseClick={onCloseClick} >
+            {visible && <InfoWindow position={localInfo.position} onCloseClick={onCloseClick}>
                 <>
                     <Nav fill justify variant="pills" defaultActiveKey="info-position">
                         <Nav.Item>
@@ -146,7 +186,8 @@ const InfoWindowItem = ({info, zoom}) => {
                         </>
                     )}
                     {visibleEstimate && <EstimateContainer/>}
-                    {visibleComment && <CommentContainer info={localInfo} isCloseBox={isCloseBox}/>}
+                    {visibleComment && <CommentContainer info={localInfo} isCloseBox={isCloseBox}
+                                                         setUpdateCommentList={setUpdateCommentList}/>}
                 </>
             </InfoWindow>}
         </>

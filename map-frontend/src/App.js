@@ -26,7 +26,7 @@ const App = () => {
             <Route component={MapPage} path={["/map"]} />
             <Route component={UserInfoPage} path={"/userInfo"}/>
             <Route component={UserPlacePage} path={"/userplace"}/>
-            <Route component={GeoPage} path={["/", "/geo"]}/>
+            <Route component={GeoPage} path={["/geo", "/"]} exact/>
             <Route component={DirectionPage} path={"/direction"}/>
         </>
     );

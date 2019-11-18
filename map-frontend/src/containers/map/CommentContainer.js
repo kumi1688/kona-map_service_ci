@@ -7,7 +7,6 @@ import CommentEditor from "../../components/map/CommentEditor";
 const CommentList = ({info, newComment}) => {
     const [localCommentList, setLocalCommentList] = useState(info);
 
-
     return (
         <>
             { newComment && newComment.map((inf, index) => (<li key={index}>{inf.title}</li>))}
@@ -16,7 +15,7 @@ const CommentList = ({info, newComment}) => {
     )
 };
 
-const CommentContainer = ({info, isCloseBox}) => {
+const CommentContainer = ({info, isCloseBox, setUpdateCommentList}) => {
     const [localCommentList, setLocalCommentList] = useState(info.commentList);
 
     useEffect(() => {
@@ -30,7 +29,8 @@ const CommentContainer = ({info, isCloseBox}) => {
     return (
         <>
             <CommentList info={info} newComment={localCommentList}/>
-            <CommentEditor info={info} setLocalCommentList={setLocalCommentList} isCloseBox={isCloseBox}/>
+            <CommentEditor info={info} setLocalCommentList={setLocalCommentList}
+                           isCloseBox={isCloseBox} setUpdateCommentList={setUpdateCommentList}/>
         </>
     );
 };

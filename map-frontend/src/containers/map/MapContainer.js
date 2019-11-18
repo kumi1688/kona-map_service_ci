@@ -21,6 +21,7 @@ import {useSelector, useDispatch} from "react-redux";
 import RectangleContainer from "./RectangleContainer";
 import UserInfoOnMapContainer from "./UserInfoOnMapContainer";
 import {GiSoccerBall} from 'react-icons/gi';
+import ClusterMarkerContainer from "./ClusterMarkerContainer";
 
 const MapContainer = ({onPopUpClick}) => {
         const dispatch = useDispatch();
@@ -73,7 +74,8 @@ const MapContainer = ({onPopUpClick}) => {
             else setCircle(false);
         }, [circle]);
 
-        const onInfoInsertButtonClick = useCallback(() => {
+        const onInfoInsertButtonClick = useCallback((e) => {
+            e.preventDefault();
             if (!insertInfoBox) setInsertInfoBox(true);
             else setInsertInfoBox(false);
         }, [insertInfoBox]);
@@ -101,7 +103,6 @@ const MapContainer = ({onPopUpClick}) => {
                 }
             }, [radius]
         );
-
 
         const onDblClick = useCallback(e => {
             console.dir(e);
@@ -136,12 +137,6 @@ const MapContainer = ({onPopUpClick}) => {
         const getMapObject = useCallback(e => {
             setMap(e);
             console.dir(e.getZoom());
-        }, [map]);
-
-        useEffect(() => {
-            console.dir(map);
-            //const response = map.getZoom();
-            //console.dir(map.getZoom());
         }, [map]);
 
         const onZoomChanged = useCallback(e => {
@@ -188,7 +183,7 @@ const MapContainer = ({onPopUpClick}) => {
                                 gestureHandling: "cooperative"
                             }}
                         >
-
+                            {searchQueryOnMap && zoom <= 13 && <ClusterMarkerContainer zoom={zoom}/> }
                             {drawingMode && <DrawingManager onRectangleComplete={onCompleteRectangleInDrawingManager}
                                                             drawingMode={drawingMode}/>}
                             {circle && <MapCircle position={userPosition} radius={radius}/>}
@@ -198,7 +193,7 @@ const MapContainer = ({onPopUpClick}) => {
                             />}
                             {rectangle && <RectangleContainer
                                 leftUpper={leftUpperPoint} rightDown={rightDownPoint}/>}
-                            {searchQueryOnMap && <UserInfoOnMapContainer zoom={zoom}/>}
+                            {searchQueryOnMap && zoom > 13 && <UserInfoOnMapContainer zoom={zoom}/>}
                             {userLocOnMap && <UserMarker position={currentUserLocation} circle={-1}/>}
 
                         </GoogleMap>
