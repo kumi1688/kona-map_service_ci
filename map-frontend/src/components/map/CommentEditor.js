@@ -13,20 +13,24 @@ const CommentEditor = ({info, setLocalCommentList, isCloseBox}) => {
     }));
 
     useEffect(() => {
-        if(isCloseBox && localComment !== info ) saveData();
+        console.log('comment editor'); console.dir(isCloseBox);
+        if(isCloseBox) {
+            console.log('저장되었습니다');
+            saveData();
+        }
     }, [isCloseBox]);
 
     useEffect(() => {
-        console.dir(username);
+        //console.dir(username);
     }, [username]);
 
     useEffect( () => {
-        console.dir(localComment);
+        //console.dir(localComment);
         setLocalCommentList(localComment);
     }, [localComment]);
 
     useEffect(() => {
-        console.dir(info);
+        //console.dir(info);
     }, [info]);
 
     const onChange = useCallback(
@@ -50,6 +54,7 @@ const CommentEditor = ({info, setLocalCommentList, isCloseBox}) => {
                 username: username,
                 objectID: info._id,
             }));
+            setInput('');
         }, [input]);
 
     const saveData = useCallback(

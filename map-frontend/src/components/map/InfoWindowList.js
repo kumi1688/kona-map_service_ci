@@ -65,8 +65,17 @@ const InfoWindowItem = ({info, zoom}) => {
     }, [visible]);
 
     const onCloseClick = useCallback(() => {
+
+        setVisibleEstimate(false);
+        setVisibleComment(false);
+        setVisiblePositionInfo(true);
         if(!isCloseBox) setIsCloseBox(true);
         else setIsCloseBox(false);
+        //console.dir(isCloseBox);
+    }, [isCloseBox]);
+
+    useEffect(() => {
+        console.dir(isCloseBox);
     }, [isCloseBox]);
 
     const onTabPosition = useCallback(
@@ -95,13 +104,7 @@ const InfoWindowItem = ({info, zoom}) => {
 
     useEffect(() => {
         if(!localInfo) setLocalInfo(info);
-        console.dir(info);
     }, [info]);
-
-    useEffect(() =>{
-        console.dir(localInfo);
-    }, [localInfo]);
-
 
     if (!localInfo) return null;
 
@@ -111,7 +114,7 @@ const InfoWindowItem = ({info, zoom}) => {
                     icon={zoom > 15 && localInfo.primaryPositionType === 'education' ? smokeIcon : null}/>
             {localInfo.radius !== undefined && visible &&
             <Circle center={localInfo.position} radius={localInfo.radius}/>}
-            {visible && <InfoWindow position={localInfo.position} onCloseClick={onCloseClick} >
+            { visible && <InfoWindow position={localInfo.position} onCloseClick={onCloseClick} >
                 <>
                     <Nav fill justify variant="pills" defaultActiveKey="info-position">
                         <Nav.Item>
