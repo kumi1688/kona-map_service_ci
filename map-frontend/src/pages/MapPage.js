@@ -1,24 +1,28 @@
 import React, {useCallback, useState} from 'react'
 import HeaderContainer from "../containers/common/HeaderContainer";
 import MapContainer from "../containers/map/MapContainer";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import SideBarContainter from "../containers/map/SideBarContainer";
+import styled from "styled-components";
+
+const StyledMapPage = styled.div`
+    padding-top: 60px;
+    padding-left : 60px;
+`;
 
 const MapPage = () => {
     const [popUp, setPopUp] = useState(null);
 
     const onPopUpClick = useCallback(
         e => {
-            if(!popUp) setPopUp(true);
+            if (!popUp) setPopUp(true);
             else setPopUp(false);
         }, [popUp]);
 
     return (
         <>
-            <HeaderContainer/>
-            {popUp && <h2>hello!!</h2>}
-            <>
-            <MapContainer onPopUpClick={onPopUpClick}/>
-            </>
+            <StyledMapPage>
+                <MapContainer onPopUpClick={onPopUpClick}/>
+            </StyledMapPage>
         </>
     );
 };

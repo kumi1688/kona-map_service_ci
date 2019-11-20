@@ -9,8 +9,10 @@ import {createStore, applyMiddleware} from "redux";
 import {composeWithDevTools} from "redux-devtools-extension";
 import rootReducer, {rootSaga} from "./modules";
 import createSagaMiddleware from 'redux-saga';
-import {tempSetUser,check} from "./modules/user";
+import {tempSetUser, check} from "./modules/user";
 import {HelmetProvider} from 'react-helmet-async';
+import {Provider as AlertProvider} from 'react-alert';
+import AlertTemplate from "react-alert-template-basic";
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
@@ -19,9 +21,9 @@ const store = createStore(
 );
 
 function loadUser() {
-    try{
-        const user= localStorage.getItem('user');
-        if(!user) return;
+    try {
+        const user = localStorage.getItem('user');
+        if (!user) return;
 
         store.dispatch(tempSetUser(user));
         store.dispatch(check());
@@ -33,11 +35,20 @@ function loadUser() {
 sagaMiddleware.run(rootSaga);
 loadUser();
 
+const options = {
+    position: 'bottom right',
+    timeout: 5000,
+    offset: '30px',
+    transition: 'scale'
+};
+
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
             <HelmetProvider>
-                <App/>
+                <AlertProvider template={AlertTemplate} {...options}>
+                    <App/>
+                </AlertProvider>
             </HelmetProvider>
         </BrowserRouter>
     </Provider>, document.getElementById('root'));

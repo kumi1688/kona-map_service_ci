@@ -14,7 +14,7 @@ const UserInfoContainer = () => {
     useEffect( ( ) => {
         const fetchData = async () => {
             await dispatch(fetchUserData(user));
-        }
+        };
         fetchData();
     }, [user]);
 

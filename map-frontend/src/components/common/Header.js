@@ -9,6 +9,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {setSearchQuery} from "../../modules/map";
 
 
+const HeaderStyle = styled.div`
+    padding-right: 10rem;
+`;
 const UserInfo = styled.div`
     font-weight: 800;
     margin-right: 1rem;
@@ -44,6 +47,11 @@ const Spacer = styled.div`
 height: 4rem;
 `;
 
+const headerStyle= styled.div`
+    margin: 0px 20px 0px 100px;
+    padding-left: 100px;
+`;
+
 const Header = ({user, onLogout}) => {
     const dispatch = useDispatch();
     const {searchQueryOnMap} = useSelector(({map}) => ({
@@ -74,8 +82,8 @@ const Header = ({user, onLogout}) => {
         }, [dispatch, value, option]);
 
     return (
-        <>
-            <Navbar bg="dark" variant="dark">
+        <div className={headerStyle}>
+            <Navbar bg="dark" variant="dark" fixed="top">
                 <Navbar.Brand href="/map">KONA MAP SERVICE</Navbar.Brand>
                 <Nav className="mr-auto">
                     {user && <Nav.Link href="/userInfo">유저 정보</Nav.Link>}
@@ -97,7 +105,7 @@ const Header = ({user, onLogout}) => {
                     </Form.Group>
                 </Form>
             </Navbar>
-        </>
+        </div>
     );
 };
 

@@ -197,6 +197,7 @@ const DirectionContainer = () => {
                         {
                             response !== null && (
                                 <DirectionsRenderer
+                                    directions={response}
                                     // required
                                     options={{
                                         directions: response

@@ -5,7 +5,11 @@ import {useSelector} from "react-redux";
 import CommentEditor from "../../components/map/CommentEditor";
 
 const CommentList = ({info, newComment}) => {
-    const [localCommentList, setLocalCommentList] = useState(info);
+    const [fetchedCommentList, setFetchedCommentList] = useState(info);
+
+    useEffect(() => {
+        console.dir(newComment);
+    }, [newComment]);
 
     return (
         <>

@@ -2,18 +2,20 @@ import React, {useCallback, useEffect, useState} from "react";
 import {Marker, InfoWindow, Circle} from "@react-google-maps/api";
 import {Nav} from 'react-bootstrap';
 import CommentContainer from "../../containers/map/CommentContainer";
-import schoolIcon from '../../lib/styles/MarkerImage/icons/school.svg';
 import stadiumIcon from '../../lib/styles/MarkerImage/icons/stadium.svg';
-import smokeIcon from '../../lib/styles/MarkerImage/icons/smoke.png';
+import schoolIcon from '../../lib/styles/MarkerImage/icons/school.svg';
+import hostpitalIcon from '../../lib/styles/MarkerImage/icons/hospital.svg';
 import {useSelector} from "react-redux";
 import EstimateContainer from "../../containers/map/EstimateContainer";
 import client from "../../lib/api/client";
+import ClusterMarkerContainer from "../../containers/map/ClusterMarkerContainer";
 
 const findIcon = primaryType => {
     let matchedIcon;
     switch(primaryType){
-        case 'education': matchedIcon = smokeIcon; break;
+        case 'education': matchedIcon = schoolIcon; break;
         case 'excercise': matchedIcon = stadiumIcon; break;
+        case 'hospital' : matchedIcon = hostpitalIcon; break;
         default : matchedIcon =schoolIcon;
     };
     return matchedIcon;
@@ -47,10 +49,15 @@ const InfoWindowList = ({info, zoom}) => {
         }
     }, [searchQuery, searchQueryType]);
 
+    useEffect(() => {
+        console.dir(filteredData);
+    }, [filteredData]);
+
     if (!filteredData) return null;
 
     return (
         <>
+            <ClusterMarkerContainer zoom={zoom} info={filteredData}/>
             {filteredData.map((inf) => (<InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}
         </>
     );
@@ -142,16 +149,13 @@ const InfoWindowItem = ({info, zoom}) => {
         if (!localInfo) setLocalInfo(info);
     }, [info]);
 
-    useEffect(() => {
-        console.dir(updateCommentList);
-    }, [updateCommentList]);
-
     if (!localInfo) return null;
 
     return (
         <>
             <Marker position={localInfo.position} onClick={onClick}
-                    icon={zoom > 13 ? findIcon(localInfo.primaryPositionType) : null}/>
+                    icon={zoom > 13 ? findIcon(localInfo.primaryPositionType) : null}
+                    visible={zoom <= 13 ? false : true}/>
             {localInfo.radius !== undefined && visible &&
             <Circle center={localInfo.position} radius={localInfo.radius}/>}
             {visible && <InfoWindow position={localInfo.position} onCloseClick={onCloseClick}>

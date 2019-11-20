@@ -4,13 +4,20 @@ import {MapCircleInfo} from "../map/MapCircle";
 import ImageUpload from "./ImageUpload";
 import MapTagBox from "../map/MapTagBox";
 import client from "../../lib/api/client";
+import AlertComponent from "./AlertComponent";
+
 
 const selectOptions = {
     excercise: ["축구", "농구", "배구", "야구", "볼링"],
-    education: ["유치원", "초등학교", "중학교", "대학교", "대학원", "교육원"],
-    entertainment: ["PC방", "오락실", "노래방", "당구장"],
-    food: ["학생식당", "음식점", "매점", "취식가능지역"],
+    education: ["유치원", "초등학교", "중학교", "고등학교", "대학교", "대학원", "교육원"],
+    entertainment: ["PC방", "오락실", "노래방", "당구장", "영화관", "만화방", "보드게임카페", "방탈출카페", "볼링장"],
+    food: ["중식", "한식", "일식", "프랜차이즈", "치킨", "야식", "편의점", "카페/디저트",
+        "학생식당", "음식점", "매점", "취식가능지역"],
     transport: ["공공버스", "학교버스", "지하철", "택시", "카풀"],
+    restPlace: ["호텔", "사우나", "고시원", "모텔"],
+    hospital: ["내과", "정형외과", "치과", "안과", "피부과", "성형외과", "이비인후과", "가정의학과"],
+    convenience: ["사진관", "부동산", "통신사", "성인용품매점"],
+    hairshop: ["피부미용실", "헤어미용실", "네일아트"]
 };
 
 const SecondarySelect = ({primarySelect}) => {
@@ -30,6 +37,18 @@ const SecondarySelect = ({primarySelect}) => {
             break;
         case "transport" :
             secondOption = selectOptions.transport;
+            break;
+        case "restPlace":
+            secondOption = selectOptions.restPlace;
+            break;
+        case "hospital" :
+            secondOption = selectOptions.hospital;
+            break;
+        case "convenience" :
+            secondOption = selectOptions.convenience;
+            break;
+        case "hairshop" :
+            secondOption = selectOptions.hairshop;
             break;
         default :
             secondOption = selectOptions.excercise;
@@ -87,15 +106,17 @@ const infoReducer = (state, action) => {
         case 'updateRadius': {
             return {...state, radius: action.radius}
         }
+        case 'updateAlert': {
+            return {...state, alert: action.alert}
+        }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
         }
     }
 };
 
-const MarkerModal = ({onLeftClick, position, radius, circle, setCircle}) => {
+const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlertStatus}) => {
     const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
-    const [showCircleForm, setShowCircleForm] = useState(true);
     const [show, setShow] = useState(true);
 
     const reset = () => setLocalInfo({type: 'reset'});
@@ -120,8 +141,8 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle}) => {
         setLocalInfo({type: 'updateRadius', radius: radius});
     };
 
-    const radiusButtonClick = useCallback(() => {
 
+    const radiusButtonClick = useCallback(() => {
         handleShow();
         if (!circle) setCircle(true);
     }, [show]);
@@ -155,6 +176,7 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle}) => {
                 }));
             };
             saveData();
+            setAlertStatus(true);
             reset();
             handleShow();
             setCircle(false);
@@ -163,81 +185,85 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle}) => {
 
 
     return (
-        <Modal show={show} centered onExited={onLeftClick} animation autoFocus restoreFocus
-                           size="xl">
-            <ModalTitle><strong>위치 정보 입력</strong></ModalTitle>
-            <ModalBody>
-                <Form>
-                    <Form.Group controlId="name">
-                        <Form.Label>이름</Form.Label>
-                        <Form.Control placeholder="이름을 입력해주세요" name="updateName" onChange={updateName}/>
-                    </Form.Group>
+        <>
+            <Modal show={show} centered onExited={onLeftClick} animation autoFocus restoreFocus
+                   size="xl">
+                <ModalTitle><strong>위치 정보 입력</strong></ModalTitle>
+                <ModalBody>
+                    <Form>
+                        <Form.Group controlId="name">
+                            <Form.Label>이름</Form.Label>
+                            <Form.Control placeholder="이름을 입력해주세요" name="updateName" onChange={updateName}/>
+                        </Form.Group>
 
-                    <Form.Group controlId="description">
-                        <Form.Label>설명</Form.Label>
-                        <Form.Control placeholder="설명을 입력해주세요" name="description" as="textarea"
-                                      onChange={updateDescription}/>
-                    </Form.Group>
+                        <Form.Group controlId="description">
+                            <Form.Label>설명</Form.Label>
+                            <Form.Control placeholder="설명을 입력해주세요" name="description" as="textarea"
+                                          onChange={updateDescription}/>
+                        </Form.Group>
 
-                    <Form.Group controlId="photo">
-                        <Form.Label>사진</Form.Label>
-                        <ImageUpload/>
-                    </Form.Group>
+                        <Form.Group controlId="photo">
+                            <Form.Label>사진</Form.Label>
+                            <ImageUpload/>
+                        </Form.Group>
 
-                    <Form.Group controlId="gridPosition">
-                        <Form.Label>위치</Form.Label>
-                        <ListGroup>
-                            <ListGroup.Item>위도 : {position.lat}</ListGroup.Item>
-                            <ListGroup.Item>경도 : {position.lng}</ListGroup.Item>
-                        </ListGroup>
-                    </Form.Group>
+                        <Form.Group controlId="gridPosition">
+                            <Form.Label>위치</Form.Label>
+                            <ListGroup>
+                                <ListGroup.Item>위도 : {position.lat}</ListGroup.Item>
+                                <ListGroup.Item>경도 : {position.lng}</ListGroup.Item>
+                            </ListGroup>
+                        </Form.Group>
 
-                    <Form.Group controlId="radius">
-                        <Form.Label>범위 {localInfo.radius} m</Form.Label>
-                        <Button variant="outline-primary" onClick={radiusButtonClick}>범위 추가하기</Button>
-                    </Form.Group>
+                        <Form.Group controlId="radius">
+                            <Form.Label>범위 {localInfo.radius} m</Form.Label>
+                            <Button variant="outline-primary" onClick={radiusButtonClick}>범위 추가하기</Button>
+                        </Form.Group>
 
-                    <Form.Group controlId="detailedPosition">
-                        <Form.Label>세부 위치</Form.Label>
-                        <Form.Control placeholder="ex) 팔달관 근처, 도서관 정문 앞" name="detailedDescription"
-                                      as="textarea"
-                                      onChange={updateDetailedDescription}/>
-                    </Form.Group>
+                        <Form.Group controlId="detailedPosition">
+                            <Form.Label>세부 위치</Form.Label>
+                            <Form.Control placeholder="ex) 팔달관 근처, 도서관 정문 앞" name="detailedDescription"
+                                          as="textarea"
+                                          onChange={updateDetailedDescription}/>
+                        </Form.Group>
 
-                    <Form.Group>
-                        <Form.Label>위치 타입</Form.Label>
-                        <Form.Group as={Row}>
+                        <Form.Group>
+                            <Form.Label>위치 타입</Form.Label>
+                            <Form.Group as={Row}>
 
-                            <Form.Group as={Col} controlId="positionType">
-                                <Form.Control as="select" onChange={updatePrimaryPositionType}
-                                              value={localInfo.primaryPositionType}>
-                                    <option value="excercise">운동</option>
-                                    <option value="education">교육</option>
-                                    <option value="entertainment">오락</option>
-                                    <option value="food">음식</option>
-                                    <option value="transport">교통</option>
-                                </Form.Control>
-                            </Form.Group>
-                            <Form.Group as={Col} controlId="SecondPositionType">
-                                <Form.Control as="select" onChange={updateSecondaryPositionType}
-                                              value={localInfo.secondaryPositionType}>
-                                    <SecondarySelect primarySelect={localInfo.primaryPositionType}/>
-                                </Form.Control>
+                                <Form.Group as={Col} controlId="positionType">
+                                    <Form.Control as="select" onChange={updatePrimaryPositionType}
+                                                  value={localInfo.primaryPositionType}>
+                                        <option value="excercise">운동</option>
+                                        <option value="education">교육</option>
+                                        <option value="entertainment">오락</option>
+                                        <option value="food">음식</option>
+                                        <option value="transport">교통</option>
+                                        <option value="restPlace">숙소</option>
+                                        <option value="hospital">병원</option>
+                                        <option value="convenience">편의시설</option>
+                                        <option value="hairshop">미용시설</option>
+                                    </Form.Control>
+                                </Form.Group>
+                                <Form.Group as={Col} controlId="SecondPositionType">
+                                    <Form.Control as="select" onChange={updateSecondaryPositionType}
+                                                  value={localInfo.secondaryPositionType}>
+                                        <SecondarySelect primarySelect={localInfo.primaryPositionType}/>
+                                    </Form.Control>
+                                </Form.Group>
                             </Form.Group>
                         </Form.Group>
-                    </Form.Group>
 
-                    <MapTagBox updateTags={updateTags}/>
-                </Form>
-            </ModalBody>
-            <ModalFooter>
-                <Button color="secondary" onClick={handleShow}>닫기</Button>
-                <Button color="primary" onClick={onSubmit}>등록</Button>
-            </ModalFooter>
-        </Modal>
-
-    )
-        ;
+                        <MapTagBox updateTags={updateTags}/>
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="secondary" onClick={handleShow}>닫기</Button>
+                    <Button color="primary" onClick={onSubmit}>등록</Button>
+                </ModalFooter>
+            </Modal>
+        </>
+    );
 };
 
 export default MarkerModal;

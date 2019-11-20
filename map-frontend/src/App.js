@@ -11,23 +11,31 @@ import UserInfoPage from "./pages/UserInfoPage";
 import UserPlacePage from "./pages/UserPlacePage";
 import GeoPage from "./pages/GeoPage";
 import DirectionPage from "./pages/DirectionPage";
+import OverlayPage from "./pages/OverlayPage";
+import SideBarContainter from "./containers/map/SideBarContainer";
+import HeaderContainer from "./containers/common/HeaderContainer";
+
 
 const App = () => {
     return (
         <>
-            <Helmet>
-                <title>KONA</title>
-            </Helmet>
-            <Route component={PostListPage} path={[`/@:username`]} exact/>
-            <Route component={LoginPage} path="/login"/>
-            <Route component={RegisterPage} path="/register"/>
-            <Route component={WritePage} path="/write"/>
-            <Route component={PostPage} path="/@:username/:postId"/>
-            <Route component={MapPage} path={["/map"]} />
-            <Route component={UserInfoPage} path={"/userInfo"}/>
-            <Route component={UserPlacePage} path={"/userplace"}/>
-            <Route component={GeoPage} path={["/geo", "/"]} exact/>
-            <Route component={DirectionPage} path={"/direction"}/>
+            <HeaderContainer/>
+            <SideBarContainter/>
+            {/*
+            <>
+                <Helmet>
+                    <title>KONA</title>
+                </Helmet>
+                <Route component={LoginPage} path="/login"/>
+                <Route component={RegisterPage} path="/register"/>
+                <Route component={PostPage} path="/@:username/:postId"/>
+                <Route component={MapPage} path={["/map"]}/>
+                <Route component={UserPlacePage} path={"/userplace"}/>
+                <Route component={GeoPage} path={["/geo", "/"]} exact/>
+                <Route component={DirectionPage} path={"/direction"}/>
+                <Route component={OverlayPage} path={"/overlay"}/>
+            </>
+            */}
         </>
     );
 };

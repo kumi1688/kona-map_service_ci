@@ -9,9 +9,14 @@ import {MapCircleInfo} from "./MapCircle";
 const selectOptions = {
     excercise: ["축구", "농구", "배구", "야구", "볼링"],
     education: ["유치원", "초등학교", "중학교", "고등학교", "대학교", "대학원", "교육원"],
-    entertainment: ["PC방", "오락실", "노래방", "당구장"],
-    food: ["학생식당", "음식점", "매점", "취식가능지역"],
+    entertainment: ["PC방", "오락실", "노래방", "당구장", "영화관", "만화방", "보드게임카페", "방탈출카페", "볼링장"],
+    food: ["중식", "한식", "일식", "프랜차이즈", "치킨", "야식", "편의점", "카페/디저트",
+        "학생식당", "음식점", "매점", "취식가능지역"],
     transport: ["공공버스", "학교버스", "지하철", "택시", "카풀"],
+    restPlace: ["호텔", "사우나", "고시원"],
+    hospital: ["내과", "정형외과", "치과", "안과", "피부과", "성형외과", "이비인후과", "가정의학과"],
+    convenience: ["사진관", "부동산", "통신사", "성인용품매점"],
+    hairshop: ["피부미용실", "헤어미용실", "네일아트 미히토미"]
 };
 
 const SecondarySelect = ({primarySelect}) => {
@@ -32,6 +37,18 @@ const SecondarySelect = ({primarySelect}) => {
         case "transport" :
             secondOption = selectOptions.transport;
             break;
+        case "restPlace":
+            secondOption = selectOptions.restPlace;
+            break;
+        case "hospital" :
+            secondOption = selectOptions.hospital;
+            break;
+        case "convenience" :
+            secondOption = selectOptions.convenience;
+            break;
+        case "hairshop" :
+            secondOption = selectOptions.hairshop;
+            break;
         default :
             secondOption = selectOptions.excercise;
     }
@@ -42,7 +59,6 @@ const SecondarySelect = ({primarySelect}) => {
         </>
     );
 };
-
 
 const initialState = {
     name: '',
@@ -143,7 +159,7 @@ const UserInfoInsertBox = ({position, onKeyPress, setRadius, setCircle, circle, 
                     detailedPosition: localInfo.detailedPosition,
                     primaryPositionType: localInfo.primaryPositionType,
                     secondaryPositionType: localInfo.secondaryPositionType,
-                    radius : localInfo.radius,
+                    radius: localInfo.radius,
                 }));
             };
             saveData();
@@ -153,7 +169,7 @@ const UserInfoInsertBox = ({position, onKeyPress, setRadius, setCircle, circle, 
     );
 
     const circleOnClick = () => {
-        if(!circle) setCircle(true);
+        if (!circle) setCircle(true);
         else setCircle(false);
     };
 
@@ -182,9 +198,9 @@ const UserInfoInsertBox = ({position, onKeyPress, setRadius, setCircle, circle, 
             <Form.Group controlId="radius">
                 <Form.Label>반경</Form.Label>
                 <Button variant="outline-primary" onClick={circleOnClick}>반경 추가</Button>
-                { circle && <MapCircleInfo position={position} onKeyPress={onKeyPress}
-                                           setRadius={setRadius} insert={false}
-                                            /> }
+                {circle && <MapCircleInfo position={position} onKeyPress={onKeyPress}
+                                          setRadius={setRadius} insert={false}
+                />}
             </Form.Group>
 
             <Form.Group controlId="detailedPosition">
@@ -194,21 +210,27 @@ const UserInfoInsertBox = ({position, onKeyPress, setRadius, setCircle, circle, 
                               onChange={updateDetailedDescription}/>
             </Form.Group>
 
-            <Form.Group >
+            <Form.Group>
                 <Form.Label>위치 타입</Form.Label>
                 <Form.Group as={Row}>
 
                     <Form.Group as={Col} controlId="positionType">
-                        <Form.Control as="select" onChange={updatePrimaryPositionType} value={localInfo.primaryPositionType}>
+                        <Form.Control as="select" onChange={updatePrimaryPositionType}
+                                      value={localInfo.primaryPositionType}>
                             <option value="excercise">운동</option>
                             <option value="education">교육</option>
                             <option value="entertainment">오락</option>
                             <option value="food">음식</option>
                             <option value="transport">교통</option>
+                            <option value="restPlace">숙소</option>
+                            <option value="hospital">병원</option>
+                            <option value="convenience">편의시설</option>
+                            <option value="hairshop">미용시설</option>
                         </Form.Control>
                     </Form.Group>
                     <Form.Group as={Col} controlId="SecondPositionType">
-                        <Form.Control as="select" onChange={updateSecondaryPositionType} value={localInfo.secondaryPositionType}>
+                        <Form.Control as="select" onChange={updateSecondaryPositionType}
+                                      value={localInfo.secondaryPositionType}>
                             <SecondarySelect primarySelect={localInfo.primaryPositionType}/>
                         </Form.Control>
                     </Form.Group>

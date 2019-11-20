@@ -4,10 +4,7 @@ import UserInfoContainer from "../containers/auth/UserInfoContainer";
 
 const UserInfoPage = () => {
     return (
-        <>
-        <HeaderContainer />
-        <UserInfoContainer />
-        </>
+        <UserInfoContainer/>
     );
 };
 

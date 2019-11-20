@@ -1,12 +1,20 @@
 import React, {useEffect} from 'react';
 import {Table} from 'react-bootstrap';
+import styled from "styled-components";
+
+const TableStyle = styled.div`
+    padding-left: 60px;
+    
+`;
 
 const UserInfoShowForm = ({userInfo}) => {
     useEffect(() =>{
         console.dir(userInfo);
     }, [userInfo]);
     return(
-        <>
+        <TableStyle>
+            <br/>
+            <br/>
             <Table striped bordered hover variant="dark" >
                 <thead>
                 <tr>
@@ -33,7 +41,7 @@ const UserInfoShowForm = ({userInfo}) => {
                 </tr>
                 </tbody>
             </Table>
-        </>
+        </TableStyle>
     )
 };
 
