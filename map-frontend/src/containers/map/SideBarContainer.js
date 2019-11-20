@@ -16,17 +16,18 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 // Be sure to include styles at some point, probably during your bootstraping
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import styled from "styled-components";
+import UserCommentShowPage from "../../pages/UserCommentShowPage";
 
 const StyledSideBar = styled.div`
-    padding-top: 30px;
+    height: '100%';
 `;
 
 const SideBarContainter = ({history}) => {
     return (
+        <StyledSideBar>
             <Route render={({history}) => (
                 <React.Fragment>
                     <SideNav
-                        expanded={false}
                         onSelect={(selected) => {
                             const to = '/' + selected;
                             console.dir(to);
@@ -125,9 +126,12 @@ const SideBarContainter = ({history}) => {
                     <main>
                         <Route path={["/", "/home"]} exact component={MapPage}/>
                         <Route path={"/userInfo"} exact component={UserInfoPage}/>
+                        <Route path={"/userInfo/comment"} exact component={UserCommentShowPage}/>
                     </main>
                 </React.Fragment>
             )}/>
+        </StyledSideBar>
+
     );
 };
 

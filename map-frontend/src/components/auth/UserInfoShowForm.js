@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 const TableStyle = styled.div`
     padding-left: 60px;
-    
 `;
 
 const UserInfoShowForm = ({userInfo}) => {
@@ -13,8 +12,6 @@ const UserInfoShowForm = ({userInfo}) => {
     }, [userInfo]);
     return(
         <TableStyle>
-            <br/>
-            <br/>
             <Table striped bordered hover variant="dark" >
                 <thead>
                 <tr>

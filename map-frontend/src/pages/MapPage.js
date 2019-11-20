@@ -5,7 +5,7 @@ import SideBarContainter from "../containers/map/SideBarContainer";
 import styled from "styled-components";
 
 const StyledMapPage = styled.div`
-    padding-top: 60px;
+    
     padding-left : 60px;
 `;
 

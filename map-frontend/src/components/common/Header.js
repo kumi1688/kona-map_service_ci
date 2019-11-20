@@ -47,9 +47,8 @@ const Spacer = styled.div`
 height: 4rem;
 `;
 
-const headerStyle= styled.div`
-    margin: 0px 20px 0px 100px;
-    padding-left: 100px;
+const StyledHeader = styled.div`
+    padding-left: 60px;
 `;
 
 const Header = ({user, onLogout}) => {
@@ -82,8 +81,8 @@ const Header = ({user, onLogout}) => {
         }, [dispatch, value, option]);
 
     return (
-        <div className={headerStyle}>
-            <Navbar bg="dark" variant="dark" fixed="top">
+        <StyledHeader>
+            <Navbar bg="dark" variant="dark">
                 <Navbar.Brand href="/map">KONA MAP SERVICE</Navbar.Brand>
                 <Nav className="mr-auto">
                     {user && <Nav.Link href="/userInfo">유저 정보</Nav.Link>}
@@ -105,7 +104,7 @@ const Header = ({user, onLogout}) => {
                     </Form.Group>
                 </Form>
             </Navbar>
-        </div>
+        </StyledHeader>
     );
 };
 
