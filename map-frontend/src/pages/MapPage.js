@@ -10,18 +10,10 @@ const StyledMapPage = styled.div`
 `;
 
 const MapPage = () => {
-    const [popUp, setPopUp] = useState(null);
-
-    const onPopUpClick = useCallback(
-        e => {
-            if (!popUp) setPopUp(true);
-            else setPopUp(false);
-        }, [popUp]);
-
     return (
         <>
             <StyledMapPage>
-                <MapContainer onPopUpClick={onPopUpClick}/>
+                <MapContainer />
             </StyledMapPage>
         </>
     );

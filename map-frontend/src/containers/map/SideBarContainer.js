@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useEffect, useReducer} from 'react';
 import MapPage from "../../pages/MapPage";
 import UserInfoPage from "../../pages/UserInfoPage";
+import DirectionPage from "../../pages/DirectionPage";
 import SideNav, {Toggle, Nav, NavItem, NavIcon, NavText} from '@trendmicro/react-sidenav';
 import {Router, Route} from 'react-router-dom';
 import {
@@ -9,7 +10,7 @@ import {
     faMapMarker,
     faMapPin,
     faRoad,
-    faMap, faUser, faAddressCard, faEdit, faComment
+    faMap, faUser, faAddressCard, faEdit, faComment, faBuilding, faStreetView
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
@@ -17,21 +18,70 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import styled from "styled-components";
 import UserCommentShowPage from "../../pages/UserCommentShowPage";
+import UserPostShowPage from "../../pages/UserPostShowPage";
+import GeoPage from "../../pages/GeoPage";
+import {useDispatch, useSelector} from "react-redux";
+import {setAddInfoOnMap} from "../../modules/map";
+import LoginPage from "../../pages/LoginPage";
+import BoardComponent from "../common/BoardComponent";
 
 const StyledSideBar = styled.div`
-    height: '100%';
+    height: 100%;
 `;
 
+const initialState = {
+    addInfoOnMap: false,
+};
+
+const infoReducer = (state, action) => {
+    switch (action.type) {
+        case 'reset': {
+            return initialState
+        }
+        case 'addInfoOnMap': {
+            return {...state, addInfoOnMap: action.addInfoOnMap}
+        }
+        default: {
+            throw new Error(`unexpected action.type: ${action.type}`)
+        }
+    }
+};
+
 const SideBarContainter = ({history}) => {
+    const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
+    const dispatch = useDispatch();
+
+    const setAddInfo = value => setLocalInfo({type : 'addInfoOnMap', addInfoOnMap: value});
+
+    useEffect(() =>{
+        dispatch(setAddInfoOnMap(localInfo.addInfoOnMap));
+    }, [localInfo.addInfoOnMap]);
+
     return (
         <StyledSideBar>
             <Route render={({history}) => (
                 <React.Fragment>
                     <SideNav
                         onSelect={(selected) => {
+                            let route = false;
                             const to = '/' + selected;
-                            console.dir(to);
-                            history.push(to);
+                            switch(to){
+                                case "/" :
+                                case "/home":
+                                case "/userInfo" :
+                                case "/userInfo/post":
+                                case "/userInfo/comment":
+                                case "/geo" : history.push(to); route = true; break;
+                            }
+
+
+                            if(!route){
+                                console.dir(to);
+                                switch(to){
+                                    case "/addInfo/point":
+                                        localInfo.addInfoOnMap ? setAddInfo(false) : setAddInfo(true); break;
+                                }
+                            }
                         }}
                     >
                         <SideNav.Toggle/>
@@ -62,7 +112,7 @@ const SideBarContainter = ({history}) => {
 
                                 </NavItem>
 
-                                <NavItem eventKey="userInfo/userPlace">
+                                <NavItem eventKey="userInfo/post">
                                     <NavIcon>
                                         <FontAwesomeIcon icon={faEdit} size="2x"/>
                                     </NavIcon>
@@ -88,6 +138,33 @@ const SideBarContainter = ({history}) => {
                                 <NavText>
                                     즐겨찾기
                                 </NavText>
+                                <NavItem>
+                                    <NavIcon>
+                                        <FontAwesomeIcon icon={faMapMarker} size="2x"/>
+                                        <FontAwesomeIcon icon={faStar} size="sm"/>
+                                    </NavIcon>
+                                    <NavText>
+                                        위치 즐겨찾기 추가
+                                    </NavText>
+                                </NavItem>
+                                <NavItem>
+                                    <NavIcon>
+                                        <FontAwesomeIcon icon={faRoad} size="2x"/>
+                                        <FontAwesomeIcon icon={faStar} size="sm"/>
+                                    </NavIcon>
+                                    <NavText>
+                                        경로 즐겨찾기 추가
+                                    </NavText>
+                                </NavItem>
+                                <NavItem>
+                                    <NavIcon>
+                                        <FontAwesomeIcon icon={faBuilding} size="2x"/>
+                                        <FontAwesomeIcon icon={faStar} size="sm"/>
+                                    </NavIcon>
+                                    <NavText>
+                                        건물 즐겨 찾기 추가
+                                    </NavText>
+                                </NavItem>
                             </NavItem>
                             <NavItem eventKey="addInfo">
                                 <NavIcon>
@@ -98,7 +175,7 @@ const SideBarContainter = ({history}) => {
                                 </NavText>
                                 <NavItem eventKey="addInfo/point">
                                     <NavIcon>
-                                        <FontAwesomeIcon icon={faMapPin} size="2x"/>
+                                        <FontAwesomeIcon icon={faMapMarker} size="2x"/>
                                     </NavIcon>
                                     <NavText>
                                         위치 추가하기
@@ -114,19 +191,33 @@ const SideBarContainter = ({history}) => {
                                 </NavItem>
                                 <NavItem eventKey="addInfo/building">
                                     <NavIcon>
-                                        <FontAwesomeIcon icon={faMap} size="2x"/>
+                                        <FontAwesomeIcon icon={faBuilding} size="2x"/>
                                     </NavIcon>
                                     <NavText>
                                         건물 약도 추가하기
                                     </NavText>
                                 </NavItem>
                             </NavItem>
+                            <NavItem eventKey="geo">
+                                <NavIcon>
+                                    <FontAwesomeIcon icon={faStreetView} size="2x"/>
+                                </NavIcon>
+                                <NavText>
+                                    내 현재 위치 찾기
+                                </NavText>
+                            </NavItem>
                         </SideNav.Nav>
                     </SideNav>
                     <main>
                         <Route path={["/", "/home"]} exact component={MapPage}/>
                         <Route path={"/userInfo"} exact component={UserInfoPage}/>
+                        <Route path={"/userInfo/post"} exact component={UserPostShowPage}/>
                         <Route path={"/userInfo/comment"} exact component={UserCommentShowPage}/>
+                        <Route path={"/geo"} exact component={GeoPage}/>
+                        <Route path={"/direction"} exact component={DirectionPage}/>
+                        <Route path={"/login"} exact component={LoginPage}/>
+                        <Route path={"/register"} exact component={LoginPage}/>
+                        <Route path={"/board"} exact component={BoardComponent}/>
                     </main>
                 </React.Fragment>
             )}/>

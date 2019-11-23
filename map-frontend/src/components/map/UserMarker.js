@@ -3,7 +3,7 @@ import {InfoWindow, Marker} from '@react-google-maps/api';
 import MarkerModal from "../common/MarkerModal";
 import AlertComponent from "../common/AlertComponent";
 
-const UserMarker = ({position, circle, setCircle, onKeyPressForRadius, setRadius, radius}) => {
+const UserMarker = ({position, circle, setCircle, onKeyPressForRadius, setRadius, radius, animation}) => {
     const [leftClick, setLeftClick] = useState(null);
     const [alertStatus, setAlertStatus] = useState(false);
 
@@ -20,7 +20,7 @@ const UserMarker = ({position, circle, setCircle, onKeyPressForRadius, setRadius
                                         setAlertStatus={setAlertStatus}/>}
             <Marker
                 onClick={onLeftClick}
-                animation={circle === -1 ? `BOUNCE` : null}
+                animation='BOUNCE'
                 position={{
                     lat: parseFloat(position.lat),
                     lng: parseFloat(position.lng),

@@ -1,5 +1,7 @@
 import UserPlace from "../../models/userPlace"
 import Post from "../../models/post";
+import User from "../../models/user";
+import UserRoad from "../../models/userRoad";
 
 const post = new Post([
     {
@@ -33,11 +35,11 @@ const userPlaceList = new UserPlace([
 ]);
 
 exports.makeUserPlace = async ctx => {
-    const { name, description, tags, position, detailedPosition, publishingDate,
+    const { username, name, description, tags, position, detailedPosition, publishingDate,
     primaryPositionType, secondaryPositionType, radius } = ctx.request.body;
     console.dir(ctx.request.body);
     const userPlace = new UserPlace({
-        name, description, tags, position, detailedPosition, publishingDate,
+        username, name, description, tags, position, detailedPosition, publishingDate,
         primaryPositionType, secondaryPositionType, radius
     });
     try{
@@ -61,6 +63,48 @@ exports.listUserPlace = async ctx => {
     }
 };
 
+exports.listUserRoads = async ctx => {
+    try{
+        const userRoads = await UserRoad.find().exec();
+        if(!userRoads) {
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = userRoads;
+    } catch(e){
+        ctx.throw(500, e);
+    }
+};
+
+exports.findUserRoadByUserName = async ctx => {
+    const {username} = ctx.params;
+  try{
+    const userRoad = await UserRoad.findByUsername(username).exec();
+    if(!userRoad){
+        ctx.status = 404;
+        return;
+    }
+    ctx.body = userRoad;
+  }catch(e){
+      ctx.throw(500,e);
+  }
+};
+
+exports.findUserPlaceByUserName = async ctx => {
+    console.log('hello!');
+    const {username} = ctx.params;
+    try{
+        const userplace = await UserPlace.findByUsername(username).exec();
+        if(!userplace){
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = userplace;
+    } catch(e){
+        ctx.throw(500, e);
+    }
+};
+
 exports.findUserPlace = async ctx => {
     const { id } = ctx.params;
     try{
@@ -72,6 +116,23 @@ exports.findUserPlace = async ctx => {
         ctx.body = userplace;
 
     } catch(e){
+        ctx.throw(500, e);
+    }
+};
+
+
+exports.makeUserRoad = async ctx => {
+    const { username, name, description, tags, position, detailedPosition, publishingDate,
+        primaryPositionType, secondaryPositionType, roadInfo } = ctx.request.body;
+    console.dir(ctx.request.body);
+    const userRoad = new UserRoad({
+        username, name, description, tags, position, detailedPosition, publishingDate,
+        primaryPositionType, secondaryPositionType, roadInfo
+    });
+    try{
+        await userRoad.save();
+        ctx.body = userRoad;
+    } catch(e) {
         ctx.throw(500, e);
     }
 };

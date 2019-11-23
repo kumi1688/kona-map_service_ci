@@ -1,58 +1,28 @@
 import React, {useCallback, useEffect, useReducer, useState} from 'react';
 import {Modal, ModalBody, ModalTitle, ModalFooter, Button, Form, ListGroup, Row, Col} from "react-bootstrap";
-import {MapCircleInfo} from "../map/MapCircle";
-import ImageUpload from "./ImageUpload";
-import MapTagBox from "../map/MapTagBox";
-import client from "../../lib/api/client";
-import AlertComponent from "./AlertComponent";
 import {useSelector} from "react-redux";
+import client from "../../lib/api/client";
+import ImageUpload from "../common/ImageUpload";
 
 
 const selectOptions = {
-    excercise: ["축구", "농구", "배구", "야구", "볼링"],
-    education: ["유치원", "초등학교", "중학교", "고등학교", "대학교", "대학원", "교육원"],
-    entertainment: ["PC방", "오락실", "노래방", "당구장", "영화관", "만화방", "보드게임카페", "방탈출카페", "볼링장"],
-    food: ["중식", "한식", "일식", "프랜차이즈", "치킨", "야식", "편의점", "카페/디저트",
-        "학생식당", "음식점", "매점", "취식가능지역"],
-    transport: ["공공버스", "학교버스", "지하철", "택시", "카풀"],
-    restPlace: ["호텔", "사우나", "고시원", "모텔"],
-    hospital: ["내과", "정형외과", "치과", "안과", "피부과", "성형외과", "이비인후과", "가정의학과"],
-    convenience: ["사진관", "부동산", "통신사", "성인용품매점"],
-    hairshop: ["피부미용실", "헤어미용실", "네일아트"]
+    'mainRoad': ['4차로', '3차로', '2차로', '포장도로'],
+    'smallRoad' : ['지름길', '오솔길', '산길', '나무길'],
+    'travelRoad' : ['홀로 여행', '도보여행', '테마여행', '자전거여행', '반려견과 함께 여행'],
+    'foodRoad': [ '한식', '양식', '중식', '혼합', '기타'],
+    'sightSeeingRoad' : ['문화', '건축물', '음악'],
 };
 
 const SecondarySelect = ({primarySelect}) => {
     let secondOption;
     switch (primarySelect) {
-        case "excercise" :
-            secondOption = selectOptions.excercise;
-            break;
-        case "education" :
-            secondOption = selectOptions.education;
-            break;
-        case "entertainment" :
-            secondOption = selectOptions.entertainment;
-            break;
-        case "food" :
-            secondOption = selectOptions.food;
-            break;
-        case "transport" :
-            secondOption = selectOptions.transport;
-            break;
-        case "restPlace":
-            secondOption = selectOptions.restPlace;
-            break;
-        case "hospital" :
-            secondOption = selectOptions.hospital;
-            break;
-        case "convenience" :
-            secondOption = selectOptions.convenience;
-            break;
-        case "hairshop" :
-            secondOption = selectOptions.hairshop;
-            break;
+        case 'mainRoad' : secondOption = selectOptions.mainRoad; break;
+        case 'smallRoad' : secondOption = selectOptions.smallRoad; break;
+        case 'travelRoad': secondOption = selectOptions.travelRoad; break;
+        case 'foodRoad' : secondOption = selectOptions.foodRoad; break;
+        case 'sightSeeingRoad' : secondOption = selectOptions.sightSeeingRoad; break;
         default :
-            secondOption = selectOptions.excercise;
+            secondOption = selectOptions.mainRoad;
     }
 
     return (
@@ -70,7 +40,8 @@ const initialState = {
     tags: [],
     primaryPositionType: "excercise",
     secondaryPositionType: "축구",
-    radius: 0,
+    roadInfo : null,
+    username : null,
 };
 
 const infoReducer = (state, action) => {
@@ -95,6 +66,9 @@ const infoReducer = (state, action) => {
                 }
             }
         }
+        case 'updateRoadInfo' : {
+            return {...state, roadInfo : action.roadInfo}
+        }
         case 'updateTags': {
             return {...state, tags: action.tags}
         }
@@ -110,13 +84,18 @@ const infoReducer = (state, action) => {
         case 'updateAlert': {
             return {...state, alert: action.alert}
         }
+        case 'updateUserName' : {
+            return {...state, username: action.username}
+        }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
         }
     }
 };
 
-const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlertStatus}) => {
+const RoadModal = ( {roadInfo}) => {
+    let temp = [];
+    let [localRoad, setlocalRoad] = useState(null);
     const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
     const [show, setShow] = useState(true);
     const {username} = useSelector(({user}) => ({
@@ -141,63 +120,74 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlert
     const updateSecondaryPositionType = e => {
         setLocalInfo({type: 'updateSecondaryPositionType', secondaryPositionType: e.target.value});
     };
-    const setRadius = radius => {
-        setLocalInfo({type: 'updateRadius', radius: radius});
+    const updateRoadInfo = value => {
+        setLocalInfo( {type: 'updateRoadInfo', roadInfo: value});
     };
-
-
-    const radiusButtonClick = useCallback(() => {
-        handleShow();
-        if (!circle) setCircle(true);
-    }, [show]);
+    const updateUserName = () => {
+        setLocalInfo( {type: 'updateUserName', username: username});
+    };
 
     const handleShow = useCallback(() => {
         if (!show) setShow(true);
         else setShow(false);
     }, [show]);
 
-    useEffect(() => {
-        setRadius(radius);
-    }, [radius]);
-    useEffect(() => {
-        updateGridPosition(position);
-    }, [position]);
-    useEffect(() =>{
-        console.dir(username);
-    }, [username]);
-
     const onSubmit = useCallback(
         e => {
             e.preventDefault();
             console.dir(localInfo);
             const saveData = async () => {
-                await client.post('/api/map', ({
+                await client.post('/api/map/userRoad', ({
                     name: localInfo.name,
                     description: localInfo.description,
-                    position: localInfo.gridPosition,
                     tags: localInfo.tags,
                     detailedPosition: localInfo.detailedPosition,
                     primaryPositionType: localInfo.primaryPositionType,
                     secondaryPositionType: localInfo.secondaryPositionType,
-                    radius: localInfo.radius,
-                    username: username
+                    username: localInfo.username,
+                    roadInfo: localInfo.roadInfo,
                 }));
             };
             saveData();
-            setAlertStatus(true);
-            reset();
             handleShow();
-            setCircle(false);
-        }, [localInfo]
-    );
+        }, [localInfo]);
 
+    useEffect(() => {
+        updateUserName(username);
+    }, [username]);
+
+    useEffect(() => {
+        console.dir(localInfo);
+    }, [localInfo]);
+
+    let count = 0;
+    useEffect(() => {
+        //roadInfo.map(road => console.dir(road.De.bounds));
+        /*
+        [1,2,3,4,5,6].forEach(function(element){
+            console.dir(element);
+        });
+         */
+        roadInfo.forEach(function(road){
+            temp = temp.concat({lat: road.De.bounds.fa, lng: road.De.bounds.X});
+            temp = temp.concat({lat: road.De.bounds.aa, lng: road.De.bounds.ea});
+        });
+        console.dir(temp);
+        updateRoadInfo(temp);
+    }, [roadInfo]);
 
     return (
         <>
-            <Modal show={show} centered onExited={onLeftClick} animation autoFocus restoreFocus
-                   size="xl">
+            <Modal show={show} centered animation autoFocus restoreFocus
+                   size="lg">
                 <ModalTitle><strong>위치 정보 입력</strong></ModalTitle>
                 <ModalBody>
+
+                    <Form.Group controlId="photo">
+                        <Form.Label>사진</Form.Label>
+                        <ImageUpload/>
+                    </Form.Group>
+
                     <Form>
                         <Form.Group controlId="name">
                             <Form.Label>이름</Form.Label>
@@ -208,24 +198,6 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlert
                             <Form.Label>설명</Form.Label>
                             <Form.Control placeholder="설명을 입력해주세요" name="description" as="textarea"
                                           onChange={updateDescription}/>
-                        </Form.Group>
-
-                        <Form.Group controlId="photo">
-                            <Form.Label>사진</Form.Label>
-                            <ImageUpload/>
-                        </Form.Group>
-
-                        <Form.Group controlId="gridPosition">
-                            <Form.Label>위치</Form.Label>
-                            <ListGroup>
-                                <ListGroup.Item>위도 : {position.lat}</ListGroup.Item>
-                                <ListGroup.Item>경도 : {position.lng}</ListGroup.Item>
-                            </ListGroup>
-                        </Form.Group>
-
-                        <Form.Group controlId="radius">
-                            <Form.Label>범위 {localInfo.radius} m</Form.Label>
-                            <Button variant="outline-primary" onClick={radiusButtonClick}>범위 추가하기</Button>
                         </Form.Group>
 
                         <Form.Group controlId="detailedPosition">
@@ -242,15 +214,11 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlert
                                 <Form.Group as={Col} controlId="positionType">
                                     <Form.Control as="select" onChange={updatePrimaryPositionType}
                                                   value={localInfo.primaryPositionType}>
-                                        <option value="excercise">운동</option>
-                                        <option value="education">교육</option>
-                                        <option value="entertainment">오락</option>
-                                        <option value="food">음식</option>
-                                        <option value="transport">교통</option>
-                                        <option value="restPlace">숙소</option>
-                                        <option value="hospital">병원</option>
-                                        <option value="convenience">편의시설</option>
-                                        <option value="hairshop">미용시설</option>
+                                        <option value="mainRoad">큰 도로</option>
+                                        <option value="smallRoad">작은 도로</option>
+                                        <option value="travelRoad">여행로</option>
+                                        <option value="foodRoad">음식 추천로</option>
+                                        <option value="sightSeeingRoad">관광</option>
                                     </Form.Control>
                                 </Form.Group>
                                 <Form.Group as={Col} controlId="SecondPositionType">
@@ -262,7 +230,6 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlert
                             </Form.Group>
                         </Form.Group>
 
-                        <MapTagBox updateTags={updateTags}/>
                     </Form>
                 </ModalBody>
                 <ModalFooter>
@@ -274,4 +241,4 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlert
     );
 };
 
-export default MarkerModal;
+export default RoadModal;

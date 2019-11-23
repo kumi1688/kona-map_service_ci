@@ -169,7 +169,7 @@ const DirectionContainer = () => {
                         id='direction-example'
                         // required
                         mapContainerStyle={{
-                            height: '400px',
+                            height: '300px',
                             width: '100%'
                         }}
                         // required

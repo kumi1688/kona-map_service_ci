@@ -1,13 +1,29 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Button, Form} from "react-bootstrap";
+import SideNav, {Toggle, Nav, NavItem, NavIcon, NavText} from '@trendmicro/react-sidenav';
 import {number} from "prop-types";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {FaCalculator, FaCamera} from "react-icons/all";
 
 const CustomFormCheck = ({label, number}) => {
+    const [value, setValue] = useState(null);
+
+    const onClick = useCallback(
+        () => {
+            if(value) setValue(false);
+            else setValue(true);
+        }, [value]);
+
+    useEffect(() => {
+        console.dir(value);
+    }, [value]);
+
     return (
         <Form.Check
             custom
             inline
             label={number}
+            onClick={onClick}
             type="checkbox"
             id={`custom-inline-checkbox-${label}-${number}`}
         />
@@ -15,6 +31,7 @@ const CustomFormCheck = ({label, number}) => {
 };
 
 const CustomForm = ({label}) => {
+
     return (
         <Form.Group>
             <Form.Label>{label}</Form.Label>
@@ -24,6 +41,13 @@ const CustomForm = ({label}) => {
 };
 
 const EstimateContainer = () => {
+    const [userEstimate, setUserEstimate] = useState(null);
+    const [input, setInput] = useState(null);
+
+    useEffect(()=>{
+        console.dir(input);
+    }, [input]);
+
     return (
         <>
             <Form>
@@ -32,7 +56,7 @@ const EstimateContainer = () => {
                 <CustomForm label="신선도"/>
                 <CustomForm label="적절함"/>
                 <Form.Group>
-                    <Form.Label>종합</Form.Label>
+                    <Form.Label>좋아요</Form.Label>
                     <Form.Check custom
                                 inline
                                 label="좋아요"

@@ -9,18 +9,61 @@ import {useSelector} from "react-redux";
 import EstimateContainer from "../../containers/map/EstimateContainer";
 import client from "../../lib/api/client";
 import ClusterMarkerContainer from "../../containers/map/ClusterMarkerContainer";
+import loading from "../../modules/loading";
 
 const findIcon = primaryType => {
     let matchedIcon;
-    switch(primaryType){
-        case 'education': matchedIcon = schoolIcon; break;
-        case 'excercise': matchedIcon = stadiumIcon; break;
-        case 'hospital' : matchedIcon = hostpitalIcon; break;
-        default : matchedIcon =schoolIcon;
-    };
+    switch (primaryType) {
+        case 'education':
+            matchedIcon = schoolIcon;
+            break;
+        case 'excercise':
+            matchedIcon = stadiumIcon;
+            break;
+        case 'hospital' :
+            matchedIcon = hostpitalIcon;
+            break;
+        default :
+            matchedIcon = schoolIcon;
+    }
+    ;
     return matchedIcon;
 };
 
+const adjustMouseOverPosition = (position, zoom) => {
+    let customPosition = {lat: null, lng: position.lng};
+    switch (zoom) {
+        case 15 :
+            customPosition.lat = position.lat + 0.0015;
+            break;
+        case 16 :
+            customPosition.lat = position.lat + 0.001;
+            break;
+        case 17 :
+            customPosition.lat = position.lat + 0.0005;
+            break;
+        case 18 :
+            customPosition.lat = position.lat + 0.0003;
+            break;
+        case 19 :
+            customPosition.lat = position.lat + 0.0001;
+            break;
+        case 20 :
+            customPosition.lat = position.lat + 0.0001;
+            break;
+        case 21 :
+        case 22:
+        case 23:
+        case 24:
+        case 25:
+            customPosition.lat = position.lat;
+            break;
+        default :
+            customPosition.lat = position.lat;
+            break;
+    }
+    return customPosition;
+};
 
 const InfoWindowList = ({info, zoom}) => {
     const {searchQuery, searchQueryType} = useSelector(({map}) => ({
@@ -69,6 +112,7 @@ const InfoWindowItem = ({info, zoom}) => {
     const [isCloseBox, setIsCloseBox] = useState(true);
     const [localInfo, setLocalInfo] = useState(null);
     const [visible, setVisible] = useState(null);
+    const [visibleMarkerMouseOver, setVisibleMarkerMouseOver] = useState(null);
     const [visiblePositionInfo, setVisiblePositionInfo] = useState(true);
     const [visibleEstimate, setVisibleEstimate] = useState(null);
     const [visibleComment, setVisibleComment] = useState(null);
@@ -90,7 +134,7 @@ const InfoWindowItem = ({info, zoom}) => {
         if (!isCloseBox) {
             setIsCloseBox(true);
             setVisible(null);
-            if(info.commentList !== updateCommentList) updateComment();
+            if (info.commentList !== updateCommentList) updateComment();
         } else {
             setIsCloseBox(false);
             setVisible(null);
@@ -132,18 +176,24 @@ const InfoWindowItem = ({info, zoom}) => {
 
     const updateComment = useCallback(
         e => {
-            setLoading(true);
+
             const saveData = async () => {
-                try{
+                setLoading(true);
+                try {
                     console.dir(updateCommentList);
-                     await client.post(`/api/comment/${info._id}`, (updateCommentList));
-                } catch(e){
+                    await client.post(`/api/comment/${info._id}`, (updateCommentList));
+                } catch (e) {
                     console.dir(e);
                 }
+                setLoading(false);
             };
             saveData();
-            setLoading(false);
-    }, [updateCommentList]);
+        }, [updateCommentList]);
+
+    const onMouseOver = useCallback(() => {
+        if (visibleMarkerMouseOver) setVisibleMarkerMouseOver(false);
+        else setVisibleMarkerMouseOver(true);
+    }, [visibleMarkerMouseOver]);
 
     useEffect(() => {
         if (!localInfo) setLocalInfo(info);
@@ -153,9 +203,15 @@ const InfoWindowItem = ({info, zoom}) => {
 
     return (
         <>
+            {visibleMarkerMouseOver && <InfoWindow
+                position={adjustMouseOverPosition(localInfo.position, zoom)}>
+                <h2>hello</h2>
+            </InfoWindow>}
             <Marker position={localInfo.position} onClick={onClick}
                     icon={zoom > 13 ? findIcon(localInfo.primaryPositionType) : null}
-                    visible={zoom <= 13 ? false : true}/>
+                    visible={zoom <= 13 ? false : true}
+                    onMouseOver={onMouseOver}
+                    onMouseOut={onMouseOver}/>
             {localInfo.radius !== undefined && visible &&
             <Circle center={localInfo.position} radius={localInfo.radius}/>}
             {visible && <InfoWindow position={localInfo.position} onCloseClick={onCloseClick}>

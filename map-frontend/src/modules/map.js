@@ -9,6 +9,7 @@ const SET_SEARCH_QUERY = 'map/SET_SEARCH_QUERY';
 const SET_CURRENT_USER_LOCATION = 'map/SET_CURRENT_USER_LOCATION';
 const SET_COMMENT_LIST  = 'map/SET_COMMENT_LIST';
 const SET_COMMENT = 'map/SET_COMMENT';
+const SET_ADD_INFO_ON_MAP = 'map/SET_ADD_INFO_ON_MAP';
 
 // 액션에 할당된 파라미터의 값이 어떤것인지 알 수 없기 때문에 파라미터로 전달받은 값을 action의 payload로 설정함
 export const list = createAction(LIST, info => info);
@@ -23,6 +24,7 @@ export const setSearchQuery = createAction(SET_SEARCH_QUERY, ({searchQuery, sear
 export const setCurrentUserLocation = createAction(SET_CURRENT_USER_LOCATION, location => location);
 export const setCommentList = createAction(SET_COMMENT_LIST, (commentList) => (commentList) );
 export const setComment = createAction(SET_COMMENT, comment => comment);
+export const setAddInfoOnMap = createAction(SET_ADD_INFO_ON_MAP, isAddInfo => isAddInfo);
 
 
 //{name, description, tags, position, detailedPosition, publishingDate}
@@ -47,6 +49,7 @@ const initialState = {
     },
     commentList : null,
     comment: null,
+    isAddInfo: false,
     info: {
         name: '',
         description: '',
@@ -98,6 +101,10 @@ const map = handleActions(
         [SET_COMMENT] : (state, {payload: comment}) => ({
             ...state,
             comment: comment,
+        }),
+        [SET_ADD_INFO_ON_MAP] : (state, {payload: isAddInfo}) => ({
+            ...state,
+            isAddInfo: isAddInfo
         }),
     },
     initialState,

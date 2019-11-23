@@ -12,7 +12,7 @@ const GeoPage = ({history}) => {
         console.dir(curlocation);
         if(curlocation) {
             dispatch(setCurrentUserLocation(curlocation));
-            history.push('/map');
+            history.push('/home');
         }
     }, [curlocation]);
 

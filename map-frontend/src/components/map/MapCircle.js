@@ -2,6 +2,20 @@ import {Circle} from '@react-google-maps/api'
 import React, {useState, useCallback} from "react";
 import {Row, Col, Form, FormGroup, ListGroup} from 'react-bootstrap';
 import InputBar from "../common/InputBar";
+import styled from "styled-components";
+
+const StyledCircleWrapper = styled.div`
+    z-index : 20;
+    background-color : white;
+    position: fixed;
+    right: 0;
+    margin : 20px 20px 20px 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+   
+`;
 
 export const MapCircleInfo = ({onKeyPress, setRadius, radius}) => {
     const [input, setInput] = useState('');
@@ -21,18 +35,19 @@ export const MapCircleInfo = ({onKeyPress, setRadius, radius}) => {
     },);
 
     return (
-        <Row>
-            <Form>
-                <Form.Group as={Col} controlId="circleRadius">
-                    <Form.Label>찾고 싶은 범위를 입력해주세요</Form.Label>
-                    <Form.Control placeholder="찾고 싶은 범위를 입력해주세요" name={input}
-                                  onChange={onChange} onKeyPress={onKeyPress}/>
-                </Form.Group>
-                <Form.Group as={Col} controlId="circleRadiusBar">
-                    <InputBar onRadiusChange={onRadiusChange} radius={radius}/>
-                </Form.Group>
-            </Form>
-        </Row>
+        <StyledCircleWrapper>
+            <Row>
+                <Form >
+                    <Form.Group as={Col} controlId="circleRadius" >
+                        <Form.Control placeholder="범위 입력" name={input}
+                                      onChange={onChange} onKeyPress={onKeyPress}/>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="circleRadiusBar">
+                        <InputBar onRadiusChange={onRadiusChange} radius={radius}/>
+                    </Form.Group>
+                </Form>
+            </Row>
+        </StyledCircleWrapper>
     );
 };
 

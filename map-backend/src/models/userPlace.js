@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
-import Comment from "./comment";
 
 const { Schema } = mongoose;
 
 const UserPlaceSchema = new Schema({
+    username: String,
     name: String,
     description: String,
     detailedPosition: String,
@@ -15,6 +15,10 @@ const UserPlaceSchema = new Schema({
     radius: Number,
     commentList: [],
 });
+
+UserPlaceSchema.statics.findByUsername = function(username){
+    return this.find({username:username});
+};
 
 UserPlaceSchema.statics.findByType = function(primary){
     return this.find({primaryPositionType: primary});
