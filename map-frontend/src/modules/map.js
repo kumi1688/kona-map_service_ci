@@ -12,6 +12,7 @@ const SET_COMMENT = 'map/SET_COMMENT';
 const SET_ADD_INFO_ON_MAP = 'map/SET_ADD_INFO_ON_MAP';
 const SET_ADD_ROAD_ON_MAP = 'map/SET_ADD_ROAD_ON_MAP';
 const SET_ROAD_TYPE_ON_MAP = 'map/SET_ROAD_TYPE_ON_MAP';
+const CLEAR_MAP = 'map/CLEAR_MAP';
 
 // 액션에 할당된 파라미터의 값이 어떤것인지 알 수 없기 때문에 파라미터로 전달받은 값을 action의 payload로 설정함
 export const list = createAction(LIST, info => info);
@@ -22,6 +23,7 @@ export const setSearchQuery = createAction(SET_SEARCH_QUERY,
     ({searchQuery, searchQueryType, searchQueryOnMap, searchQueryOption}) => ({
     searchQuery, searchQueryType, searchQueryOnMap, searchQueryOption
 }));
+export const clearMap = createAction(CLEAR_MAP, isclearMap => isclearMap);
 
 export const setCurrentUserLocation = createAction(SET_CURRENT_USER_LOCATION, location => location);
 export const setCommentList = createAction(SET_COMMENT_LIST, (commentList) => (commentList) );
@@ -47,6 +49,7 @@ const initialState = {
         searchQueryOnMap: false,
         searchQueryOption: '',
     },
+    isClearMap: false,
     currentUserLocaction: {
         lat: '',
         lng: '',
@@ -118,6 +121,10 @@ const map = handleActions(
         [SET_ROAD_TYPE_ON_MAP] : (state, {payload: roadType}) => ({
             ...state,
             roadType: roadType
+        }),
+        [CLEAR_MAP] : (state, {payload: isClearMap}) => ({
+           ...state,
+            isClearMap: isClearMap
         }),
     },
     initialState,

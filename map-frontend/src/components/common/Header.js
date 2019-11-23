@@ -6,7 +6,7 @@ import Button from "./Button";
 import {Navbar, Nav, Form, FormControl} from "react-bootstrap";
 import UserInfoOnMapContainer from "../../containers/map/UserInfoOnMapContainer";
 import {useDispatch, useSelector} from "react-redux";
-import {setSearchQuery} from "../../modules/map";
+import {clearMap, setSearchQuery} from "../../modules/map";
 
 
 const HeaderStyle = styled.div`
@@ -53,8 +53,9 @@ const StyledHeader = styled.div`
 
 const Header = ({user, onLogout}) => {
     const dispatch = useDispatch();
-    const {searchQueryOnMap} = useSelector(({map}) => ({
-        searchQueryOnMap: map.searchQuery.searchQueryOnMap
+    const {searchQueryOnMap, isClearMap} = useSelector(({map}) => ({
+        searchQueryOnMap: map.searchQuery.searchQueryOnMap,
+        isClearMap : map.isClearMap
     }));
 
     const [optionValue, setOptionValue] = useState('');
@@ -80,6 +81,7 @@ const Header = ({user, onLogout}) => {
     const onSubmit = useCallback(
         e => {
             e.preventDefault();
+            dispatch(clearMap(false));
             dispatch(setSearchQuery({
                 searchQuery: optionValue,
                 searchQueryType: type,

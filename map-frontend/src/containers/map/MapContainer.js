@@ -78,7 +78,7 @@ const MapContainer = () => {
         const dispatch = useDispatch();
         const {
             username, searchQueryOnMap, currentUserLocation, isAddInfo, isAddRoad, roadType,
-            searchQueryType
+            searchQueryType, isClearMap
         } = useSelector(({map, user}) => ({
             searchQueryOnMap: map.searchQuery.searchQueryOnMap,
             searchQueryType: map.searchQuery.searchQueryType,
@@ -86,7 +86,8 @@ const MapContainer = () => {
             isAddInfo: map.isAddInfo,
             isAddRoad: map.isAddRoad,
             username: user.user.username,
-            roadType: map.roadType
+            roadType: map.roadType,
+            isClearMap: map.isClearMap
         }));
 
         const [temp, setTemp] = useState(null);
@@ -320,7 +321,7 @@ const MapContainer = () => {
                                                               setRadius={setRadius} radius={radius}
                                 />}
 
-                                {searchQueryOnMap && <UserInfoOnMapContainer zoom={zoom}/>}
+                                {searchQueryOnMap && !isClearMap && <UserInfoOnMapContainer zoom={zoom}/>}
                                 {userLocOnMap && <UserMarker position={userLocOnMap} circle={-1} animation={true}/>}
                                 {fetchedRoadList && <RoadViewContainer/>}
                                 {visibleRoad &&

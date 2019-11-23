@@ -9,7 +9,6 @@ import {useSelector} from "react-redux";
 import EstimateContainer from "../../containers/map/EstimateContainer";
 import client from "../../lib/api/client";
 import ClusterMarkerContainer from "../../containers/map/ClusterMarkerContainer";
-import loading from "../../modules/loading";
 import RoadViewContainer from "../../containers/map/RoadViewContainer";
 
 const findIcon = primaryType => {
@@ -161,7 +160,6 @@ const InfoWindowItem = ({info, zoom}) => {
             setIsCloseBox(false);
             setVisible(null);
         }
-        //console.dir(isCloseBox);
     }, [updateCommentList]);
 
     const onTabPosition = useCallback(
@@ -225,7 +223,8 @@ const InfoWindowItem = ({info, zoom}) => {
                     icon={zoom > 13 ? findIcon(localInfo.primaryPositionType) : null}
                     visible={zoom <= 13 ? false : true}
                     onMouseOver={onMouseOver}
-                    onMouseOut={onMouseOver}/>
+                    onMouseOut={onMouseOver}
+                    draggable={true}/>
             {localInfo.radius !== undefined && visible &&
             <Circle center={localInfo.position} radius={localInfo.radius}/>}
             {visible && <InfoWindow position={localInfo.position} onCloseClick={onCloseClick}>

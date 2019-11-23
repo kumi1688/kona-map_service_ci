@@ -1,8 +1,10 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import reactCSS from 'reactcss'
-import {SketchPicker} from 'react-color'
+import {Button} from 'react-bootstrap';
 import styled from "styled-components";
 import {Row} from "react-bootstrap";
+import {useDispatch, useSelector} from "react-redux";
+import {clearMap} from "../../modules/map";
 
 const StyledColor = styled.div`
     padding-top: 5px;
@@ -79,8 +81,21 @@ const RemarkList = () => {
     )
 };
 const RoadRemarkContainer = () => {
+    const {isClearMap} = useSelector(({map}) => ({
+       isClearMap : map.isClearMap,
+    }));
+    const dispatch = useDispatch();
+
+    const onClick = useCallback(
+        e => {
+            if(!isClearMap) dispatch(clearMap(true));
+            else dispatch(clearMap(false));
+        }, [isClearMap, dispatch]);
+
     return (
         <StyledRoadRemarkWrapper>
+            <Button onClick={onClick}>지도초기화</Button>
+            <hr/>
             <RemarkList/>
         </StyledRoadRemarkWrapper>
     )

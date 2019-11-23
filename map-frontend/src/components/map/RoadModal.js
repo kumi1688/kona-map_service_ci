@@ -3,6 +3,9 @@ import {Modal, ModalBody, ModalTitle, ModalFooter, Button, Form, ListGroup, Row,
 import {useSelector} from "react-redux";
 import client from "../../lib/api/client";
 import ImageUpload from "../common/ImageUpload";
+import AlertTemplate from "react-alert-template-basic";
+import AlertComponent from "../common/AlertComponent";
+import MapTagBox from "./MapTagBox";
 
 
 const selectOptions = {
@@ -95,6 +98,7 @@ const infoReducer = (state, action) => {
 
 const RoadModal = ( {roadPath}) => {
     const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
+    const [visibleAlert, setVisibleAlert] = useState(false);
     const [show, setShow] = useState(true);
     const {username} = useSelector(({user}) => ({
         username: user.user.username,
@@ -143,6 +147,7 @@ const RoadModal = ( {roadPath}) => {
                 }));
             };
             saveData();
+            setVisibleAlert(true);
             handleShow();
         }, [localInfo]);
 
@@ -157,6 +162,7 @@ const RoadModal = ( {roadPath}) => {
     useEffect(() => {
         console.dir(localInfo);
     }, [localInfo]);
+
 
     return (
         <>
@@ -211,6 +217,7 @@ const RoadModal = ( {roadPath}) => {
                                 </Form.Group>
                             </Form.Group>
                         </Form.Group>
+                        <MapTagBox updateTags={updateTags}/>
                     </Form>
                 </ModalBody>
                 <ModalFooter>
@@ -218,6 +225,7 @@ const RoadModal = ( {roadPath}) => {
                     <Button color="primary" onClick={onSubmit}>등록</Button>
                 </ModalFooter>
             </Modal>
+            {visibleAlert && <AlertComponent text="경로가 등록되었습니다"/>}
         </>
     );
 };

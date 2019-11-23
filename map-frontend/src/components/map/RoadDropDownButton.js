@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {Button, Dropdown, DropdownButton, Form} from "react-bootstrap";
+import {Button, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
 import styled from "styled-components";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import {useDispatch} from "react-redux";
@@ -20,13 +20,20 @@ const StyledDropDown = styled.div`
 
 const getTitle = (select) => {
     switch (select) {
-        case 'mainRoad' : return '큰 도로';
-        case 'smallRoad' : return '작은 도로';
-        case 'travelRoad' : return '여행로';
-        case 'foodRoad' : return '음식 추천로';
-        case 'sightSeeingRoad' : return '관광로';
-        default : return '큰 도로';
-    };
+        case 'mainRoad' :
+            return '큰 도로';
+        case 'smallRoad' :
+            return '작은 도로';
+        case 'travelRoad' :
+            return '여행로';
+        case 'foodRoad' :
+            return '음식 추천로';
+        case 'sightSeeingRoad' :
+            return '관광로';
+        default :
+            return '큰 도로';
+    }
+    ;
 };
 
 const RoadDropDownButton = ({addRoadInfo}) => {
@@ -40,16 +47,18 @@ const RoadDropDownButton = ({addRoadInfo}) => {
 
     return (
         <StyledDropDown>
-            <Button variant="primary" onClick={addRoadInfo}>경로 저장하기</Button>
-            <Dropdown onSelect={onSelect}>
-                <DropdownButton id="dropdown-basic-button" title={getTitle(select)}>
-                    <Dropdown.Item eventKey="mainRoad">큰 도로</Dropdown.Item>
-                    <Dropdown.Item eventKey="smallRoad">작은 도로</Dropdown.Item>
-                    <Dropdown.Item eventKey="travelRoad">여행로</Dropdown.Item>
-                    <Dropdown.Item eventKey="foodRoad">음식 추천로</Dropdown.Item>
-                    <Dropdown.Item eventKey="sightSeeingRoad">관광로</Dropdown.Item>
-                </DropdownButton>
-            </Dropdown>
+            <Row>
+                <Dropdown onSelect={onSelect}>
+                    <DropdownButton id="dropdown-basic-button" title={getTitle(select)}>
+                        <Dropdown.Item eventKey="mainRoad">큰 도로</Dropdown.Item>
+                        <Dropdown.Item eventKey="smallRoad">작은 도로</Dropdown.Item>
+                        <Dropdown.Item eventKey="travelRoad">여행로</Dropdown.Item>
+                        <Dropdown.Item eventKey="foodRoad">음식 추천로</Dropdown.Item>
+                        <Dropdown.Item eventKey="sightSeeingRoad">관광로</Dropdown.Item>
+                    </DropdownButton>
+                </Dropdown>
+                <Button variant="outline-primary" onClick={addRoadInfo}>경로 저장하기</Button>
+            </Row>
         </StyledDropDown>
     )
 };
