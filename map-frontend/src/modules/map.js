@@ -18,8 +18,9 @@ export const list = createAction(LIST, info => info);
 export const post = createAction(POST_USER_PLACE, ({name, description, tags, position, detailedPosition}) => ({
     name, description, tags, position, detailedPosition,
 }));
-export const setSearchQuery = createAction(SET_SEARCH_QUERY, ({searchQuery, searchQueryType, searchQueryOnMap}) => ({
-    searchQuery, searchQueryType, searchQueryOnMap
+export const setSearchQuery = createAction(SET_SEARCH_QUERY,
+    ({searchQuery, searchQueryType, searchQueryOnMap, searchQueryOption}) => ({
+    searchQuery, searchQueryType, searchQueryOnMap, searchQueryOption
 }));
 
 export const setCurrentUserLocation = createAction(SET_CURRENT_USER_LOCATION, location => location);
@@ -41,9 +42,10 @@ export function* mapSaga() {
 
 const initialState = {
     searchQuery: {
-        searchQueryType: '',
+        searchQueryType: 'place',
         searchQuery: '',
         searchQueryOnMap: false,
+        searchQueryOption: '',
     },
     currentUserLocaction: {
         lat: '',

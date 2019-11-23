@@ -57,28 +57,36 @@ const Header = ({user, onLogout}) => {
         searchQueryOnMap: map.searchQuery.searchQueryOnMap
     }));
 
-    const [value, setValue] = useState('');
+    const [optionValue, setOptionValue] = useState('');
+    const [type, setType] = useState('place');
     const [option, setOption] = useState('name');
 
     const onChangeSearchQuery = useCallback(
         e => {
-            setValue(e.target.value);
-        }, [value]);
+            setOptionValue(e.target.value);
+        }, [optionValue]);
 
     const onChangeSearchOption = useCallback(
         e => {
             setOption(e.target.value);
         }, [option]);
 
+    const onChangeSearchQueryType = useCallback(
+        e => {
+            console.dir(e.target.value);
+            setType(e.target.value);
+        }, [type]);
+
     const onSubmit = useCallback(
         e => {
             e.preventDefault();
             dispatch(setSearchQuery({
-                searchQuery: value,
-                searchQueryType: option,
-                searchQueryOnMap: true
+                searchQuery: optionValue,
+                searchQueryType: type,
+                searchQueryOnMap: true,
+                searchQueryOption: option,
                 }));
-        }, [dispatch, value, option]);
+        }, [dispatch, optionValue, option, type]);
 
     return (
         <StyledHeader>
@@ -92,12 +100,15 @@ const Header = ({user, onLogout}) => {
                 <Form inline>
                     <Form.Group>
                         <FormControl type="text" placeholder="Search" className="mr-sm-2"
-                        value={value} onChange={onChangeSearchQuery}/>
+                        value={optionValue} onChange={onChangeSearchQuery}/>
+                        <Form.Control as="select" value={type} onChange={onChangeSearchQueryType}>
+                            <option value="place">위치 검색</option>
+                            <option value="road">경로 검색</option>
+                        </Form.Control>
                         <Form.Control as="select" value={option} onChange={onChangeSearchOption}>
                             <option value="name">이름</option>
                             <option value="tag">태그</option>
                             <option value="description">설명</option>
-                            <option value="position">위치</option>
                         </Form.Control>
                         <Button variant="outline-info" size="lg"
                         onSubmit={onSubmit} onClick={onSubmit}>검색</Button>

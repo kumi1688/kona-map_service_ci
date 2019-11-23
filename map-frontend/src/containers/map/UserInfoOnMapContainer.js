@@ -9,7 +9,8 @@ import ClusterMarkerContainer from "./ClusterMarkerContainer";
 
 const UserInfoOnMapContainer = ({zoom}) => {
     const [loading, setLoading]= useState(false);
-    const [localInfo, setLocalInfo] = useState(null);
+    const [placeInfo, setPlaceInfo] = useState(null);
+    const [roadInfo, setRoadInfo] = useState(null);
     const [visible, setVisible] = useState(null);
     const dispatch = useDispatch();
     const { commentList } = useSelector(({map, loading}) => ({
@@ -25,8 +26,10 @@ const UserInfoOnMapContainer = ({zoom}) => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await client.get('/api/map');
-                setLocalInfo(response.data);
+                const response = await client.get('/api/map/userPlace');
+                const response2 = await client.get('/api/map/userRoad');
+                setPlaceInfo(response.data);
+                setRoadInfo(response2.data);
             } catch (e) {
                 console.dir(e);
             }
@@ -40,16 +43,16 @@ const UserInfoOnMapContainer = ({zoom}) => {
     }, [commentList]);
 
     useEffect(() => {
-        console.dir(localInfo);
-        if(localInfo) dispatch(setCommentList(localInfo));
-    }, [localInfo]);
+        console.dir(placeInfo);
+        if(placeInfo) dispatch(setCommentList(placeInfo));
+    }, [placeInfo]);
 
     if (loading) return <h2>로딩중...</h2>;
-    if (!localInfo) return null;
+    if (!placeInfo) return null;
 
     return (
         <>
-            <InfoWindowList info={localInfo} zoom={zoom}/>
+            <InfoWindowList placeInfo={placeInfo} roadInfo={roadInfo} zoom={zoom}/>
         </>
     );
 };

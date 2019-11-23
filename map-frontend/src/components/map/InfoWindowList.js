@@ -10,6 +10,7 @@ import EstimateContainer from "../../containers/map/EstimateContainer";
 import client from "../../lib/api/client";
 import ClusterMarkerContainer from "../../containers/map/ClusterMarkerContainer";
 import loading from "../../modules/loading";
+import RoadViewContainer from "../../containers/map/RoadViewContainer";
 
 const findIcon = primaryType => {
     let matchedIcon;
@@ -65,32 +66,52 @@ const adjustMouseOverPosition = (position, zoom) => {
     return customPosition;
 };
 
-const InfoWindowList = ({info, zoom}) => {
-    const {searchQuery, searchQueryType} = useSelector(({map}) => ({
+const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
+    const {searchQuery, searchQueryType, searchQueryOption} = useSelector(({map}) => ({
         searchQueryType: map.searchQuery.searchQueryType,
         searchQuery: map.searchQuery.searchQuery,
+        searchQueryOption: map.searchQuery.searchQueryOption
     }));
     const [filteredData, setFilteredData] = useState(null);
 
     useEffect(() => {
         //console.dir(info);
-        switch (searchQueryType) {
-            case "name":
-                setFilteredData(info.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
-                break;
-            case "tag":
-                setFilteredData(info.filter(inf => (inf.tags.indexOf(searchQuery)) !== -1 ? inf : null));
-                break;
-            case "description":
-                setFilteredData(info.filter(inf => (inf.description.indexOf(searchQuery)) !== -1 ? inf : null));
-                break;
-            case "position":
-                setFilteredData(info.filter(inf => (inf.detailedPosition.indexOf(searchQuery)) !== -1 ? inf : null));
-                break;
-            default:
-                setFilteredData(info.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+        if (searchQueryType === 'place') {
+            switch (searchQueryOption) {
+                case "name":
+                    setFilteredData(placeInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "tag":
+                    setFilteredData(placeInfo.filter(inf => (inf.tags.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "description":
+                    setFilteredData(placeInfo.filter(inf => (inf.description.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "position":
+                    setFilteredData(placeInfo.filter(inf => (inf.detailedPosition.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                default:
+                    setFilteredData(placeInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+            }
+        } else { // 경로 검색
+            switch (searchQueryOption) {
+                case "name":
+                    setFilteredData(roadInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "tag":
+                    setFilteredData(roadInfo.filter(inf => (inf.tags.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "description":
+                    setFilteredData(roadInfo.filter(inf => (inf.description.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "position":
+                    setFilteredData(roadInfo.filter(inf => (inf.detailedPosition.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                default:
+                    setFilteredData(roadInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+            }
         }
-    }, [searchQuery, searchQueryType]);
+    }, [searchQuery, searchQueryType, searchQueryOption]);
 
     useEffect(() => {
         console.dir(filteredData);
@@ -101,7 +122,8 @@ const InfoWindowList = ({info, zoom}) => {
     return (
         <>
             <ClusterMarkerContainer zoom={zoom} info={filteredData}/>
-            {filteredData.map((inf) => (<InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}
+            {searchQueryType === 'road' ? <RoadViewContainer roadList={filteredData}/> :
+            filteredData.map((inf) => (<InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}
         </>
     );
 };
@@ -165,14 +187,6 @@ const InfoWindowItem = ({info, zoom}) => {
             if (!visibleComment) setVisibleComment(true);
             else setVisibleComment(false);
         }, [visibleComment]);
-
-    const onKeyPress = useCallback(
-        (e) => {
-            console.log('키 눌림');
-            if (e.key === 'Esc') {
-                console.log('esc 눌림');
-            }
-        }, []);
 
     const updateComment = useCallback(
         e => {

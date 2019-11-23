@@ -4,8 +4,8 @@ import * as mapCtrl from './map.ctrl';
 const map = new Router();
 
 map.get('/username/:username', mapCtrl.findUserPlaceByUserName);
-map.get('/:id', mapCtrl.findUserPlace);
-map.get('/', mapCtrl.listUserPlace);
+map.get('/userPlace/:id', mapCtrl.findUserPlace);
+map.get('/userPlace', mapCtrl.listUserPlace);
 map.get('/find/:primary', mapCtrl.findUserPlaceByType);
 map.post('/', mapCtrl.makeUserPlace);
 map.post('/userRoad', mapCtrl.makeUserRoad);

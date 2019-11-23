@@ -28,6 +28,7 @@ import RoadModal from "../../components/map/RoadModal";
 import RoadViewContainer from "./RoadViewContainer";
 import RoadDropDownButton from "../../components/map/RoadDropDownButton";
 import {polylineOptions} from "../../components/map/RoadColor";
+import RoadRemarkContainer from "../../components/map/RoadRemarkContainer";
 
 const StyledMapContainerWrapper = styled.div`
     position: fixed;
@@ -76,9 +77,11 @@ const getPolyLineOption = (type) => {
 const MapContainer = () => {
         const dispatch = useDispatch();
         const {
-            username, searchQueryOnMap, currentUserLocation, isAddInfo, isAddRoad, roadType
+            username, searchQueryOnMap, currentUserLocation, isAddInfo, isAddRoad, roadType,
+            searchQueryType
         } = useSelector(({map, user}) => ({
             searchQueryOnMap: map.searchQuery.searchQueryOnMap,
+            searchQueryType: map.searchQuery.searchQueryType,
             currentUserLocation: map.currentUserLocaction,
             isAddInfo: map.isAddInfo,
             isAddRoad: map.isAddRoad,
@@ -275,6 +278,7 @@ const MapContainer = () => {
                 {circle && <MapCircleInfo setRadius={setRadius} onKeyPress={onKeyPressForRadius}
                                           radius={radius}/>}
                 {isAddRoad && <RoadDropDownButton addRoadInfo={addRoadInfo}/>}
+                {searchQueryOnMap && searchQueryType === 'road' && <RoadRemarkContainer/>}
 
                 <StyledMapContainerWrapper>
                     <Col>

@@ -65,15 +65,14 @@ const RoadViewListItem = ({road}) => {
     )
 };
 
-const RoadViewContainer = () => {
+const RoadViewContainer = ({roadList}) => {
     const [loading, setLoading] = useState(false);
-    const [localRoad, setLocalRoad] = useState(null);
 
     const {username} = useSelector(({user}) => ({
         username: user.user.username,
     }));
 
-
+    /*
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -88,17 +87,18 @@ const RoadViewContainer = () => {
         };
         fetchData();
     }, []);
+    */
 
     useEffect(() => {
-        console.dir(localRoad);
-    });
+        console.dir(roadList);
+    }, [roadList]);
 
     if (loading) return <h2>로딩중...</h2>;
-    if (!localRoad) return null;
+    if (!roadList) return null;
 
     return (
         <>
-            <RoadViewList roadList={localRoad}/>
+            <RoadViewList roadList={roadList}/>
         </>
     );
 
