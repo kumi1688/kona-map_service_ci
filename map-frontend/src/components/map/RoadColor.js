@@ -5,8 +5,6 @@ const mainRoad = {
     fillColor: '#0091ff',
     fillOpacity: 0.35,
     clickable: true,
-    draggable: true,
-    editable: true,
     visible: true,
     radius: 30000,
     zIndex: 1,

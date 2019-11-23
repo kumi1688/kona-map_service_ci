@@ -9,6 +9,10 @@ const RoadControlContainer = ({roadList, map, uploadRoadList}) => {
         console.dir(uploadRoadList);
     }, [uploadRoadList]);
 
+    useEffect(() =>{
+        console.dir(roadList);
+    }, [roadList]);
+
     if(!roadList) return null;
 
 

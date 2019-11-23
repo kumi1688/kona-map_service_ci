@@ -93,9 +93,7 @@ const infoReducer = (state, action) => {
     }
 };
 
-const RoadModal = ( {roadInfo}) => {
-    let temp = [];
-    let [localRoad, setlocalRoad] = useState(null);
+const RoadModal = ( {roadPath}) => {
     const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
     const [show, setShow] = useState(true);
     const {username} = useSelector(({user}) => ({
@@ -108,10 +106,6 @@ const RoadModal = ( {roadInfo}) => {
     const updateDetailedDescription = e => setLocalInfo({
         type: 'updateDetailedPosition',
         detailedPosition: e.target.value
-    });
-    const updateGridPosition = position => setLocalInfo({
-        type: 'updateGridPosition',
-        gridPosition: position
     });
     const updateTags = newtag => setLocalInfo({type: 'updateTags', tags: newtag});
     const updatePrimaryPositionType = e => {
@@ -152,6 +146,10 @@ const RoadModal = ( {roadInfo}) => {
             handleShow();
         }, [localInfo]);
 
+    useEffect(() =>{
+        updateRoadInfo(roadPath);
+    }, []);
+
     useEffect(() => {
         updateUserName(username);
     }, [username]);
@@ -159,22 +157,6 @@ const RoadModal = ( {roadInfo}) => {
     useEffect(() => {
         console.dir(localInfo);
     }, [localInfo]);
-
-    let count = 0;
-    useEffect(() => {
-        //roadInfo.map(road => console.dir(road.De.bounds));
-        /*
-        [1,2,3,4,5,6].forEach(function(element){
-            console.dir(element);
-        });
-         */
-        roadInfo.forEach(function(road){
-            temp = temp.concat({lat: road.De.bounds.fa, lng: road.De.bounds.X});
-            temp = temp.concat({lat: road.De.bounds.aa, lng: road.De.bounds.ea});
-        });
-        console.dir(temp);
-        updateRoadInfo(temp);
-    }, [roadInfo]);
 
     return (
         <>
@@ -229,7 +211,6 @@ const RoadModal = ( {roadInfo}) => {
                                 </Form.Group>
                             </Form.Group>
                         </Form.Group>
-
                     </Form>
                 </ModalBody>
                 <ModalFooter>

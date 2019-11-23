@@ -32,8 +32,14 @@ const selectPolyLineOption = (road) => {
 };
 
 const getRoadInfoWindowPosition = (road) => {
-    return {lat: (road.roadInfo[0].lat + road.roadInfo[1].lat)/2,
-            lng: (road.roadInfo[0].lng + road.roadInfo[1].lng)/2}
+    let sum_lat, sum_lng;
+    sum_lat = sum_lng = 0;
+    road.roadInfo.forEach(function(element){
+       sum_lat += element.lat;
+       sum_lng += element.lng;
+    });
+
+    return {lat : sum_lat / road.roadInfo.length, lng : sum_lng / road.roadInfo.length };
 };
 
 const RoadViewList = ({roadList}) => {
@@ -48,15 +54,10 @@ const RoadViewListItem = ({road}) => {
             else setVisibleOnMouseOver(false);
         }, [visibleOnMouseOver]);
 
-    useEffect(() =>{
-        console.dir(road);
-    },[road]);
-
-
     return (
         <>
             {visibleOnMouseOver && <InfoWindow position={getRoadInfoWindowPosition(road)}>
-                <h2>hello</h2>
+                <h2>{road.name}</h2>
             </InfoWindow>}
             <Polyline path={road.roadInfo} options={selectPolyLineOption(road)} onMouseOver={onMouseOver}
                       onMouseOut={onMouseOver}/>

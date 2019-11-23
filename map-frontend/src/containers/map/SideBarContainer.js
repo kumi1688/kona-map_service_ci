@@ -21,7 +21,7 @@ import UserCommentShowPage from "../../pages/UserCommentShowPage";
 import UserPostShowPage from "../../pages/UserPostShowPage";
 import GeoPage from "../../pages/GeoPage";
 import {useDispatch, useSelector} from "react-redux";
-import {setAddInfoOnMap} from "../../modules/map";
+import {setAddInfoOnMap, setAddRoadOnMap} from "../../modules/map";
 import LoginPage from "../../pages/LoginPage";
 import BoardComponent from "../common/BoardComponent";
 
@@ -31,6 +31,7 @@ const StyledSideBar = styled.div`
 
 const initialState = {
     addInfoOnMap: false,
+    addRoadOnMap: false,
 };
 
 const infoReducer = (state, action) => {
@@ -40,6 +41,9 @@ const infoReducer = (state, action) => {
         }
         case 'addInfoOnMap': {
             return {...state, addInfoOnMap: action.addInfoOnMap}
+        }
+        case 'addRoadOnMap': {
+            return {...state, addRoadOnMap: action.addRoadOnMap}
         }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
@@ -52,10 +56,14 @@ const SideBarContainter = ({history}) => {
     const dispatch = useDispatch();
 
     const setAddInfo = value => setLocalInfo({type : 'addInfoOnMap', addInfoOnMap: value});
+    const setAddRoad = value => setLocalInfo({type : 'addRoadOnMap', addRoadOnMap: value});
 
     useEffect(() =>{
         dispatch(setAddInfoOnMap(localInfo.addInfoOnMap));
     }, [localInfo.addInfoOnMap]);
+    useEffect(()=>{
+        dispatch(setAddRoadOnMap(localInfo.addRoadOnMap))
+    }, [localInfo.addRoadOnMap]);
 
     return (
         <StyledSideBar>
@@ -80,6 +88,9 @@ const SideBarContainter = ({history}) => {
                                 switch(to){
                                     case "/addInfo/point":
                                         localInfo.addInfoOnMap ? setAddInfo(false) : setAddInfo(true); break;
+                                    case "/addInfo/direction":
+                                        localInfo.addRoadOnMap ? setAddRoad(false) : setAddRoad(true); break;
+
                                 }
                             }
                         }}

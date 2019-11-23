@@ -22,34 +22,28 @@ import UserPlaceContainer from "./UserPlaceContainer";
 import {useSelector, useDispatch} from "react-redux";
 import RectangleContainer from "./RectangleContainer";
 import UserInfoOnMapContainer from "./UserInfoOnMapContainer";
-import {GiSoccerBall} from 'react-icons/gi';
-import ClusterMarkerContainer from "./ClusterMarkerContainer";
-import AlertComponent from "../../components/common/AlertComponent";
-import {setAddInfoOnMap} from "../../modules/map";
 import styled from "styled-components";
 import RoadControlContainer from "./RoadControlContainer";
-import MarkerModal from "../../components/common/MarkerModal";
 import RoadModal from "../../components/map/RoadModal";
 import RoadViewContainer from "./RoadViewContainer";
+import RoadDropDownButton from "../../components/map/RoadDropDownButton";
+import {polylineOptions} from "../../components/map/RoadColor";
 
 const StyledMapContainerWrapper = styled.div`
     position: fixed;
 `;
 
-const polylineOptions = {
-    strokeColor: '#FF0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 10,
-    fillColor: '#FF0000',
-    fillOpacity: 0.35,
-    clickable: true,
-    draggable: true,
-    editable: true,
-    visible: true,
-    radius: 30000,
-    zIndex: 1,
-    geodesic: true
-};
+const StyledDropDownWrapper = styled.div`
+    z-index : 10;
+    position: fixed;
+    background-color : white;
+    right: 0;
+    margin : 40px 20px 40px 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+`;
 
 const circleOptions = {
     fillColor: '#ffff00',
@@ -60,16 +54,39 @@ const circleOptions = {
     zIndex: 1
 };
 
+const getPolyLineOption = (type) => {
+    switch (type) {
+        case 'mainRoad' :
+            return polylineOptions.mainRoad;
+        case 'smallRoad' :
+            return polylineOptions.smallRoad;
+        case 'travelRoad' :
+            return polylineOptions.travelRoad;
+        case 'foodRoad' :
+            return polylineOptions.foodRoad;
+        case 'sightSeeingRoad' :
+            return polylineOptions.sightSeeingRoad;
+        default :
+            return polylineOptions.mainRoad;
+    }
+    ;
+};
+
 
 const MapContainer = () => {
         const dispatch = useDispatch();
-        const {username, searchQueryOnMap, currentUserLocation, isAddInfo} = useSelector(({map, user}) => ({
+        const {
+            username, searchQueryOnMap, currentUserLocation, isAddInfo, isAddRoad, roadType
+        } = useSelector(({map, user}) => ({
             searchQueryOnMap: map.searchQuery.searchQueryOnMap,
             currentUserLocation: map.currentUserLocaction,
             isAddInfo: map.isAddInfo,
+            isAddRoad: map.isAddRoad,
             username: user.user.username,
+            roadType: map.roadType
         }));
 
+        const [temp, setTemp] = useState(null);
         const [fetchedRoadList, setFetchedRoadList] = useState(null);
         const [uploadRoadList, setUploadRoadList] = useState([]);
         const [roadList, setRoadList] = useState([]);
@@ -93,6 +110,7 @@ const MapContainer = () => {
         const initialPosition = {lat: 37.284315, lng: 127.044504};
 
         const onMapClick = useCallback(e => {
+            console.dir('클릭');
             if (circle || insertInfoBox) {
                 addMarker(e);
             }
@@ -126,10 +144,10 @@ const MapContainer = () => {
             }, [radius]);
 
         const onRightClick = useCallback(
-            e=>{
-            console.dir(e);
-            setDrawingMode('');
-        }, [drawingMode]);
+            e => {
+                console.dir(e);
+                setDrawingMode('');
+            }, [drawingMode]);
 
         useEffect(() => {
             if (!userLocOnMap) setUserLocOnMap(currentUserLocation);
@@ -146,6 +164,10 @@ const MapContainer = () => {
         }, [zoom]);
 
         useEffect(() => {
+            console.dir(isAddRoad);
+        }, [isAddRoad]);
+
+        useEffect(() => {
             if (!currentUserLocation) setUserLocOnMap(true);
         }, [currentUserLocation]);
 
@@ -157,17 +179,17 @@ const MapContainer = () => {
             }, [leftUpperPoint, rightDownPoint]
         );
 
-        const getPolyLineObject = useCallback( e => {
+        const getPolyLineObject = useCallback(e => {
             setPolyLineObject(e);
         }, [polyLineObject]);
 
-        const RemovePolyLine = useCallback(e =>{
+        const RemovePolyLine = useCallback(e => {
             const removePolyLine = () => {
-                try{
-                    if(roadList) {
-                        roadList.map((road, index) => ( road.setMap(null)));
+                try {
+                    if (roadList) {
+                        roadList.map((road, index) => (road.setMap(null)));
                     }
-                } catch(e){
+                } catch (e) {
                     console.dir(e);
                 }
             };
@@ -198,8 +220,18 @@ const MapContainer = () => {
 
         const onPolylineComplete = useCallback(
             e => {
-            setRoadList(roadList.concat(e));
-        }, [drawingMode]);
+                console.dir(e.getPath());
+                let arr = [];
+                e.getPath().g.forEach(function (element) {
+                    arr = arr.concat({lat: element.lat(), lng: element.lng()});
+                });
+                setTemp(arr);
+                setRoadList(roadList.concat(arr));
+            }, [drawingMode]);
+
+        useEffect(() => {
+            console.dir(temp);
+        }, [temp]);
 
         useEffect(() => {
             console.dir(roadList);
@@ -207,33 +239,33 @@ const MapContainer = () => {
 
         const onVisibleToggle = useCallback(
             () => {
-                if(!visibleRoad) setVisibleRoad(true);
+                if (!visibleRoad) setVisibleRoad(true);
                 else setVisibleRoad(false);
-            },[visibleRoad]);
+            }, [visibleRoad]);
 
         const addRoadInfo = useCallback(
             () => {
-                if(!isAddRoadInfo) setIsAddRoadInfo(true);
+                if (!isAddRoadInfo) setIsAddRoadInfo(true);
                 else setIsAddRoadInfo(false);
             }, [roadList]);
 
-        const saveRoadList = useCallback(() =>{
+        const saveRoadList = useCallback(() => {
             console.dir(roadList);
-            if(roadList) {
+            if (roadList) {
                 setUploadRoadList(uploadRoadList.concat({
-                    roadInfo : roadList,
+                    roadInfo: roadList,
                     username: username,
                 }));
             }
-        },[roadList, uploadRoadList]);
+        }, [roadList, uploadRoadList]);
 
-        useEffect(() =>{
+        useEffect(() => {
             console.dir(uploadRoadList);
         }, [uploadRoadList]);
 
         const fetchRoad = useCallback(
             () => {
-                if(!fetchedRoadList) setFetchedRoadList(true);
+                if (!fetchedRoadList) setFetchedRoadList(true);
                 else setFetchedRoadList(false);
             }, [fetchedRoadList]);
 
@@ -242,6 +274,8 @@ const MapContainer = () => {
             <Row>
                 {circle && <MapCircleInfo setRadius={setRadius} onKeyPress={onKeyPressForRadius}
                                           radius={radius}/>}
+                {isAddRoad && <RoadDropDownButton addRoadInfo={addRoadInfo}/>}
+
                 <StyledMapContainerWrapper>
                     <Col>
                         <LoadScriptNext
@@ -267,16 +301,14 @@ const MapContainer = () => {
                                     gestureHandling: "cooperative",
                                 }}
                             >
-
                                 {!drawingMode && <DrawingManager onRectangleComplete={onCompleteRectangleInDrawingManager}
                                                                  drawingMode={drawingMode}
                                                                  options={{
-                                                                     polylineOptions: polylineOptions,
+                                                                     polylineOptions: getPolyLineOption(roadType),
                                                                      circleOptions: circleOptions
                                                                  }}
                                                                  onPolylineComplete={onPolylineComplete}
                                                                  onLoad={getPolyLineObject}
-
                                 />}
                                 {circle && <MapCircle position={userPosition} radius={radius}/>}
                                 {insertInfoBox && <UserMarker position={userPosition} circle={circle}
@@ -287,13 +319,13 @@ const MapContainer = () => {
                                 {searchQueryOnMap && <UserInfoOnMapContainer zoom={zoom}/>}
                                 {userLocOnMap && <UserMarker position={userLocOnMap} circle={-1} animation={true}/>}
                                 {fetchedRoadList && <RoadViewContainer/>}
-                                {visibleRoad && <RoadControlContainer uploadRoadList={uploadRoadList} roadList={roadList} map={map}/>}
+                                {visibleRoad &&
+                                <RoadControlContainer uploadRoadList={uploadRoadList} roadList={roadList} map={map}/>}
                             </GoogleMap>
                         </LoadScriptNext>
-                        {isAddRoadInfo && <RoadModal roadInfo={roadList}/>}
+                        {isAddRoadInfo && <RoadModal roadPath={roadList}/>}
                         <Button variant="outline-info" onClick={RemovePolyLine}>경로 삭제하기</Button>
                         <Button variant="outline-info" onClick={onVisibleToggle}>경로 보여주기</Button>
-                        <Button variant="outline-info" onClick={addRoadInfo}>경로 저장하기</Button>
                         <Button variant="outline-info" onClick={onUserPlaceListClick}>유저 위치(리스트)</Button>
                         <Button variant="outline-info" onClick={fetchRoad}>경로 가져오기</Button>
                     </Col>

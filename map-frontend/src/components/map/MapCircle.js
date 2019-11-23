@@ -14,7 +14,7 @@ const StyledCircleWrapper = styled.div`
     padding-right: 20px;
     padding-top: 20px;
     padding-bottom: 20px;
-   
+    border : dashed black;
 `;
 
 export const MapCircleInfo = ({onKeyPress, setRadius, radius}) => {
