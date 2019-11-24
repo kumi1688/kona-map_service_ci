@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import InputRange from 'react-input-range';
 import index from 'react-input-range/lib/css/index.css'
 

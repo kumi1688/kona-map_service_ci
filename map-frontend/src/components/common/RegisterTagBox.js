@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {Row, Col, Button, InputGroup, FormControl, Alert} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 

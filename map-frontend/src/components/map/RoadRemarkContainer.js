@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback} from 'react';
 import reactCSS from 'reactcss'
 import {Button} from 'react-bootstrap';
 import styled from "styled-components";

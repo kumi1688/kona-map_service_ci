@@ -1,7 +1,6 @@
 import React, {useCallback, useState} from 'react';
-import {Button, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
+import {Button, Dropdown, DropdownButton, Row} from "react-bootstrap";
 import styled from "styled-components";
-import DropdownMenu from "react-bootstrap/DropdownMenu";
 import {useDispatch} from "react-redux";
 import {setRoadTypeOnMap} from "../../modules/map";
 

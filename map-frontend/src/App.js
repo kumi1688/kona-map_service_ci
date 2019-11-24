@@ -21,7 +21,6 @@ const App = () => {
         <>
             <HeaderContainer/>
             <SideBarContainter/>
-            {/*
             <>
                 <Helmet>
                     <title>KONA</title>
@@ -30,12 +29,12 @@ const App = () => {
                 <Route component={RegisterPage} path="/register"/>
                 <Route component={PostPage} path="/@:username/:postId"/>
                 <Route component={MapPage} path={["/map"]}/>
-                <Route component={UserPlacePage} path={"/userplace"}/>
+                <Route component={UserPlacePage} path={"/userPlace"}/>
                 <Route component={GeoPage} path={["/geo", "/"]} exact/>
                 <Route component={DirectionPage} path={"/direction"}/>
                 <Route component={OverlayPage} path={"/overlay"}/>
             </>
-            */}
+
         </>
     );
 };

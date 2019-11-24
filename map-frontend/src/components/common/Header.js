@@ -8,45 +8,6 @@ import UserInfoOnMapContainer from "../../containers/map/UserInfoOnMapContainer"
 import {useDispatch, useSelector} from "react-redux";
 import {clearMap, setSearchQuery} from "../../modules/map";
 
-
-const HeaderStyle = styled.div`
-    padding-right: 10rem;
-`;
-const UserInfo = styled.div`
-    font-weight: 800;
-    margin-right: 1rem;
-    
-`;
-
-const HeaderBlock = styled.div`
-      position: fixed;
-      z-index : 30;
-      width: 100%;
-      background: white;
-      box-shadow: 0px 2px 4px rgba(0,0,0,0.08);
-    `;
-
-const Wrapper = styled(Responsive)`
-    height: 4rem;
-    display: flex;
-    z-index : 30;
-    align-items: center;
-    justify-content : space-between;
-    .logo{
-    font-size: 1.125rem;
-    font-weight: 800;
-    letter-spacing: 2px;
-    }
-    .right{
-    display:flex;
-    align-items: center;
-    }
-`;
-
-const Spacer = styled.div`
-height: 4rem;
-`;
-
 const StyledHeader = styled.div`
     padding-left: 60px;
 `;

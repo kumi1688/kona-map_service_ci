@@ -1,10 +1,8 @@
 import React, {useCallback, useEffect, useReducer, useState} from 'react';
 import {Modal, ModalBody, ModalTitle, ModalFooter, Button, Form, ListGroup, Row, Col} from "react-bootstrap";
-import {MapCircleInfo} from "../map/MapCircle";
 import ImageUpload from "./ImageUpload";
 import MapTagBox from "../map/MapTagBox";
 import client from "../../lib/api/client";
-import AlertComponent from "./AlertComponent";
 import {useSelector} from "react-redux";
 
 

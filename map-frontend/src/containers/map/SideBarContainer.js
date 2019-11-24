@@ -2,15 +2,14 @@ import React, {useEffect, useReducer} from 'react';
 import MapPage from "../../pages/MapPage";
 import UserInfoPage from "../../pages/UserInfoPage";
 import DirectionPage from "../../pages/DirectionPage";
-import SideNav, {Toggle, Nav, NavItem, NavIcon, NavText} from '@trendmicro/react-sidenav';
-import {Router, Route} from 'react-router-dom';
+import SideNav, { Nav, NavItem, NavIcon, NavText} from '@trendmicro/react-sidenav';
+import {Route} from 'react-router-dom';
 import {
     faHome,
     faStar,
     faMapMarker,
-    faMapPin,
     faRoad,
-    faMap, faUser, faAddressCard, faEdit, faComment, faBuilding, faStreetView
+    faUser, faAddressCard, faEdit, faComment, faBuilding, faStreetView
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 

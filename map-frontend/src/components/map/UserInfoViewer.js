@@ -1,8 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Button, Table} from 'react-bootstrap';
+import {Table} from 'react-bootstrap';
 import MapSearchBox from "./MapSearchBox";
 import {useDispatch, useSelector} from "react-redux";
-import {setSearchQuery} from "../../modules/map";
 
 const translatePrimary = (primaryPositionType) => {
     let translated;

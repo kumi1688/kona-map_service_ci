@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {Rectangle, Marker} from "@react-google-maps/api";
+import React, {useState, useCallback} from 'react';
+import {Rectangle} from "@react-google-maps/api";
 
 const RectangleContainer = ({leftUpper, rightDown }) => {
     const [localPosition, setLocalPosition] = useState(null);

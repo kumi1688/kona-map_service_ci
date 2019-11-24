@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from 'react';
 import MapTagBox from "./MapTagBox";
-import {Form, Card, Row, Col, Button} from 'react-bootstrap';
+import {Form, Col, Button} from 'react-bootstrap';
 
 const MarkerInfo = ({position}) => {
     const [input, setInput] = useState('');

@@ -1,9 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Button, Form} from "react-bootstrap";
-import SideNav, {Toggle, Nav, NavItem, NavIcon, NavText} from '@trendmicro/react-sidenav';
-import {number} from "prop-types";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {FaCalculator, FaCamera} from "react-icons/all";
 
 const CustomFormCheck = ({label, number}) => {
     const [value, setValue] = useState(null);

@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, LoadScriptNext} from '@react-google-maps/api'
+import {GoogleMap, DirectionsService, DirectionsRenderer, LoadScriptNext} from '@react-google-maps/api'
 
 const initialPosition = {lat: 37.284315, lng: 127.044504};
 
@@ -8,18 +8,7 @@ const DirectionContainer = () => {
     const [travelMode, setTravelMode] = useState('Walking');
     const [origin, setOrigin] = useState('');
     const [destination, setDestination] = useState('');
-    // state : response, travelMode, origin, destination
-    /* method :
-        this.directionsCallback = this.directionsCallback.bind(this)
-        this.checkDriving = this.checkDriving.bind(this)
-        this.checkBicycling = this.checkBicycling.bind(this)
-        this.checkTransit = this.checkTransit.bind(this)
-        this.checkWalking = this.checkWalking.bind(this)
-        this.getOrigin = this.getOrigin.bind(this)
-        this.getDestination = this.getDestination.bind(this)
-        this.onClick = this.onClick.bind(this)
-        this.onMapClick = this.onMapClick.bind(this)
-    */
+
 
     const directionsCallback = useCallback((res) => {
         if (res !== null) {

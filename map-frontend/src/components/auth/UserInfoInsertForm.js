@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 import palette from "../../lib/styles/palette";
-import {Row, ListGroupItem} from 'react-bootstrap';
+import {Row} from 'react-bootstrap';
 import RegisterTagBox from "../common/RegisterTagBox";
 
 const StyledInput = styled.input`

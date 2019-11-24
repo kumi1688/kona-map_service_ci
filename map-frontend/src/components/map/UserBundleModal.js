@@ -1,9 +1,8 @@
-import React, {useCallback, useEffect, useReducer, useState} from 'react';
-import {Modal, ModalBody, ModalTitle, ModalFooter, Button, Form, ListGroup, Row, Col} from "react-bootstrap";
+import React, {useCallback, useReducer, useState} from 'react';
+import {Modal, ModalBody, ModalTitle, ModalFooter, Button, Form, Row, Col} from "react-bootstrap";
 import {useSelector} from "react-redux";
 import client from "../../lib/api/client";
 import ImageUpload from "../common/ImageUpload";
-import AlertTemplate from "react-alert-template-basic";
 import AlertComponent from "../common/AlertComponent";
 import MapTagBox from "./MapTagBox";
 

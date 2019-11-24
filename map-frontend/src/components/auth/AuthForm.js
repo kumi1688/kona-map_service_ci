@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {Link} from 'react-router-dom';
 import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
-import {FormGroup, InputGroup, Form} from 'react-bootstrap';
+import {FormGroup, Form} from 'react-bootstrap';
 import UserInfoInsertForm from "./UserInfoInsertForm";
 
 //회원가입 or 로그인

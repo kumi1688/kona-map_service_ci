@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useState} from "react";
 import styled from "styled-components";
 import {useSelector} from "react-redux";
 import {Button} from "react-bootstrap";
-import client from "../../lib/api/client";
 import UserBundleModal from "../../components/map/UserBundleModal";
 
 const StyledBookMarkWrapper = styled.div`

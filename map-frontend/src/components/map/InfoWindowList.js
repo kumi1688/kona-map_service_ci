@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useReducer, useState} from "react";
 import {Marker, InfoWindow, Circle} from "@react-google-maps/api";
-import {Nav,Card, ListGroupItem, ListGroup, FormGroup, Form, Row, Col} from 'react-bootstrap';
+import {Nav, Form, Row, Col} from 'react-bootstrap';
 import CommentContainer from "../../containers/map/CommentContainer";
 import stadiumIcon from '../../lib/styles/MarkerImage/icons/stadium.svg';
 import schoolIcon from '../../lib/styles/MarkerImage/icons/school.svg';

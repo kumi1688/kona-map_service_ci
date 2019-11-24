@@ -1,20 +1,10 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {
     GoogleMap,
-    InfoWindow,
-    LoadScript,
-    DirectionsRenderer,
-    DirectionsService,
-    Polyline,
-    Polygon,
-    Marker,
     DrawingManager,
-    MarkerClusterer,
     LoadScriptNext,
-    OverlayView,
-    GroundOverlay
 } from '@react-google-maps/api'
-import {Row, Col, Button, Container, Image} from 'react-bootstrap';
+import {Row, Col, Button} from 'react-bootstrap';
 import UserMarker from "../../components/map/UserMarker";
 import MarkerInfo from "../../components/map/MarkerInfo";
 import MapCircle, {MapCircleInfo} from "../../components/map/MapCircle";

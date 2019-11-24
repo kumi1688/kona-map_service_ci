@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {InfoWindow, Marker} from '@react-google-maps/api';
+import React, {useCallback, useState} from 'react';
+import { Marker} from '@react-google-maps/api';
 import MarkerModal from "../common/MarkerModal";
 import AlertComponent from "../common/AlertComponent";
 

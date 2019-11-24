@@ -1,4 +1,4 @@
-import {Card, ListGroup, ListGroupItem, Row, Col, FormText, Form} from "react-bootstrap";
+import {Card, ListGroup, ListGroupItem, Row} from "react-bootstrap";
 import React from "react";
 
 const getPrimaryPosition = (position) => {
@@ -10,11 +10,12 @@ const getPrimaryPosition = (position) => {
         case "transport" : return '교통';
         case "restPlace": return "숙소";
         case "hospital" : return "병원";
-        case "convenience" : return "편의시설"
+        case "convenience" : return "편의시설";
         case "hairshop" : return "미용시설";
         default : return "없음";
     }
-}
+};
+
 const CardComponent = ({info}) => {
 
     return (
