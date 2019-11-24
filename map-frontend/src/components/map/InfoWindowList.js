@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useReducer, useState} from "react";
 import {Marker, InfoWindow, Circle} from "@react-google-maps/api";
-import {Nav} from 'react-bootstrap';
+import {Nav,Card, ListGroupItem, ListGroup, FormGroup, Form, Row, Col} from 'react-bootstrap';
 import CommentContainer from "../../containers/map/CommentContainer";
 import stadiumIcon from '../../lib/styles/MarkerImage/icons/stadium.svg';
 import schoolIcon from '../../lib/styles/MarkerImage/icons/school.svg';
@@ -12,6 +12,22 @@ import EstimateContainer from "../../containers/map/EstimateContainer";
 import client from "../../lib/api/client";
 import ClusterMarkerContainer from "../../containers/map/ClusterMarkerContainer";
 import RoadViewContainer from "../../containers/map/RoadViewContainer";
+import CardComponent from "./CardComponent";
+
+const getPrimaryPosition = (position) => {
+    switch(position){
+        case "excercise": return '운동';
+        case "education": return '교육';
+        case 'entertainment' : return '오락';
+        case "food": return '음식';
+        case "transport" : return '교통';
+        case "restPlace": return "숙소";
+        case "hospital" : return "병원";
+        case "convenience" : return "편의시설"
+        case "hairshop" : return "미용시설";
+        default : return "없음";
+    }
+}
 
 const findIcon = primaryType => {
     let matchedIcon;
@@ -268,7 +284,7 @@ const InfoWindowItem = ({info, zoom}) => {
         <>
             {localInfo.visibleMarkerMouseOver && <InfoWindow
                 position={adjustMouseOverPosition(info.position, zoom)}>
-                <h2>{info.name}</h2>
+            <CardComponent info={info}/>
             </InfoWindow>}
             <Marker position={info.position} onClick={toggleInfoWindow}
                     icon={zoom > 13 ? findIcon(info.primaryPositionType) : null}
@@ -306,11 +322,43 @@ const InfoWindowItem = ({info, zoom}) => {
                     <hr/>
                     {localInfo.visibleOnTabPosition && (
                         <>
-                            <h3>이름 : {info.name}</h3>
-                            <h3>설명 : {info.description}</h3>
-                            <h3>자세한 설명 : {info.detailedPosition}</h3>
-                            <h3>위치 타입 : {info.primaryPositionType}, {info.secondaryPositionType}</h3>
-                            <h3>태그 : {info.tags.map((tag, index) => (<li key={index}>{tag}</li>))}</h3>
+                            <Form>
+                                <Form.Group as={Row} controlId="formPlaintextEmail">
+                                    <Form.Label column sm="2">
+                                        이름
+                                    </Form.Label>
+                                    <Col sm="8">
+                                        <Form.Control readOnly defaultValue={info.name} />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="formPlaintextEmail">
+                                    <Form.Label column sm="2">
+                                        설명
+                                    </Form.Label>
+                                    <Col sm="8">
+                                        <Form.Control readOnly defaultValue={info.description} />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="formPlaintextEmail">
+                                    <Form.Label column sm="2">
+                                        위치 타입
+                                    </Form.Label>
+                                    <Col sm="8">
+                                        <Form.Control readOnly defaultValue={getPrimaryPosition(info.primaryPositionType)}/>
+                                        <Form.Control readOnly defaultValue={info.secondaryPositionType}/>
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="formPlaintextEmail">
+                                    <Form.Label column sm="2">
+                                        태그
+                                    </Form.Label>
+                                    <Col sm="8">
+                                        {info.tags.map((tag, index) => (<li key={index}>{tag}</li>))}
+                                    </Col>
+                                </Form.Group>
+                            </Form>
+
+
                             {info.radius && <h3>{info.radius === undefined ? "반경 없음" : `반경 ${info.radius} m`}</h3>}
                             <p>등록일 : {info.publishingDate}</p>
                         </>

@@ -20,7 +20,6 @@ import MarkerInfo from "../../components/map/MarkerInfo";
 import MapCircle, {MapCircleInfo} from "../../components/map/MapCircle";
 import UserPlaceContainer from "./UserPlaceContainer";
 import {useSelector, useDispatch} from "react-redux";
-import RectangleContainer from "./RectangleContainer";
 import UserInfoOnMapContainer from "./UserInfoOnMapContainer";
 import styled from "styled-components";
 import RoadControlContainer from "./RoadControlContainer";
@@ -275,6 +274,9 @@ const MapContainer = () => {
                 else setFetchedRoadList(false);
             }, [fetchedRoadList]);
 
+        useEffect(() => {
+            console.dir(process.env);
+        }, []);
 
         return (
             <Row>
@@ -288,7 +290,7 @@ const MapContainer = () => {
                     <Col>
                         <LoadScriptNext
                             id="script-loader"
-                            googleMapsApiKey="AIzaSyBoLaZLcIzTtGb0Ogg23GTiPkuXs0R-JwE"
+                            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}
                             libraries={[`drawing`]}>
 
                             <GoogleMap
