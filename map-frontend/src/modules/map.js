@@ -26,7 +26,8 @@ export const setSearchQuery = createAction(SET_SEARCH_QUERY,
     searchQuery, searchQueryType, searchQueryOnMap, searchQueryOption
 }));
 export const clearMap = createAction(CLEAR_MAP, isclearMap => isclearMap);
-export const updateBookMark = createAction(UPDATE_BOOK_MARK, ({building, road, place}) => ({building, road, place}));
+export const updateBookMark = createAction(UPDATE_BOOK_MARK, ({buildingList, roadList, placeList}) =>
+    ({buildingList, roadList, placeList}));
 export const addBookMark = createAction(START_ADD_BOOK_MARK, isStart => isStart);
 
 export const setCurrentUserLocation = createAction(SET_CURRENT_USER_LOCATION, location => location);
@@ -77,9 +78,9 @@ const initialState = {
     },
     isAddBookMark: false,
     bookMark : {
-        building: [],
-        road : [],
-        place : [],
+        buildingList: [],
+        roadList : [],
+        placeList : [],
     },
     error: null,
 };
@@ -138,7 +139,13 @@ const map = handleActions(
         }),
         [UPDATE_BOOK_MARK] : (state, {payload: addedInfo}) => ({
             ...state,
-            bookMark: addedInfo
+            bookMark: {
+            buildingList: state.bookMark.buildingList === addedInfo.buildingList ?
+                state.bookMark.buildingList : state.bookMark.buildingList.concat(addedInfo.buildingList),
+            placeList: state.bookMark.placeList === addedInfo.placeList ?
+                 state.bookMark.placeList : state.bookMark.placeList.concat(addedInfo.placeList),
+            roadList: state.bookMark.roadList === addedInfo.roadList ?
+                state.bookMark.roadList : state.bookMark.roadList.concat(addedInfo.roadList)}
         }),
         [START_ADD_BOOK_MARK] : (state, {payload : isStart}) => ({
             ...state,

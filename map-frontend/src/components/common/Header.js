@@ -106,6 +106,7 @@ const Header = ({user, onLogout}) => {
                         <Form.Control as="select" value={type} onChange={onChangeSearchQueryType}>
                             <option value="place">위치 검색</option>
                             <option value="road">경로 검색</option>
+                            <option value="bundle">모음 검색</option>
                         </Form.Control>
                         <Form.Control as="select" value={option} onChange={onChangeSearchOption}>
                             <option value="name">이름</option>

@@ -5,7 +5,8 @@ import CommentContainer from "../../containers/map/CommentContainer";
 import stadiumIcon from '../../lib/styles/MarkerImage/icons/stadium.svg';
 import schoolIcon from '../../lib/styles/MarkerImage/icons/school.svg';
 import hostpitalIcon from '../../lib/styles/MarkerImage/icons/hospital.svg';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {updateBookMark} from "../../modules/map";
 import EstimateContainer from "../../containers/map/EstimateContainer";
 import client from "../../lib/api/client";
 import ClusterMarkerContainer from "../../containers/map/ClusterMarkerContainer";
@@ -72,6 +73,8 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
         searchQueryOption: map.searchQuery.searchQueryOption
     }));
     const [filteredData, setFilteredData] = useState(null);
+    const [filteredBundleRoad, setFilteredBundleRoad] = useState(null);
+    const [filteredBundlePlace, setFilteredBundlePlace] = useState(null);
 
     useEffect(() => {
         //console.dir(info);
@@ -92,7 +95,7 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
                 default:
                     setFilteredData(placeInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
             }
-        } else { // 경로 검색
+        } else if( searchQueryType === 'road'){ // 경로 검색
             switch (searchQueryOption) {
                 case "name":
                     setFilteredData(roadInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
@@ -109,6 +112,30 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
                 default:
                     setFilteredData(roadInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
             }
+        } else {
+            console.dir(placeInfo);
+            console.dir(roadInfo);
+            switch (searchQueryOption) {
+                case "name":
+                    setFilteredBundlePlace(placeInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+                    setFilteredBundleRoad(roadInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "tag":
+                    setFilteredBundlePlace(placeInfo.filter(inf => (inf.tags.indexOf(searchQuery)) !== -1 ? inf : null));
+                    setFilteredBundleRoad(roadInfo.filter(inf => (inf.tags.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "description":
+                    setFilteredBundlePlace(placeInfo.filter(inf => (inf.description.indexOf(searchQuery)) !== -1 ? inf : null));
+                    setFilteredBundleRoad(roadInfo.filter(inf => (inf.description.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "position":
+                    setFilteredBundlePlace(placeInfo.filter(inf => (inf.detailedPosition.indexOf(searchQuery)) !== -1 ? inf : null));
+                    setFilteredBundleRoad(roadInfo.filter(inf => (inf.detailedPosition.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                default:
+                    setFilteredBundlePlace(placeInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+                    setFilteredBundleRoad(roadInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+            }
         }
     }, [searchQuery, searchQueryType, searchQueryOption]);
 
@@ -116,13 +143,17 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
         console.dir(filteredData);
     }, [filteredData]);
 
-    if (!filteredData) return null;
+    if (searchQueryType !== 'bundle' && !filteredData) return null;
+    if( searchQueryType === 'bundle' && ( !filteredBundlePlace || !filteredBundleRoad)) return null;
 
     return (
         <>
-            <ClusterMarkerContainer zoom={zoom} info={filteredData}/>
-            {searchQueryType === 'road' ? <RoadViewContainer roadList={filteredData}/> :
-            filteredData.map((inf) => (<InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}
+            {searchQueryType === 'place' && <ClusterMarkerContainer zoom={zoom} info={filteredData}/>}
+            {searchQueryType === 'place' && filteredData.map((inf) => (<InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}}
+            {searchQueryType === 'road' && <RoadViewContainer roadList={filteredData}/>}
+            {searchQueryType === 'bundle' && <RoadViewContainer roadList={filteredBundleRoad}/>}
+            {searchQueryType === 'bundle' && filteredBundlePlace.map((inf) => (
+                <InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}
         </>
     );
 };
@@ -159,6 +190,9 @@ const InfoWindowReducer = (state, action) => {
         case 'setLoading' : {
             return {...state, loading: action.loading};
         }
+        case 'addBookMark' : {
+            return {...state, isInBookMark: action.isInBookMark}
+        }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
         }
@@ -174,13 +208,19 @@ const initialState = {
     visibleInfoWindow : false,
     isCloseBox: true,
     loading : false,
+    isInBookMark : false,
 };
 
 const InfoWindowItem = ({info, zoom}) => {
     const [localInfo, setLocalInfo] = useReducer(InfoWindowReducer, initialState);
-    const {username} = useSelector(({user}) => ({
+    const {username, isAddBookMark, buildingList, roadList, placeList} = useSelector(({user, map}) => ({
         username : user.user.username,
+        isAddBookMark : map.isAddBookMark,
+        buildingList : map.bookMark.buildingList,
+        roadList : map.bookMark.roadList,
+        placeList : map.bookMark.placeList
     }));
+    const dispatch = useDispatch();
 
     const toggleMarKerMouseOver = useCallback(() => {setLocalInfo({type: 'toggleMouseOverWindow'})}, [localInfo]);
     const toggleInfoWindow = useCallback(() => {setLocalInfo({type: 'toggleInfoWindow'})}, [localInfo]);
@@ -189,6 +229,20 @@ const InfoWindowItem = ({info, zoom}) => {
     const toggleTabPosition = useCallback(() => {setLocalInfo({type: 'toggleTabPosition'})}, [localInfo]);
     const setLoading = useCallback((value) => {setLocalInfo({type: 'setLoading', loading: value})}, [localInfo]);
     const updateComment = useCallback((value) => setLocalInfo({type: 'updateComment', comment: value}), [localInfo]);
+    const updateLocalBookMark = useCallback((value) => {setLocalInfo({type: 'addBookMark', isInBookMark: value})}, [localInfo]);
+
+    const addInfoToBookMark = useCallback(() => {
+        if(!localInfo.isInBookMark && isAddBookMark) {
+            updateLocalBookMark(true);
+            let updatePlace = placeList;
+            updatePlace = updatePlace.concat(info);
+            dispatch(updateBookMark({buildingList : buildingList, roadList : roadList, placeList : updatePlace}));
+        }
+    }, [isAddBookMark]);
+
+    useEffect(() => {
+        console.dir(localInfo.isInBookMark);
+    }, [localInfo.isInBookMark]);
 
     const onCloseClick = useCallback(() => {
         const uploadComment = async () => {
@@ -242,6 +296,7 @@ const InfoWindowItem = ({info, zoom}) => {
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link eventKey="bookMark"
+                                      onSelect={addInfoToBookMark}
                                       >즐겨찾기추가
                             </Nav.Link>
                         </Nav.Item>

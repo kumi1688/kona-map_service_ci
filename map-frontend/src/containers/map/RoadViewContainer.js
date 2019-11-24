@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useReducer, useState} from 'react';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import client from "../../lib/api/client";
 import {InfoWindow, Polyline} from "@react-google-maps/api";
 import {Form, Nav} from "react-bootstrap";
@@ -7,6 +7,7 @@ import {Form, Nav} from "react-bootstrap";
 import {polylineOptions} from "../../components/map/RoadColor";
 import EstimateContainer from "./EstimateContainer";
 import CommentContainer from "./CommentContainer";
+import {updateBookMark} from "../../modules/map";
 
 const selectPolyLineOption = (road) => {
     let option = null;
@@ -46,6 +47,7 @@ const initialState = {
     visibleOnTabPosition: true,
     visibleOnTabEstimate: false,
     visibleOnTabComment: false,
+    isInBookMark : false,
     commentList: [],
 };
 
@@ -79,6 +81,9 @@ const roadReducer = (state, action) => {
         case 'updateComment' : {
             return {...state, commentList: action.comment};
         }
+        case 'addBookMark' : {
+            return {...state, isInBookMark: action.isInBookMark}
+        }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
         }
@@ -88,9 +93,15 @@ const roadReducer = (state, action) => {
 const RoadViewListItem = ({road}) => {
     const [localInfo, setLocalInfo] = useReducer(roadReducer, initialState);
     const [loading, setLoading] = useState(false);
-    const {username} = useSelector(({user})=> ({
+
+    const {username, buildingList, placeList, roadList, isAddBookMark} = useSelector(({user, map}) => ({
+        isAddBookMark: map.isAddBookMark,
         username: user.user.username,
+        buildingList : map.bookMark.buildingList,
+        placeList : map.bookMark.placeList,
+        roadList: map.bookMark.roadList,
     }));
+    const dispatch = useDispatch();
 
     const onRoadClick = useCallback(() => setLocalInfo({type: 'toggleInfoWindow'}), [localInfo]);
     const onMouseOver = useCallback(() => setLocalInfo({type: 'toggleMouseOverWindow'}), [localInfo]);
@@ -98,6 +109,7 @@ const RoadViewListItem = ({road}) => {
     const onTabEstimateClick = useCallback(() => setLocalInfo({type: 'toggleTabEstimate'}), [localInfo]);
     const onTabCommentClick = useCallback(() => setLocalInfo({type: 'toggleTabComment'}), [localInfo]);
     const updateComment = useCallback((value) => setLocalInfo({type: 'updateComment', comment: value}), [localInfo]);
+    const updateLocalBookMark = useCallback((value) => {setLocalInfo({type: 'addBookMark', isInBookMark: value})}, [localInfo]);
     const onCloseClick = useCallback(() => {
      const uploadComment = async () => {
          setLoading(true);
@@ -113,6 +125,18 @@ const RoadViewListItem = ({road}) => {
      };
      uploadComment();
     }, [localInfo]);
+
+    const addInfoToBookMark = useCallback(() => {
+        console.dir('추가');
+        if(!localInfo.isInBookMark && isAddBookMark) {
+            console.dir('추가 inside');
+            updateLocalBookMark(true);
+            let updateRoad = roadList;
+            updateRoad = updateRoad.concat(road);
+            dispatch(updateBookMark({buildingList : buildingList, roadList : updateRoad, placeList : placeList}));
+        }
+    }, [isAddBookMark]);
+
 
     return (
         <>
@@ -138,6 +162,12 @@ const RoadViewListItem = ({road}) => {
                                       onSelect={onTabCommentClick}
                             >댓글</Nav.Link>
                         </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link eventKey="bookMark"
+                                      onSelect={addInfoToBookMark}
+                            >즐겨찾기추가
+                            </Nav.Link>
+                        </Nav.Item>
                     </Nav>
                     <hr/>
                     {localInfo.visibleOnTabPosition && (
@@ -162,17 +192,6 @@ const RoadViewListItem = ({road}) => {
 };
 
 const RoadViewContainer = ({roadList}) => {
-    const [loading, setLoading] = useState(false);
-
-    const {username} = useSelector(({user}) => ({
-        username: user.user.username,
-    }));
-
-    useEffect(() => {
-        console.dir(roadList);
-    }, [roadList]);
-
-    if (loading) return <h2>로딩중...</h2>;
     if (!roadList) return null;
 
     return (

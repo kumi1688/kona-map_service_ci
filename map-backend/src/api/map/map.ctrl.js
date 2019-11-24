@@ -3,6 +3,7 @@ import Post from "../../models/post";
 import Comment from "../../models/comment";
 import UserRoad from "../../models/userRoad";
 import sanitizeHtml from "sanitize-html";
+import UserBundle from "../../models/userBundle";
 
 const post = new Post([
     {
@@ -230,6 +231,35 @@ export const updateUserPlaceComment = async ctx => {
             return;
         }
         ctx.body = road;
+    } catch(e){
+        ctx.throw(500, e);
+    }
+};
+
+export const makeUserBundle = async ctx => {
+    const { username, name, description, tags, position, detailedPosition, publishingDate,
+        primaryPositionType, secondaryPositionType, roadList, placeList, buildingList } = ctx.request.body;
+    const userBundle = new UserBundle({
+        username, name, description, tags, position, detailedPosition, publishingDate,
+        primaryPositionType, secondaryPositionType, roadList, placeList, buildingList
+    });
+    try{
+        await userBundle.save();
+        ctx.body = userBundle;
+    } catch(e) {
+        ctx.throw(500, e);
+    }
+};
+
+
+exports.listUserBundle = async ctx => {
+    try{
+        const userBundle = await UserBundle.find().exec();
+        if(!userBundle) {
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = userBundle;
     } catch(e){
         ctx.throw(500, e);
     }
