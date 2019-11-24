@@ -14,10 +14,6 @@ const CustomFormCheck = ({label, number}) => {
             else setValue(true);
         }, [value]);
 
-    useEffect(() => {
-        console.dir(value);
-    }, [value]);
-
     return (
         <Form.Check
             custom
@@ -35,7 +31,7 @@ const CustomForm = ({label}) => {
     return (
         <Form.Group>
             <Form.Label>{label}</Form.Label>
-            {[1, 2, 3, 4, 5].map(number => (<CustomFormCheck label={label} number={number}/>))}
+            {[1, 2, 3, 4, 5].map((number, index) => (<CustomFormCheck key={index} label={label} number={number}/>))}
         </Form.Group>
     )
 };

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useReducer, useState} from "react";
 import {Marker, InfoWindow, Circle} from "@react-google-maps/api";
 import {Nav} from 'react-bootstrap';
 import CommentContainer from "../../containers/map/CommentContainer";
@@ -127,140 +127,139 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
     );
 };
 
-const InfoWindowItem = ({info, zoom}) => {
-    const [loading, setLoading] = useState(false);
-    const [updateCommentList, setUpdateCommentList] = useState(null);
-    const [isCloseBox, setIsCloseBox] = useState(true);
-    const [localInfo, setLocalInfo] = useState(null);
-    const [visible, setVisible] = useState(null);
-    const [visibleMarkerMouseOver, setVisibleMarkerMouseOver] = useState(null);
-    const [visiblePositionInfo, setVisiblePositionInfo] = useState(true);
-    const [visibleEstimate, setVisibleEstimate] = useState(null);
-    const [visibleComment, setVisibleComment] = useState(null);
-
-    const onClick = useCallback(() => {
-        if (!visible) {
-            setVisible(true);
-            setIsCloseBox(null);
-        } else {
-            setVisible(null);
-            setIsCloseBox(true);
+const InfoWindowReducer = (state, action) => {
+    switch (action.type) {
+        case 'reset' : {
+            return initialState
         }
-    }, [visible]);
+        case 'toggleMouseOverWindow' : {
+            return state.visibleMarkerMouseOver ? {...state, visibleMarkerMouseOver: false} : {
+                ...state,
+                visibleMarkerMouseOver: true
+            };
+        }
+        case 'toggleInfoWindow' : {
+            return state.visibleInfoWindow ? {...state, visibleInfoWindow: false} : {...state, visibleInfoWindow: true};
+        }
+        case 'toggleTabPosition' : {
+            return {...state, visibleOnTabPosition: true, visibleOnTabComment: false, visibleOnTabEstimate: false}
+        }
+        case 'toggleTabEstimate' : {
+            return {...state, visibleOnTabEstimate: true, visibleOnTabPosition: false, visibleOnTabComment: false}
+        }
+        case 'toggleTabComment' : {
+            return {...state, visibleOnTabComment: true, visibleOnTabEstimate: false, visibleOnTabPosition: false}
+        }
+        case 'updateComment' : {
+            return {...state, commentList: action.comment};
+        }
+        case 'toggleCloseBox' : {
+            return {...state, isCloseBox: action.isCloseBox};
+        }
+        case 'setLoading' : {
+            return {...state, loading: action.loading};
+        }
+        default: {
+            throw new Error(`unexpected action.type: ${action.type}`)
+        }
+    }
+};
+
+const initialState = {
+    visibleMarkerMouseOver : false,
+    visibleOnTabPosition : true,
+    visibleOnTabEstimate :false,
+    toggleTabComment : false,
+    commentList : [],
+    visibleInfoWindow : false,
+    isCloseBox: true,
+    loading : false,
+};
+
+const InfoWindowItem = ({info, zoom}) => {
+    const [localInfo, setLocalInfo] = useReducer(InfoWindowReducer, initialState);
+    const {username} = useSelector(({user}) => ({
+        username : user.user.username,
+    }));
+
+    const toggleMarKerMouseOver = useCallback(() => {setLocalInfo({type: 'toggleMouseOverWindow'})}, [localInfo]);
+    const toggleInfoWindow = useCallback(() => {setLocalInfo({type: 'toggleInfoWindow'})}, [localInfo]);
+    const toggleTabEstimate = useCallback(() => {setLocalInfo({type: 'toggleTabEstimate'})}, [localInfo]);
+    const toggleTabComment = useCallback(() => {setLocalInfo({type: 'toggleTabComment'})}, [localInfo]);
+    const toggleTabPosition = useCallback(() => {setLocalInfo({type: 'toggleTabPosition'})}, [localInfo]);
+    const setLoading = useCallback((value) => {setLocalInfo({type: 'setLoading', loading: value})}, [localInfo]);
+    const updateComment = useCallback((value) => setLocalInfo({type: 'updateComment', comment: value}), [localInfo]);
 
     const onCloseClick = useCallback(() => {
-        setVisibleEstimate(false);
-        setVisibleComment(false);
-        setVisiblePositionInfo(true);
-        if (!isCloseBox) {
-            setIsCloseBox(true);
-            setVisible(null);
-            if (info.commentList !== updateCommentList) updateComment();
-        } else {
-            setIsCloseBox(false);
-            setVisible(null);
-        }
-    }, [updateCommentList]);
+        const uploadComment = async () => {
+            setLoading(true);
+            try{
+                const response = await client.patch(`/api/map/userPlace/comment/${info._id}`, ({
+                    commentList : localInfo.commentList,
+                    username: username,
+                }));
+            }catch(e){
+                console.dir(e);
+            }
+            setLoading(false);
+        };
+        uploadComment();
+    }, [localInfo]);
 
-    const onTabPosition = useCallback(
-        () => {
-            setVisibleComment(false);
-            setVisibleEstimate(false);
-            if (!visiblePositionInfo) setVisiblePositionInfo(true);
-            else setVisiblePositionInfo(false);
-        }, [visiblePositionInfo]);
-
-    const onTabEstimate = useCallback(
-        () => {
-            setVisibleComment(false);
-            setVisiblePositionInfo(false);
-            if (!visibleEstimate) setVisibleEstimate(true);
-            else setVisibleComment(false);
-        }, [visibleEstimate]);
-
-    const onTabComment = useCallback(
-        () => {
-            setVisibleEstimate(false);
-            setVisiblePositionInfo(false);
-            if (!visibleComment) setVisibleComment(true);
-            else setVisibleComment(false);
-        }, [visibleComment]);
-
-    const updateComment = useCallback(
-        e => {
-
-            const saveData = async () => {
-                setLoading(true);
-                try {
-                    console.dir(updateCommentList);
-                    await client.post(`/api/comment/${info._id}`, (updateCommentList));
-                } catch (e) {
-                    console.dir(e);
-                }
-                setLoading(false);
-            };
-            saveData();
-        }, [updateCommentList]);
-
-    const onMouseOver = useCallback(() => {
-        if (visibleMarkerMouseOver) setVisibleMarkerMouseOver(false);
-        else setVisibleMarkerMouseOver(true);
-    }, [visibleMarkerMouseOver]);
-
-    useEffect(() => {
-        if (!localInfo) setLocalInfo(info);
-    }, [info]);
-
-    if (!localInfo) return null;
+    if (!info) return null;
 
     return (
         <>
-            {visibleMarkerMouseOver && <InfoWindow
-                position={adjustMouseOverPosition(localInfo.position, zoom)}>
-                <h2>hello</h2>
+            {localInfo.visibleMarkerMouseOver && <InfoWindow
+                position={adjustMouseOverPosition(info.position, zoom)}>
+                <h2>{info.name}</h2>
             </InfoWindow>}
-            <Marker position={localInfo.position} onClick={onClick}
-                    icon={zoom > 13 ? findIcon(localInfo.primaryPositionType) : null}
+            <Marker position={info.position} onClick={toggleInfoWindow}
+                    icon={zoom > 13 ? findIcon(info.primaryPositionType) : null}
                     visible={zoom <= 13 ? false : true}
-                    onMouseOver={onMouseOver}
-                    onMouseOut={onMouseOver}
+                    onMouseOver={toggleMarKerMouseOver}
+                    onMouseOut={toggleMarKerMouseOver}
                     draggable={true}/>
-            {localInfo.radius !== undefined && visible &&
-            <Circle center={localInfo.position} radius={localInfo.radius}/>}
-            {visible && <InfoWindow position={localInfo.position} onCloseClick={onCloseClick}>
+            {info.radius !== undefined && localInfo.visibleInfoWindow &&
+            <Circle center={info.position} radius={info.radius}/>}
+            {localInfo.visibleInfoWindow && <InfoWindow position={adjustMouseOverPosition(info.position, zoom)} onCloseClick={onCloseClick}>
                 <>
                     <Nav fill justify variant="pills" defaultActiveKey="info-position">
                         <Nav.Item>
                             <Nav.Link eventKey="info-position"
-                                      onSelect={onTabPosition}
+                                      onSelect={toggleTabPosition}
                             >위치 정보</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link eventKey="estimate-user"
-                                      onSelect={onTabEstimate}
+                                      onSelect={toggleTabEstimate}
                             >사용자 평가</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link eventKey="comment-user"
-                                      onSelect={onTabComment}
+                                      onSelect={toggleTabComment}
                             >댓글</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link eventKey="bookMark"
+                                      >즐겨찾기추가
+                            </Nav.Link>
                         </Nav.Item>
                     </Nav>
                     <hr/>
-                    {visiblePositionInfo && (
+                    {localInfo.visibleOnTabPosition && (
                         <>
-                            <h3>이름 : {localInfo.name}</h3>
-                            <h3>설명 : {localInfo.description}</h3>
-                            <h3>자세한 설명 : {localInfo.detailedPosition}</h3>
-                            <h3>위치 타입 : {localInfo.primaryPositionType}, {localInfo.secondaryPositionType}</h3>
-                            <h3>태그 : {localInfo.tags.map((tag, index) => (<li key={index}>{tag}</li>))}</h3>
-                            <h3>{localInfo.radius === undefined ? "반경 없음" : `반경 ${localInfo.radius} m`}</h3>
-                            <p>등록일 : {localInfo.publishingDate}</p>
+                            <h3>이름 : {info.name}</h3>
+                            <h3>설명 : {info.description}</h3>
+                            <h3>자세한 설명 : {info.detailedPosition}</h3>
+                            <h3>위치 타입 : {info.primaryPositionType}, {info.secondaryPositionType}</h3>
+                            <h3>태그 : {info.tags.map((tag, index) => (<li key={index}>{tag}</li>))}</h3>
+                            {info.radius && <h3>{info.radius === undefined ? "반경 없음" : `반경 ${info.radius} m`}</h3>}
+                            <p>등록일 : {info.publishingDate}</p>
                         </>
                     )}
-                    {visibleEstimate && <EstimateContainer/>}
-                    {visibleComment && <CommentContainer info={localInfo} isCloseBox={isCloseBox}
-                                                         setUpdateCommentList={setUpdateCommentList}/>}
+                    {localInfo.visibleOnTabEstimate && <EstimateContainer/>}
+                    {localInfo.visibleOnTabComment && <CommentContainer info={info} setUpdateCommentList={updateComment}/>}
                 </>
             </InfoWindow>}
         </>

@@ -29,6 +29,7 @@ import RoadViewContainer from "./RoadViewContainer";
 import RoadDropDownButton from "../../components/map/RoadDropDownButton";
 import {polylineOptions} from "../../components/map/RoadColor";
 import RoadRemarkContainer from "../../components/map/RoadRemarkContainer";
+import BookMarkConainer from "./BookMarkContainer";
 
 const StyledMapContainerWrapper = styled.div`
     position: fixed;
@@ -78,7 +79,7 @@ const MapContainer = () => {
         const dispatch = useDispatch();
         const {
             username, searchQueryOnMap, currentUserLocation, isAddInfo, isAddRoad, roadType,
-            searchQueryType, isClearMap
+            searchQueryType, isClearMap, isAddBookMark
         } = useSelector(({map, user}) => ({
             searchQueryOnMap: map.searchQuery.searchQueryOnMap,
             searchQueryType: map.searchQuery.searchQueryType,
@@ -87,7 +88,8 @@ const MapContainer = () => {
             isAddRoad: map.isAddRoad,
             username: user.user.username,
             roadType: map.roadType,
-            isClearMap: map.isClearMap
+            isClearMap: map.isClearMap,
+            isAddBookMark : map.isAddBookMark,
         }));
 
         const [temp, setTemp] = useState(null);
@@ -280,6 +282,7 @@ const MapContainer = () => {
                                           radius={radius}/>}
                 {isAddRoad && <RoadDropDownButton addRoadInfo={addRoadInfo}/>}
                 {searchQueryOnMap && searchQueryType === 'road' && <RoadRemarkContainer/>}
+                {isAddBookMark && <BookMarkConainer/>}
 
                 <StyledMapContainerWrapper>
                     <Col>

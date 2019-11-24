@@ -20,19 +20,10 @@ const CommentEditor = ({info, setLocalCommentList, setUpdateCommentList, isClose
         }
     }, [isCloseBox]);
 
-    useEffect(() => {
-        //console.dir(username);
-    }, [username]);
-
     useEffect( () => {
-        //console.dir(localComment);
         setUpdateCommentList(localComment);
         setLocalCommentList(localComment);
     }, [localComment]);
-
-    useEffect(() => {
-        //console.dir(info);
-    }, [info]);
 
     const onChange = useCallback(
         e => {

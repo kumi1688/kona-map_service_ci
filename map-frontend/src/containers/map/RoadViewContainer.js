@@ -77,7 +77,7 @@ const roadReducer = (state, action) => {
             return {...state, visibleOnTabComment: true, visibleOnTabEstimate: false, visibleOnTabPosition: false}
         }
         case 'updateComment' : {
-            return {...state, commentList: [...state.commentList, action.comment]};
+            return {...state, commentList: action.comment};
         }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
@@ -87,6 +87,10 @@ const roadReducer = (state, action) => {
 
 const RoadViewListItem = ({road}) => {
     const [localInfo, setLocalInfo] = useReducer(roadReducer, initialState);
+    const [loading, setLoading] = useState(false);
+    const {username} = useSelector(({user})=> ({
+        username: user.user.username,
+    }));
 
     const onRoadClick = useCallback(() => setLocalInfo({type: 'toggleInfoWindow'}), [localInfo]);
     const onMouseOver = useCallback(() => setLocalInfo({type: 'toggleMouseOverWindow'}), [localInfo]);
@@ -94,14 +98,29 @@ const RoadViewListItem = ({road}) => {
     const onTabEstimateClick = useCallback(() => setLocalInfo({type: 'toggleTabEstimate'}), [localInfo]);
     const onTabCommentClick = useCallback(() => setLocalInfo({type: 'toggleTabComment'}), [localInfo]);
     const updateComment = useCallback((value) => setLocalInfo({type: 'updateComment', comment: value}), [localInfo]);
-
+    const onCloseClick = useCallback(() => {
+     const uploadComment = async () => {
+         setLoading(true);
+         try{
+            const response = await client.patch(`/api/map/userRoad/comment/${road._id}`, ({
+                commentList : localInfo.commentList,
+                username: username,
+            }));
+         }catch(e){
+             console.dir(e);
+         }
+         setLoading(false);
+     };
+     uploadComment();
+    }, [localInfo]);
 
     return (
         <>
             {localInfo.visibleOnMouseOver && <InfoWindow position={getRoadInfoWindowPosition(road)}>
                 <h2>{road.name}</h2>
             </InfoWindow>}
-            {localInfo.visibleInfoWindow && <InfoWindow position={getRoadInfoWindowPosition(road)}>
+            {localInfo.visibleInfoWindow && <InfoWindow position={getRoadInfoWindowPosition(road)}
+            onCloseClick={onCloseClick}>
                 <>
                     <Nav fill justify variant="pills" defaultActiveKey="info-position">
                         <Nav.Item>
@@ -133,7 +152,7 @@ const RoadViewListItem = ({road}) => {
                     )}
                     {localInfo.visibleOnTabEstimate && <EstimateContainer/>}
                     {localInfo.visibleOnTabComment &&
-                    <CommentContainer info={localInfo} setUpdateCommentList={updateComment}/>}
+                    <CommentContainer info={road} setUpdateCommentList={updateComment}/>}
                 </>
             </InfoWindow>}
             <Polyline path={road.roadInfo} options={selectPolyLineOption(road)} onMouseOver={onMouseOver}

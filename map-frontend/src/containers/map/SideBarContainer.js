@@ -21,7 +21,7 @@ import UserCommentShowPage from "../../pages/UserCommentShowPage";
 import UserPostShowPage from "../../pages/UserPostShowPage";
 import GeoPage from "../../pages/GeoPage";
 import {useDispatch, useSelector} from "react-redux";
-import {setAddInfoOnMap, setAddRoadOnMap} from "../../modules/map";
+import {setAddInfoOnMap, setAddRoadOnMap, addBookMark} from "../../modules/map";
 import LoginPage from "../../pages/LoginPage";
 import BoardComponent from "../common/BoardComponent";
 
@@ -32,6 +32,7 @@ const StyledSideBar = styled.div`
 const initialState = {
     addInfoOnMap: false,
     addRoadOnMap: false,
+    addBookMark: false
 };
 
 const infoReducer = (state, action) => {
@@ -45,6 +46,9 @@ const infoReducer = (state, action) => {
         case 'addRoadOnMap': {
             return {...state, addRoadOnMap: action.addRoadOnMap}
         }
+        case 'addBookMark' : {
+            return {...state, addBookMark: action.addBookMark}
+        }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
         }
@@ -57,13 +61,17 @@ const SideBarContainter = ({history}) => {
 
     const setAddInfo = value => setLocalInfo({type : 'addInfoOnMap', addInfoOnMap: value});
     const setAddRoad = value => setLocalInfo({type : 'addRoadOnMap', addRoadOnMap: value});
+    const setAddBookMark = value => setLocalInfo({type: 'addBookMark', addBookMark: value});
 
     useEffect(() =>{
         dispatch(setAddInfoOnMap(localInfo.addInfoOnMap));
     }, [localInfo.addInfoOnMap]);
     useEffect(()=>{
-        dispatch(setAddRoadOnMap(localInfo.addRoadOnMap))
+        dispatch(setAddRoadOnMap(localInfo.addRoadOnMap));
     }, [localInfo.addRoadOnMap]);
+    useEffect(() => {
+        dispatch(addBookMark(localInfo.addBookMark));
+    },[localInfo.addBookMark]);
 
     return (
         <StyledSideBar>
@@ -90,7 +98,8 @@ const SideBarContainter = ({history}) => {
                                         localInfo.addInfoOnMap ? setAddInfo(false) : setAddInfo(true); break;
                                     case "/addInfo/direction":
                                         localInfo.addRoadOnMap ? setAddRoad(false) : setAddRoad(true); break;
-
+                                    case "/bookMark/addBookmark":
+                                        localInfo.addBookMark ? setAddBookMark(false) : setAddBookMark(true); break;
                                 }
                             }
                         }}
@@ -142,14 +151,14 @@ const SideBarContainter = ({history}) => {
                                 </NavItem>
 
                             </NavItem>
-                            <NavItem>
+                            <NavItem eventKey="bookMark">
                                 <NavIcon>
                                     <FontAwesomeIcon icon={faStar} size="2x"/>
                                 </NavIcon>
                                 <NavText>
                                     즐겨찾기
                                 </NavText>
-                                <NavItem>
+                                <NavItem eventKey="bookMark/addBookmark">
                                     <NavIcon>
                                         <FontAwesomeIcon icon={faMapMarker} size="2x"/>
                                         <FontAwesomeIcon icon={faStar} size="sm"/>

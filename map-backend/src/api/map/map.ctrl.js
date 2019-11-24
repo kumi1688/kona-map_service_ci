@@ -1,7 +1,8 @@
 import UserPlace from "../../models/userPlace"
 import Post from "../../models/post";
-import User from "../../models/user";
+import Comment from "../../models/comment";
 import UserRoad from "../../models/userRoad";
+import sanitizeHtml from "sanitize-html";
 
 const post = new Post([
     {
@@ -146,6 +147,89 @@ exports.findUserPlaceByType = async ctx => {
             return;
         }
         ctx.body = userplace;
+    } catch(e){
+        ctx.throw(500, e);
+    }
+};
+
+exports.updateUserRoadComment = async ctx => {
+    console.dir('----------------------------');
+    //console.dir(ctx.request.body);
+
+    let arr = [];
+    try{
+        ctx.request.body.commentList.forEach(function(element){
+            let { title, body, username } = element;
+           const comment = new Comment({
+               title: title,
+               body: body,
+               username: username,
+           });
+           comment.save();
+           arr = arr.concat(comment);
+        });
+    }catch(e){
+        ctx.throw(500, e);
+    }
+
+    const {id} = ctx.params;
+
+    try{
+        console.dir(arr);
+        const road = await UserRoad.findByIdAndUpdate(id, {commentList: arr}, {
+            new: true,
+        }).exec();
+        if(!road){
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = road;
+    } catch(e){
+        ctx.throw(500, e);
+    }
+};
+
+export const checkOwnPost = (ctx, next) => {
+    const { user, road } = ctx.state;
+    if( road.user._id.toString() !== user._id) {
+        ctx.status = 403;
+        return;
+    }
+    return next();
+};
+
+export const updateUserPlaceComment = async ctx => {
+    console.dir('---------------------------');
+    console.dir(ctx.request.body);
+
+    let arr = [];
+    try{
+        ctx.request.body.commentList.forEach(function(element){
+            let { title, body, username } = element;
+            const comment = new Comment({
+                title: title,
+                body: body,
+                username: username,
+            });
+            comment.save();
+            arr = arr.concat(comment);
+        });
+    }catch(e){
+        ctx.throw(500, e);
+    }
+
+    const {id} = ctx.params;
+
+    try{
+        console.dir(arr);
+        const road = await UserPlace.findByIdAndUpdate(id, {commentList: arr}, {
+            new: true,
+        }).exec();
+        if(!road){
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = road;
     } catch(e){
         ctx.throw(500, e);
     }

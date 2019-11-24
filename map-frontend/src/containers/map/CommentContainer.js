@@ -22,14 +22,6 @@ const CommentList = ({info, newComment}) => {
 const CommentContainer = ({info, isCloseBox, setUpdateCommentList}) => {
     const [localCommentList, setLocalCommentList] = useState(info.commentList);
 
-    useEffect(() => {
-        //console.dir(localCommentList);
-    }, [localCommentList]);
-
-    useEffect(() => {
-        //console.dir(localCommentList);
-    }, [setLocalCommentList]);
-
     return (
         <>
             <CommentList info={info} newComment={localCommentList}/>
