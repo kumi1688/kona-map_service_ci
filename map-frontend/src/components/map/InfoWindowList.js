@@ -5,6 +5,7 @@ import CommentContainer from "../../containers/map/CommentContainer";
 import stadiumIcon from '../../lib/styles/MarkerImage/icons/stadium.svg';
 import schoolIcon from '../../lib/styles/MarkerImage/icons/school.svg';
 import hostpitalIcon from '../../lib/styles/MarkerImage/icons/hospital.svg';
+import cafeIcon from '../../lib/styles/MarkerImage/icons/cafe.svg'
 import {useDispatch, useSelector} from "react-redux";
 import {updateBookMark} from "../../modules/map";
 import EstimateContainer from "../../containers/map/EstimateContainer";
@@ -16,7 +17,7 @@ const findIcon = primaryType => {
     let matchedIcon;
     switch (primaryType) {
         case 'education':
-            matchedIcon = schoolIcon;
+            matchedIcon = cafeIcon;
             break;
         case 'excercise':
             matchedIcon = stadiumIcon;
