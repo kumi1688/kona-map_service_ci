@@ -24,6 +24,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setAddInfoOnMap, setAddRoadOnMap, addBookMark} from "../../modules/map";
 import LoginPage from "../../pages/LoginPage";
 import BoardComponent from "../common/BoardComponent";
+import RegisterPage from "../../pages/RegisterPage";
 
 const StyledSideBar = styled.div`
     height: 100%;
@@ -236,7 +237,7 @@ const SideBarContainter = ({history}) => {
                         <Route path={"/geo"} exact component={GeoPage}/>
                         <Route path={"/direction"} exact component={DirectionPage}/>
                         <Route path={"/login"} exact component={LoginPage}/>
-                        <Route path={"/register"} exact component={LoginPage}/>
+                        <Route path={"/register"} exact component={RegisterPage}/>
                         <Route path={"/board"} exact component={BoardComponent}/>
                     </main>
                 </React.Fragment>

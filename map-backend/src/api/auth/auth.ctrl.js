@@ -53,6 +53,7 @@ export const register = async ctx => {
 
 export const login = async ctx => {
     const { username, password } = ctx.request.body;
+    console.dir('login try');
 
     if(!username || !password ) {
         ctx.status = 401;

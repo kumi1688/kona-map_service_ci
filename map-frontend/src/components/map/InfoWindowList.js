@@ -78,7 +78,8 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
     const [filteredBundlePlace, setFilteredBundlePlace] = useState(null);
 
     useEffect(() => {
-        //console.dir(info);
+        console.dir(placeInfo);
+        console.dir(searchQuery);
         if (searchQueryType === 'place') {
             switch (searchQueryOption) {
                 case "name":
