@@ -25,14 +25,16 @@ const App = () => {
                 <Helmet>
                     <title>KONA</title>
                 </Helmet>
-                <Route component={LoginPage} path="/login"/>
-                <Route component={RegisterPage} path="/register"/>
-                <Route component={PostPage} path="/@:username/:postId"/>
-                <Route component={MapPage} path={["/map"]}/>
-                <Route component={UserPlacePage} path={"/userPlace"}/>
-                <Route component={GeoPage} path={["/geo", "/"]} exact/>
-                <Route component={DirectionPage} path={"/direction"}/>
-                <Route component={OverlayPage} path={"/overlay"}/>
+                {/*
+                <Route component={LoginPage} path="/login" exact/>
+                <Route component={RegisterPage} path="/register" exact/>
+                <Route component={PostPage} path="/@:username/:postId" exact/>
+                <Route component={MapPage} path={["/map", "/"]} exact/>
+                <Route component={UserPlacePage} path={"/userPlace"} exact/>
+                <Route component={GeoPage} path={["/geo"]} exact/>
+                <Route component={DirectionPage} path={"/direction"} exact/>
+                <Route component={OverlayPage} path={"/overlay"} exact/>
+                */}
             </>
 
         </>
