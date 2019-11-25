@@ -69,6 +69,7 @@ const CommentEditor = ({info, setLocalCommentList, setUpdateCommentList, isClose
             <Col xl="auto">
                 <InputGroup className="mb-3">
                     <Form.Control
+                        size="lg"
                         placeholder="댓글을 입력해주세요"
                         onKeyPress={onKeyPress}
                         onChange={onChange}

@@ -1,10 +1,11 @@
 import React, {useCallback, useEffect, useState} from "react";
 import CommentEditor from "../../components/map/CommentEditor";
+import {ListGroupItem} from "react-bootstrap";
 
 const CommentList = ({info, newComment}) => {
     return (
         <>
-            { newComment && newComment.map((inf, index) => (<li key={index}>{inf.title}</li>))}
+            { newComment && newComment.map((inf, index) => (<ListGroupItem key={index}>{index}.{inf.title}</ListGroupItem>))}
             <hr/>
         </>
     )

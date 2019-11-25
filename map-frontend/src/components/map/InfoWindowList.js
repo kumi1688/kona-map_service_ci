@@ -1,11 +1,16 @@
 import React, {useCallback, useEffect, useReducer, useState} from "react";
 import {Marker, InfoWindow, Circle} from "@react-google-maps/api";
-import {Nav, Form, Row, Col} from 'react-bootstrap';
+import {Nav, Form, Row, Col, ListGroup, ListGroupItem} from 'react-bootstrap';
 import CommentContainer from "../../containers/map/CommentContainer";
 import stadiumIcon from '../../lib/styles/MarkerImage/icons/stadium.svg';
-import schoolIcon from '../../lib/styles/MarkerImage/icons/school.svg';
+import schoolIcon from '../../lib/styles/MarkerImage/icons/college-graduation.png';
 import hostpitalIcon from '../../lib/styles/MarkerImage/icons/hospital.svg';
-import cafeIcon from '../../lib/styles/MarkerImage/icons/cafe.svg'
+import amuseIcon from '../../lib/styles/MarkerImage/icons/amused.png';
+import foodIcon from '../../lib/styles/MarkerImage/icons/restaurant.png';
+import carIcon from '../../lib/styles/MarkerImage/icons/car.png';
+import bedIcon from '../../lib/styles/MarkerImage/icons/bed.png';
+import convenientIcon from '../../lib/styles/MarkerImage/icons/convenience-store.png';
+import salonIcon from '../../lib/styles/MarkerImage/icons/salon.png';
 import {useDispatch, useSelector} from "react-redux";
 import {updateBookMark} from "../../modules/map";
 import EstimateContainer from "../../containers/map/EstimateContainer";
@@ -15,34 +20,43 @@ import RoadViewContainer from "../../containers/map/RoadViewContainer";
 import CardComponent from "./CardComponent";
 
 const getPrimaryPosition = (position) => {
-    switch(position){
-        case "excercise": return '운동';
-        case "education": return '교육';
-        case 'entertainment' : return '오락';
-        case "food": return '음식';
-        case "transport" : return '교통';
-        case "restPlace": return "숙소";
-        case "hospital" : return "병원";
-        case "convenience" : return "편의시설"
-        case "hairshop" : return "미용시설";
-        default : return "없음";
+    switch (position) {
+        case "excercise":
+            return '운동';
+        case "education":
+            return '교육';
+        case 'entertainment' :
+            return '오락';
+        case "food":
+            return '음식';
+        case "transport" :
+            return '교통';
+        case "restPlace":
+            return "숙소";
+        case "hospital" :
+            return "병원";
+        case "convenience" :
+            return "편의시설"
+        case "hairshop" :
+            return "미용시설";
+        default :
+            return "없음";
     }
 }
 
 const findIcon = primaryType => {
     let matchedIcon;
     switch (primaryType) {
-        case 'education':
-            matchedIcon = cafeIcon;
-            break;
-        case 'excercise':
-            matchedIcon = stadiumIcon;
-            break;
-        case 'hospital' :
-            matchedIcon = hostpitalIcon;
-            break;
-        default :
-            matchedIcon = schoolIcon;
+        case 'education': return schoolIcon;
+        case 'excercise': return stadiumIcon;
+        case 'hospital' : return hostpitalIcon;
+        case 'entertainment' : return amuseIcon;
+        case "food": return foodIcon;
+        case "transport" : return carIcon;
+        case "restPlace": return bedIcon;
+        case "convenience" : return convenientIcon;
+        case "hairshop" : return salonIcon;
+        default : return null;
     }
     ;
     return matchedIcon;
@@ -113,7 +127,7 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
                 default:
                     setFilteredData(placeInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
             }
-        } else if( searchQueryType === 'road'){ // 경로 검색
+        } else if (searchQueryType === 'road') { // 경로 검색
             switch (searchQueryOption) {
                 case "name":
                     setFilteredData(roadInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
@@ -162,12 +176,13 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
     }, [filteredData]);
 
     if (searchQueryType !== 'bundle' && !filteredData) return null;
-    if( searchQueryType === 'bundle' && ( !filteredBundlePlace || !filteredBundleRoad)) return null;
+    if (searchQueryType === 'bundle' && (!filteredBundlePlace || !filteredBundleRoad)) return null;
 
     return (
         <>
             {searchQueryType === 'place' && <ClusterMarkerContainer zoom={zoom} info={filteredData}/>}
-            {searchQueryType === 'place' && filteredData.map((inf) => (<InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}}
+            {searchQueryType === 'place' && filteredData.map((inf) => (
+                <InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}}
             {searchQueryType === 'road' && <RoadViewContainer roadList={filteredData}/>}
             {searchQueryType === 'bundle' && <RoadViewContainer roadList={filteredBundleRoad}/>}
             {searchQueryType === 'bundle' && filteredBundlePlace.map((inf) => (
@@ -218,43 +233,57 @@ const InfoWindowReducer = (state, action) => {
 };
 
 const initialState = {
-    visibleMarkerMouseOver : false,
-    visibleOnTabPosition : true,
-    visibleOnTabEstimate :false,
-    toggleTabComment : false,
-    commentList : [],
-    visibleInfoWindow : false,
+    visibleMarkerMouseOver: false,
+    visibleOnTabPosition: true,
+    visibleOnTabEstimate: false,
+    toggleTabComment: false,
+    commentList: [],
+    visibleInfoWindow: false,
     isCloseBox: true,
-    loading : false,
-    isInBookMark : false,
+    loading: false,
+    isInBookMark: false,
 };
 
 const InfoWindowItem = ({info, zoom}) => {
     const [localInfo, setLocalInfo] = useReducer(InfoWindowReducer, initialState);
     const {username, isAddBookMark, buildingList, roadList, placeList} = useSelector(({user, map}) => ({
-        username : user.user.username,
-        isAddBookMark : map.isAddBookMark,
-        buildingList : map.bookMark.buildingList,
-        roadList : map.bookMark.roadList,
-        placeList : map.bookMark.placeList
+        username: user.user.username,
+        isAddBookMark: map.isAddBookMark,
+        buildingList: map.bookMark.buildingList,
+        roadList: map.bookMark.roadList,
+        placeList: map.bookMark.placeList
     }));
     const dispatch = useDispatch();
 
-    const toggleMarKerMouseOver = useCallback(() => {setLocalInfo({type: 'toggleMouseOverWindow'})}, [localInfo]);
-    const toggleInfoWindow = useCallback(() => {setLocalInfo({type: 'toggleInfoWindow'})}, [localInfo]);
-    const toggleTabEstimate = useCallback(() => {setLocalInfo({type: 'toggleTabEstimate'})}, [localInfo]);
-    const toggleTabComment = useCallback(() => {setLocalInfo({type: 'toggleTabComment'})}, [localInfo]);
-    const toggleTabPosition = useCallback(() => {setLocalInfo({type: 'toggleTabPosition'})}, [localInfo]);
-    const setLoading = useCallback((value) => {setLocalInfo({type: 'setLoading', loading: value})}, [localInfo]);
+    const toggleMarKerMouseOver = useCallback(() => {
+        setLocalInfo({type: 'toggleMouseOverWindow'})
+    }, [localInfo]);
+    const toggleInfoWindow = useCallback(() => {
+        setLocalInfo({type: 'toggleInfoWindow'})
+    }, [localInfo]);
+    const toggleTabEstimate = useCallback(() => {
+        setLocalInfo({type: 'toggleTabEstimate'})
+    }, [localInfo]);
+    const toggleTabComment = useCallback(() => {
+        setLocalInfo({type: 'toggleTabComment'})
+    }, [localInfo]);
+    const toggleTabPosition = useCallback(() => {
+        setLocalInfo({type: 'toggleTabPosition'})
+    }, [localInfo]);
+    const setLoading = useCallback((value) => {
+        setLocalInfo({type: 'setLoading', loading: value})
+    }, [localInfo]);
     const updateComment = useCallback((value) => setLocalInfo({type: 'updateComment', comment: value}), [localInfo]);
-    const updateLocalBookMark = useCallback((value) => {setLocalInfo({type: 'addBookMark', isInBookMark: value})}, [localInfo]);
+    const updateLocalBookMark = useCallback((value) => {
+        setLocalInfo({type: 'addBookMark', isInBookMark: value})
+    }, [localInfo]);
 
     const addInfoToBookMark = useCallback(() => {
-        if(!localInfo.isInBookMark && isAddBookMark) {
+        if (!localInfo.isInBookMark && isAddBookMark) {
             updateLocalBookMark(true);
             let updatePlace = placeList;
             updatePlace = updatePlace.concat(info);
-            dispatch(updateBookMark({buildingList : buildingList, roadList : roadList, placeList : updatePlace}));
+            dispatch(updateBookMark({buildingList: buildingList, roadList: roadList, placeList: updatePlace}));
         }
     }, [isAddBookMark]);
 
@@ -265,12 +294,12 @@ const InfoWindowItem = ({info, zoom}) => {
     const onCloseClick = useCallback(() => {
         const uploadComment = async () => {
             setLoading(true);
-            try{
+            try {
                 const response = await client.patch(`/api/map/userPlace/comment/${info._id}`, ({
-                    commentList : localInfo.commentList,
+                    commentList: localInfo.commentList,
                     username: username,
                 }));
-            }catch(e){
+            } catch (e) {
                 console.dir(e);
             }
             setLoading(false);
@@ -284,17 +313,18 @@ const InfoWindowItem = ({info, zoom}) => {
         <>
             {localInfo.visibleMarkerMouseOver && <InfoWindow
                 position={adjustMouseOverPosition(info.position, zoom)}>
-            <CardComponent info={info}/>
+                <CardComponent info={info}/>
             </InfoWindow>}
             <Marker position={info.position} onClick={toggleInfoWindow}
                     icon={zoom > 13 ? findIcon(info.primaryPositionType) : null}
                     visible={zoom <= 13 ? false : true}
                     onMouseOver={toggleMarKerMouseOver}
                     onMouseOut={toggleMarKerMouseOver}
-                    draggable={true}/>
+                    />
             {info.radius !== undefined && localInfo.visibleInfoWindow &&
             <Circle center={info.position} radius={info.radius}/>}
-            {localInfo.visibleInfoWindow && <InfoWindow position={adjustMouseOverPosition(info.position, zoom)} onCloseClick={onCloseClick}>
+            {localInfo.visibleInfoWindow &&
+            <InfoWindow position={adjustMouseOverPosition(info.position, zoom)} onCloseClick={onCloseClick}>
                 <>
                     <Nav fill justify variant="pills" defaultActiveKey="info-position">
                         <Nav.Item>
@@ -315,7 +345,7 @@ const InfoWindowItem = ({info, zoom}) => {
                         <Nav.Item>
                             <Nav.Link eventKey="bookMark"
                                       onSelect={addInfoToBookMark}
-                                      >즐겨찾기추가
+                            >즐겨찾기추가
                             </Nav.Link>
                         </Nav.Item>
                     </Nav>
@@ -323,38 +353,30 @@ const InfoWindowItem = ({info, zoom}) => {
                     {localInfo.visibleOnTabPosition && (
                         <>
                             <Form>
-                                <Form.Group as={Row} controlId="formPlaintextEmail">
-                                    <Form.Label column sm="2">
+                                <Form.Group as={Row}>
+                                    <Form.Label column sm="4" style={{textAlign: "center"}}>
                                         이름
                                     </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control readOnly defaultValue={info.name} />
-                                    </Col>
+                                    <ListGroup.Item>{info.name}</ListGroup.Item>
                                 </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextEmail">
-                                    <Form.Label column sm="2">
+                                <Form.Group as={Row}>
+                                    <Form.Label column sm="4" style={{textAlign: "center"}}>
                                         설명
                                     </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control readOnly defaultValue={info.description} />
-                                    </Col>
+                                    <ListGroup.Item>{info.description}</ListGroup.Item>
                                 </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextEmail">
-                                    <Form.Label column sm="2">
+                                <Form.Group as={Row} style={{textAlign: "center"}}>
+                                    <Form.Label column sm="4">
                                         위치 타입
                                     </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control readOnly defaultValue={getPrimaryPosition(info.primaryPositionType)}/>
-                                        <Form.Control readOnly defaultValue={info.secondaryPositionType}/>
-                                    </Col>
+                                    <ListGroup.Item>{getPrimaryPosition(info.primaryPositionType)}</ListGroup.Item>
+                                    <ListGroup.Item>{info.secondaryPositionType}</ListGroup.Item>
                                 </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextEmail">
-                                    <Form.Label column sm="2">
+                                <Form.Group as={Row} style={{textAlign: "center"}}>
+                                    <Form.Label column sm="4">
                                         태그
                                     </Form.Label>
-                                    <Col sm="8">
-                                        {info.tags.map((tag, index) => (<li key={index}>{tag}</li>))}
-                                    </Col>
+                                    {info.tags.map((tag, index) => (<ListGroupItem key={index}>#{tag}</ListGroupItem>))}
                                 </Form.Group>
                             </Form>
 
@@ -364,7 +386,8 @@ const InfoWindowItem = ({info, zoom}) => {
                         </>
                     )}
                     {localInfo.visibleOnTabEstimate && <EstimateContainer/>}
-                    {localInfo.visibleOnTabComment && <CommentContainer info={info} setUpdateCommentList={updateComment}/>}
+                    {localInfo.visibleOnTabComment &&
+                    <CommentContainer info={info} setUpdateCommentList={updateComment}/>}
                 </>
             </InfoWindow>}
         </>

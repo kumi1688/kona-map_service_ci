@@ -75,7 +75,7 @@ const MapContainer = () => {
             currentUserLocation: map.currentUserLocaction,
             isAddInfo: map.isAddInfo,
             isAddRoad: map.isAddRoad,
-            //username: user.user.username,
+            username: user.user.username,
             roadType: map.roadType,
             isClearMap: map.isClearMap,
             isAddBookMark : map.isAddBookMark,
@@ -249,7 +249,7 @@ const MapContainer = () => {
             if (roadList) {
                 setUploadRoadList(uploadRoadList.concat({
                     roadInfo: roadList,
-                    //username: username,
+                    username: username,
                 }));
             }
         }, [roadList, uploadRoadList]);
