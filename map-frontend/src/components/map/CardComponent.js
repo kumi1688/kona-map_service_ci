@@ -18,6 +18,22 @@ const getPrimaryPosition = (position) => {
 };
 
 const getImage = (info) => {
+    if(info.name.indexOf('카페') !== -1 ){
+        return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/%EC%95%84%EC%A3%BC%EB%8C%80+%EC%B9%B4%ED%8E%98.jpg';
+    }
+    if(info.name.indexOf('pc방') !== -1) {
+        return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/pc%EB%B0%A9.jpg';
+    }
+    if(info.name.indexOf('당구장') !== -1) {
+        return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/%EB%8B%B9%EA%B5%AC%EC%9E%A5.jpg';
+    }
+
+    if(info.name.indexOf('흡연장') !== -1 ){
+        return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/%ED%9D%A1%EC%97%B0%EC%9E%A51.jpg';
+    }
+    if(info.name.indexOf('올라가는 길') !== -1){
+        return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/%ED%8C%94%EB%8B%AC%EA%B4%801.jpg';
+    }
     switch(info.primaryPositionType) {
         case "excercise": return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/excercise.jpg';
         case "education": return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/education.jpg';
