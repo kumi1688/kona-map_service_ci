@@ -1,5 +1,6 @@
 import {Card, ListGroup, ListGroupItem, Row} from "react-bootstrap";
 import React from "react";
+import {polylineOptions} from "./RoadColor";
 
 const getPrimaryPosition = (position) => {
     switch(position){
@@ -16,13 +17,32 @@ const getPrimaryPosition = (position) => {
     }
 };
 
-const CardComponent = ({info}) => {
+const getImage = (info) => {
+    switch(info.primaryPositionType) {
+        case "excercise": return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/excercise.jpg';
+        case "education": return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/education.jpg';
+        case 'entertainment' : return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/amusement.jpg';
+        case "food": return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/food.jpg';
+        case "transport" : return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/transport.jpg';
+        case "restPlace": return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/restPlace.jpg';
+        case "hospital" : return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/hospital.jpg';
+        case "convenience" : return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/convenience.jpg';
+        case "hairshop" : return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/hairshop.jpg';
+        case "mainRoad" : return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/mainroad.jpg';
+        case "smallRoad" : return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/smallroad.jpg';
+        case "travelRoad": return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/travelroad.jpg';
+        case "foodRoad": return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/foodroad.jpg';
+        case "sightSeeingRoad": return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/sightseeingroad.jpg'
+        default : return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/wiki.jpg';
+    }
+};
 
+const CardComponent = ({info}) => {
     return (
         <Row>
-            <Card style={{width: '20rem', height: '25rem'}}>
+            <Card style={{width: '20rem', height: '20rem'}}>
                 <Card.Img variant="top" alt="Card image"
-                          src="https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/%ED%8C%94%EB%8B%AC%EA%B4%801.jpg"/>
+                          src={getImage(info)}/>
             </Card>
 
             <Card style={{width: '20rem', height: '15rem'}}>

@@ -45,7 +45,6 @@ const getPrimaryPosition = (position) => {
 }
 
 const findIcon = primaryType => {
-    let matchedIcon;
     switch (primaryType) {
         case 'education': return schoolIcon;
         case 'excercise': return stadiumIcon;
@@ -58,8 +57,6 @@ const findIcon = primaryType => {
         case "hairshop" : return salonIcon;
         default : return null;
     }
-    ;
-    return matchedIcon;
 };
 
 const adjustMouseOverPosition = (position, zoom) => {

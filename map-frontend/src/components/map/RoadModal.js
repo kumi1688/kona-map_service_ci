@@ -40,8 +40,8 @@ const initialState = {
     gridPosition: {lat: 0, lng: 0},
     detailedPosition: '',
     tags: [],
-    primaryPositionType: "excercise",
-    secondaryPositionType: "축구",
+    primaryPositionType: "mainRoad",
+    secondaryPositionType: "4차로",
     roadInfo : null,
     username : null,
 };

@@ -2,12 +2,29 @@ import React, {useCallback, useReducer, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import client from "../../lib/api/client";
 import {InfoWindow, Polyline} from "@react-google-maps/api";
-import {Nav} from "react-bootstrap";
+import {Form, ListGroup, ListGroupItem, Nav, Row, Col} from "react-bootstrap";
 
 import {polylineOptions} from "../../components/map/RoadColor";
 import EstimateContainer from "./EstimateContainer";
 import CommentContainer from "./CommentContainer";
 import {updateBookMark} from "../../modules/map";
+import CardComponent from "../../components/map/CardComponent";
+
+const getPrimaryPosition = (road) => {
+    switch (road.primaryPositionType) {
+        case "mainRoad" :
+            return '큰 도로';
+        case "smallRoad" :
+            return '작은 도로';
+        case "travelRoad":
+            return '여행로';
+        case "foodRoad":
+            return '음식 추천로';
+        case "sightSeeingRoad":
+            return '관광로';
+    }
+    ;
+};
 
 const selectPolyLineOption = (road) => {
     let option = null;
@@ -47,7 +64,7 @@ const initialState = {
     visibleOnTabPosition: true,
     visibleOnTabEstimate: false,
     visibleOnTabComment: false,
-    isInBookMark : false,
+    isInBookMark: false,
     commentList: [],
 };
 
@@ -97,8 +114,8 @@ const RoadViewListItem = ({road}) => {
     const {username, buildingList, placeList, roadList, isAddBookMark} = useSelector(({user, map}) => ({
         isAddBookMark: map.isAddBookMark,
         username: user.user.username,
-        buildingList : map.bookMark.buildingList,
-        placeList : map.bookMark.placeList,
+        buildingList: map.bookMark.buildingList,
+        placeList: map.bookMark.placeList,
         roadList: map.bookMark.roadList,
     }));
     const dispatch = useDispatch();
@@ -109,31 +126,31 @@ const RoadViewListItem = ({road}) => {
     const onTabEstimateClick = useCallback(() => setLocalInfo({type: 'toggleTabEstimate'}), [localInfo]);
     const onTabCommentClick = useCallback(() => setLocalInfo({type: 'toggleTabComment'}), [localInfo]);
     const updateComment = useCallback((value) => setLocalInfo({type: 'updateComment', comment: value}), [localInfo]);
-    const updateLocalBookMark = useCallback((value) => {setLocalInfo({type: 'addBookMark', isInBookMark: value})}, [localInfo]);
+    const updateLocalBookMark = useCallback((value) => {
+        setLocalInfo({type: 'addBookMark', isInBookMark: value})
+    }, [localInfo]);
     const onCloseClick = useCallback(() => {
-     const uploadComment = async () => {
-         setLoading(true);
-         try{
-            const response = await client.patch(`/api/map/userRoad/comment/${road._id}`, ({
-                commentList : localInfo.commentList,
-                username: username,
-            }));
-         }catch(e){
-             console.dir(e);
-         }
-         setLoading(false);
-     };
-     uploadComment();
+        const uploadComment = async () => {
+            setLoading(true);
+            try {
+                const response = await client.patch(`/api/map/userRoad/comment/${road._id}`, ({
+                    commentList: localInfo.commentList,
+                    username: username,
+                }));
+            } catch (e) {
+                console.dir(e);
+            }
+            setLoading(false);
+        };
+        uploadComment();
     }, [localInfo]);
 
     const addInfoToBookMark = useCallback(() => {
-        console.dir('추가');
-        if(!localInfo.isInBookMark && isAddBookMark) {
-            console.dir('추가 inside');
+        if (!localInfo.isInBookMark && isAddBookMark) {
             updateLocalBookMark(true);
             let updateRoad = roadList;
             updateRoad = updateRoad.concat(road);
-            dispatch(updateBookMark({buildingList : buildingList, roadList : updateRoad, placeList : placeList}));
+            dispatch(updateBookMark({buildingList: buildingList, roadList: updateRoad, placeList: placeList}));
         }
     }, [isAddBookMark]);
 
@@ -141,10 +158,10 @@ const RoadViewListItem = ({road}) => {
     return (
         <>
             {localInfo.visibleOnMouseOver && <InfoWindow position={getRoadInfoWindowPosition(road)}>
-                <h2>{road.name}</h2>
+                <CardComponent info={road}/>
             </InfoWindow>}
             {localInfo.visibleInfoWindow && <InfoWindow position={getRoadInfoWindowPosition(road)}
-            onCloseClick={onCloseClick}>
+                                                        onCloseClick={onCloseClick}>
                 <>
                     <Nav fill justify variant="pills" defaultActiveKey="info-position">
                         <Nav.Item>
@@ -172,11 +189,35 @@ const RoadViewListItem = ({road}) => {
                     <hr/>
                     {localInfo.visibleOnTabPosition && (
                         <>
-                            <h3>이름 : {road.name}</h3>
-                            <h3>설명 : {road.description}</h3>
-                            <h3>자세한 설명 : {road.detailedPosition}</h3>
-                            <h3>위치 타입 : {road.primaryPositionType}, {road.secondaryPositionType}</h3>
-                            {road.tags && (<h3>태그 : {road.tags.map((tag, index) => (<li key={index}>{tag}</li>))}</h3>)}
+                            <Form style={{paddingLeft: 30, paddingRight: 30}}>
+                                <Form.Group as={Row}>
+                                    <Form.Label column sm="4" style={{textAlign: "center"}}>
+                                        이름
+                                    </Form.Label>
+                                    <ListGroup.Item>{road.name}</ListGroup.Item>
+                                </Form.Group>
+                                <Row>
+                                    <Form.Label column sm="4" style={{textAlign: "center"}}>
+                                        설명
+                                    </Form.Label>
+                                    <Col>
+                                        <ListGroup.Item>{road.description}</ListGroup.Item>
+                                    </Col>
+                                </Row>
+                                <Form.Group as={Row} style={{textAlign: "center"}}>
+                                    <Form.Label column sm="4">
+                                        위치 타입
+                                    </Form.Label>
+                                    <ListGroup.Item>{getPrimaryPosition(road)}</ListGroup.Item>
+                                    <ListGroup.Item>{road.secondaryPositionType}</ListGroup.Item>
+                                </Form.Group>
+                                <Form.Group as={Row} style={{textAlign: "center"}}>
+                                    <Form.Label column sm="4">
+                                        태그
+                                    </Form.Label>
+                                    {road.tags.map((tag, index) => (<ListGroupItem key={index}>#{tag}</ListGroupItem>))}
+                                </Form.Group>
+                            </Form>
                             <p>등록일 : {road.publishingDate}</p>
                         </>
                     )}
