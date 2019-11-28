@@ -58,5 +58,9 @@ UserSchema.statics.findByJob = function(job){
     return this.find({job});
 };
 
+UserSchema.statics.getTotalNumber = function(){
+    return this.find({});
+};
+
 const User = mongoose.model('User', UserSchema);
 export default User;

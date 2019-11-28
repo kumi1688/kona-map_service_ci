@@ -79,10 +79,12 @@ export const login = async ctx => {
             maxAge: 1000*60*60*24*7,
             httpOnly: true,
         });
+        //
     } catch(e){
         ctx.throw(500, e);
     }
 };
+
 export const check = async ctx => {
     const { user } = ctx.state;
     if(!user){
@@ -107,6 +109,16 @@ export const userInfo = async ctx => {
         }
         ctx.body = userInfo;
     } catch(e){
+        ctx.throw(500, e);
+    }
+};
+
+export const getTotalUserNumber = async ctx => {
+    console.dir('he');
+    try{
+        const userNumber = await User.getTotalNumber().exec();
+        ctx.body = userNumber.length;
+    }catch(e){
         ctx.throw(500, e);
     }
 };

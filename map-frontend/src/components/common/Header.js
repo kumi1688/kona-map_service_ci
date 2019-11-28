@@ -1,10 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components';
-import Responsive from "./Responsive";
-import {Link} from 'react-router-dom';
 import Button from "./Button";
 import {Navbar, Nav, Form, FormControl} from "react-bootstrap";
-import UserInfoOnMapContainer from "../../containers/map/UserInfoOnMapContainer";
 import {useDispatch, useSelector} from "react-redux";
 import {clearMap, setSearchQuery} from "../../modules/map";
 

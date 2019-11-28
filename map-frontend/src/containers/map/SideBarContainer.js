@@ -57,6 +57,7 @@ const infoReducer = (state, action) => {
 
 const SideBarContainter = ({history}) => {
     const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
+
     const dispatch = useDispatch();
 
     const setAddInfo = value => setLocalInfo({type : 'addInfoOnMap', addInfoOnMap: value});
