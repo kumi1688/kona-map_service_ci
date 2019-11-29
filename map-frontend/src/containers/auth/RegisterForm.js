@@ -32,8 +32,8 @@ const RegisterForm = ({history}) => {
     // 폼 등록 이벤트 핸들러
     const onSubmit = e => {
         e.preventDefault();
-        const { username, password, passwordConfirm, livingArea, gender, age,
-            job, wanted  } = form;
+        const { username, password, passwordConfirm, firstLivingArea, secondLivingArea,
+            gender, age } = form;
         if([username, password, passwordConfirm].includes('')){
             setError('빈 칸을 모두 입력하세요');
             return;
@@ -45,8 +45,8 @@ const RegisterForm = ({history}) => {
             return;
         }
         if( password !== passwordConfirm) {return;}
-        console.dir(user);
-        dispatch(register({username, password, livingArea, gender, age, job, wanted }));
+        console.dir(form);
+        dispatch(register({username, password, firstLivingArea, secondLivingArea, gender, age}));
     };
 
 
@@ -80,7 +80,7 @@ const RegisterForm = ({history}) => {
         if (user) {
             console.log('check API 성공');
             console.log(user);
-            history.push('/map');
+            history.push('/home');
             try{
                 localStorage.setItem('user', JSON.stringify(user));
             } catch (e) {

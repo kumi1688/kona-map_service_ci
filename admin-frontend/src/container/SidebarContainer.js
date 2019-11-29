@@ -15,6 +15,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
+import UserStatisticsContainer from "./UserStatisticsContainer";
 
 const StyledSideBar = styled.div`
     height: 100%;
@@ -52,7 +53,7 @@ const SideBarContainter = ({history}) => {
     const {username} = useSelector(({user}) => ({
         username: user.user.username,
     }));
-*/
+    */
     const dispatch = useDispatch();
 
     return (
@@ -66,7 +67,7 @@ const SideBarContainter = ({history}) => {
                             switch (to) {
                                 case "/" :
                                 case "/home":
-                                case "/userInfo" :
+                                case "/userInfo/statistics" :
                                 case "/userInfo/post":
                                 case "/userInfo/comment":
                                 case "/geo" :
@@ -182,9 +183,9 @@ const SideBarContainter = ({history}) => {
                         </SideNav.Nav>
                     </SideNav>
                     <main>
-                        {/*<Route path={["/", "/home"]} exact component={MapPage}/>
-                        <Route path={"/userInfo"} exact component={UserInfoPage}/>
-                        */}
+                        {/*<Route path={["/", "/home"]} exact component={MapPage}/>*/}
+                        <Route path={"/userInfo/statistics"} exact component={UserStatisticsContainer}/>
+
                     </main>
                 </React.Fragment>
             )}/>

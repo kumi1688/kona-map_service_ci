@@ -8,3 +8,5 @@ export const fetchUserData = ({username}) => client.get(`/api/auth/userInfo/${us
 export const check = () => client.get('/api/auth/check');
 
 export const logout = () => client.post('/api/auth/logout');
+
+export const getUserNumber = () => client.get('/api/auth/userNumber');

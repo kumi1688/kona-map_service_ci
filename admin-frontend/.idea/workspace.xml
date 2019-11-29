@@ -2,51 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b55483f0-f3b4-4970-8d54-adbd54dcfa86" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/$PRODUCT_WORKSPACE_FILE$" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/admin-frontend.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/logo192.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/logo512.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/manifest.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/robots.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/App.test.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/UserComponent.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/common/Header.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/container/HeaderContainer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/container/SidebarContainer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/container/UserStatisticsContainer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/api/auth.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/api/client.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/createRequestSaga.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/logo.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/modules/auth.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/modules/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/modules/loading.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/modules/user.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/serviceWorker.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/UserStatisticsComponent.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../map-frontend/src/lib/backGround.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/UserComponent.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/container/SidebarContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/container/SidebarContainer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/container/UserStatisticsContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/container/UserStatisticsContainer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/api/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/auth.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../map-backend/src/api/auth/auth.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/auth/auth.ctrl.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../map-backend/src/api/auth/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/auth/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/comment/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/comment/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/map/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/map/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../map-backend/src/models/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/models/user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/common/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/components/common/Header.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/map/SideBarContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/containers/map/SideBarContainer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/auth/AuthForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/components/auth/AuthForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/auth/AuthTemplate.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/components/auth/AuthTemplate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/auth/UserInfoInsertForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/components/auth/UserInfoInsertForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/auth/LoginForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/containers/auth/LoginForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/auth/RegisterForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/containers/auth/RegisterForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/lib/api/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/lib/api/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/modules/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/modules/auth.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,8 +38,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectId" id="1U6WlZkOMcUyxTnory1RzQlXj9h" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -115,8 +91,16 @@
       <workItem from="1574678557610" duration="3250000" />
       <workItem from="1574813248089" duration="5680000" />
       <workItem from="1574819899052" duration="554000" />
-      <workItem from="1574820459633" duration="4656000" />
+      <workItem from="1574820459633" duration="12992000" />
     </task>
+    <task id="LOCAL-00001" summary="Iteration5 add admin page &amp;&amp; set layout, sideBar, Header">
+      <created>1574928198031</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1574928198031</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -134,5 +118,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Iteration5 add admin page &amp;&amp; set layout, sideBar, Header" />
+    <option name="LAST_COMMIT_MESSAGE" value="Iteration5 add admin page &amp;&amp; set layout, sideBar, Header" />
   </component>
 </project>

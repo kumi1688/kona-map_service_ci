@@ -9,5 +9,7 @@ auth.get('/check', authCtrl.check);
 auth.post('/logout', authCtrl.logout);
 auth.get('/userInfo/:username', authCtrl.userInfo);
 auth.get('/userNumber', authCtrl.getTotalUserNumber);
+auth.get('/manNumber', authCtrl.getManNumber);
+auth.get('/userStatistics', authCtrl.getUserStatistics);
 
 export default auth;

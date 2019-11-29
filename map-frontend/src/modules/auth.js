@@ -19,9 +19,9 @@ export const changeField = createAction(
 );
 
 export const initializeForm = createAction(INITIALIZE_FORM, form => form);
-export const register = createAction(REGISTER, ({ username, password, livingArea,
-                                                    gender, age, job, wanted, providingInfo }) => ({
-    username, password, livingArea, gender, age, job, wanted, providingInfo
+export const register = createAction(REGISTER, ({ username, password, firstLivingArea,
+                                                    secondLivingArea, gender, age, providingInfo }) => ({
+    username, password, firstLivingArea, secondLivingArea, gender, age, providingInfo
 }));
 export const login = createAction(LOGIN, ({username, password}) => ({
     username, password,
@@ -45,11 +45,10 @@ const initialState = {
         username: '',
         password: '',
         passwordConfirm: '',
-        livingArea: '',
-        gender: '',
-        age: '',
-        job: '',
-        wanted : [],
+        firstLivingArea: '서울특별시',
+        secondLivingArea: '종로구',
+        gender: '남자',
+        age: '10세 미만',
         providingInfo : true
     },
     login: {

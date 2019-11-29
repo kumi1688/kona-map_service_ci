@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {Link} from 'react-router-dom';
 import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
-import {FormGroup, Form} from 'react-bootstrap';
+import {FormGroup, Form, FormLabel} from 'react-bootstrap';
 import UserInfoInsertForm from "./UserInfoInsertForm";
 
 //회원가입 or 로그인
@@ -19,18 +19,6 @@ const AuthFormBlock = styled.div`
     color: ${palette.blue[3]};
     margin-bottom: 1rem;
     }
-`;
-
-const StyledInput = styled.input`
-    font-size: 1rem;
-    border: none;
-    border-bottom: 1px solid ${palette.gray[5]};
-    padding-bottom: 0.5rem;
-    outline: none;
-    width: 100%;
-    & + & {
-    margin-top: 1rem;
-  }
 `;
 
 const Footer = styled.div`
@@ -59,7 +47,7 @@ const AuthForm = ({type, form, onChange, onSubmit, error}) => {
 
     const onClick = useCallback(
         () => {
-            if(!agree) setAgree(true);
+            if (!agree) setAgree(true);
             else setAgree(false);
         }, [agree]
     );
@@ -68,18 +56,31 @@ const AuthForm = ({type, form, onChange, onSubmit, error}) => {
         <AuthFormBlock>
             <h3>{text}</h3>
             <form onSubmit={onSubmit}>
-                <StyledInput autoComplete="username" name="username" placeholder="아이디"
-                             onChange={onChange} value={form.username}/>
-                <StyledInput
-                    autoComplete="new-password" name="password" placeholder="비밀번호"
-                    type="password" onChange={onChange} value={form.password}/>
+                <Form inline>
+                    <Form.Label style={{paddingRight: 65, textAlign: "center"}}>아이디</Form.Label>
+                    <Form.Control as="input" autoComplete="username" name="username" placeholder="아이디"
+                                  onChange={onChange} value={form.username} style={{width: '70%'}}/>
+                </Form>
+                <div style={{paddingTop: 10}}/>
+                <Form inline>
+                    <Form.Label style={{paddingRight: 50}}>비밀번호</Form.Label>
+                    <Form.Control as="input"
+                                  autoComplete="new-password" name="password" placeholder="비밀번호"
+                                  type="password" onChange={onChange} value={form.password}
+                                  style={{width: '70%'}}/>
+                </Form>
+                <div style={{paddingTop: 10}}/>
                 {type === 'register' && (
-                    <StyledInput
-                        autoComplete="new-password" name="passwordConfirm" placeholder="비밀번호 확인"
-                        type="password" onChange={onChange} value={form.passwordConfirm}/>
+                    <Form inline>
+                        <Form.Label style={{paddingRight: 20}}>비밀번호확인</Form.Label>
+                        <Form.Control as="input"
+                                      autoComplete="new-password" name="passwordConfirm" placeholder="비밀번호 확인"
+                                      type="password" onChange={onChange} value={form.passwordConfirm}
+                                    style={{width: '70%'}}/>
+                    </Form>
                 )}
                 {(type === 'register' && !agree) && (
-                    <FormGroup>
+                    <FormGroup style={{paddingTop: 10}}>
                         <Form.Check
                             name="providingInfoConfirm"
                             label="정보제공동의"
@@ -87,7 +88,7 @@ const AuthForm = ({type, form, onChange, onSubmit, error}) => {
                         />
                     </FormGroup>
                 )}
-                {agree && <UserInfoInsertForm form={form} onChange={onChange} />}
+                {agree && <UserInfoInsertForm form={form} onChange={onChange}/>}
                 {error && <ErrorMessage>{error}</ErrorMessage>}
                 <ButtonWithMarginTop fullWidth>{text}</ButtonWithMarginTop>
             </form>
