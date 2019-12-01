@@ -1,5 +1,5 @@
-import React from 'react';
-import {Table} from "react-bootstrap";
+import React, {useCallback} from 'react';
+import {Button, Table} from "react-bootstrap";
 
 const CommentList = ({commentList}) => {
     return (
@@ -9,6 +9,7 @@ const CommentList = ({commentList}) => {
                 <th>원 글</th>
                 <th>글 내용</th>
                 <th>작성일</th>
+                <th>관리</th>
             </tr>
             </thead>
             <tbody>
@@ -19,11 +20,17 @@ const CommentList = ({commentList}) => {
 };
 
 const CommentListItem = ({comment}) => {
+    const onRemoveClick = useCallback(()=>{
+        
+    }, [comment]);
     return (
         <tr>
             <td>{comment.title}</td>
             <td>{comment.body}</td>
             <td>{comment.publishingDate}</td>
+            <td>
+                <Button variant="danger">삭제</Button>
+            </td>
         </tr>
     )
 };

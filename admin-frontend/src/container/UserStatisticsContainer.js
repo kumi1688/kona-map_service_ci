@@ -1,23 +1,23 @@
 import React, {useEffect} from 'react';
 import UserStatisticsComponent from "../components/UserStatisticsComponent";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchUserNumber} from "../modules/auth";
+import {fetchUserStatistics} from "../modules/auth";
 
 const UserStatisticsContainer = () => {
-    const {userNumber} = useSelector(({auth}) => ({
-        userNumber: auth.userStatistics.totalNumber
+    const {userStatistics} = useSelector(({auth}) => ({
+        userStatistics: auth.userStatistics
     }));
     const dispatch = useDispatch();
 
     useEffect(()=> {
-        dispatch(fetchUserNumber());
+        dispatch(fetchUserStatistics());
     }, []);
 
-    if(!userNumber) return null;
+    if(!userStatistics) return null;
 
     return (
         <>
-            <UserStatisticsComponent userNumber={userNumber}/>
+            <UserStatisticsComponent userStatistics={userStatistics}/>
         </>
     )
 };

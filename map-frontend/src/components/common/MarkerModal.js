@@ -69,6 +69,7 @@ const initialState = {
     primaryPositionType: "excercise",
     secondaryPositionType: "축구",
     radius: 0,
+    imageUrl: null,
 };
 
 const infoReducer = (state, action) => {
@@ -108,6 +109,9 @@ const infoReducer = (state, action) => {
         case 'updateAlert': {
             return {...state, alert: action.alert}
         }
+        case 'updateImageUrl': {
+            return {...state, imageUrl: action.imageUrl}
+        }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
         }
@@ -142,6 +146,9 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlert
     const setRadius = radius => {
         setLocalInfo({type: 'updateRadius', radius: radius});
     };
+    const updateImageUrl = (url) => {
+        setLocalInfo({type: 'updateImageUrl', imageUrl: url});
+    };
 
 
     const radiusButtonClick = useCallback(() => {
@@ -163,6 +170,9 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlert
     useEffect(() =>{
         console.dir(username);
     }, [username]);
+    useEffect(() => {
+        console.dir(localInfo.imageUrl);
+    }, [localInfo.imageUrl]);
 
     const onSubmit = useCallback(
         e => {
@@ -178,7 +188,8 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlert
                     primaryPositionType: localInfo.primaryPositionType,
                     secondaryPositionType: localInfo.secondaryPositionType,
                     radius: localInfo.radius,
-                    username: username
+                    username: username,
+                    imageUrl : localInfo.imageUrl
                 }));
             };
             saveData();
@@ -197,6 +208,11 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlert
                 <ModalTitle><strong>위치 정보 입력</strong></ModalTitle>
                 <ModalBody>
                     <Form>
+                        <Form.Group controlId="photo">
+                            <Form.Label>사진</Form.Label>
+                            <ImageUpload updateImageUrl={updateImageUrl} />
+                        </Form.Group>
+
                         <Form.Group controlId="name">
                             <Form.Label>이름</Form.Label>
                             <Form.Control placeholder="이름을 입력해주세요" name="updateName" onChange={updateName}/>
@@ -206,11 +222,6 @@ const MarkerModal = ({onLeftClick, position, radius, circle, setCircle, setAlert
                             <Form.Label>설명</Form.Label>
                             <Form.Control placeholder="설명을 입력해주세요" name="description" as="textarea"
                                           onChange={updateDescription}/>
-                        </Form.Group>
-
-                        <Form.Group controlId="photo">
-                            <Form.Label>사진</Form.Label>
-                            <ImageUpload/>
                         </Form.Group>
 
                         <Form.Group controlId="gridPosition">

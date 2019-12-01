@@ -18,6 +18,7 @@ const getPrimaryPosition = (position) => {
 };
 
 const getImage = (info) => {
+    if(info.imageUrl) return info.imageUrl;
     if(info.name.indexOf('카페') !== -1 ){
         return 'https://capstonbucket.s3.ap-northeast-2.amazonaws.com/image/%EC%95%84%EC%A3%BC%EB%8C%80+%EC%B9%B4%ED%8E%98.jpg';
     }

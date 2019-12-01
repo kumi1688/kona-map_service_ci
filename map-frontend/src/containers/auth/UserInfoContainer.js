@@ -13,10 +13,12 @@ const UserInfoContainer = () => {
 
     useEffect( ( ) => {
         const fetchData = async () => {
-            await dispatch(fetchUserData(user));
+            await dispatch(fetchUserData(user.username));
         };
         fetchData();
     }, [user]);
+
+    if(!userInfo) return null;
 
     return (
         <UserInfoShowForm userInfo={userInfo} />

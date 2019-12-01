@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { changeField, initializeForm, login } from '../../modules/auth';
+import React, {useEffect, useState} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {withRouter} from 'react-router-dom';
+import {Alert} from 'react-bootstrap';
+import {changeField, fetchUserData, initializeForm, login} from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
-import {check } from '../../modules/user';
+import {check, logout} from '../../modules/user';
+import client from "../../lib/api/client";
 
 
-const LoginForm = ( {history}) => {
+const LoginForm = ({history}) => {
     const [error, setError] = useState('');
+    const [userStatus, setUserStatus] = useState(null);
     const dispatch = useDispatch();
-    const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
+    const {form, auth, authError, user} = useSelector(({auth, user}) => ({
         form: auth.login,
         auth: auth.auth,
         authError: auth.authError,
-        user: user.user
+        user: user.user,
     }));
     // 인풋 변경 이벤트 핸들러
     const onChange = e => {
-        const { value, name } = e.target;
+        const {value, name} = e.target;
         dispatch(
             changeField({
                 form: 'login',
@@ -30,7 +33,7 @@ const LoginForm = ( {history}) => {
     // 폼 등록 이벤트 핸들러
     const onSubmit = e => {
         e.preventDefault();
-        const { username, password} = form;
+        const {username, password} = form;
         dispatch(login({username, password}));
     };
 
@@ -39,23 +42,25 @@ const LoginForm = ( {history}) => {
         dispatch(initializeForm('login'));
     }, [dispatch]);
 
-    useEffect(()=> {
-        if(authError){
+    useEffect(() => {
+        if (authError) {
             console.log('에러 발생');
             console.log(authError);
             setError('로그인 실패');
             return;
         }
-        if(auth) {
+        if (auth) {
             console.log('로그인 성공');
             dispatch(check());
+
         }
     }, [auth, authError, dispatch]);
 
-    useEffect( () => {
-        if(user){
-            history.push('/map');
-            try{
+    useEffect(() => {
+        if (user) {
+            dispatch(fetchUserData(user.username));
+            history.push('/home');
+            try {
                 localStorage.setItem('user', JSON.stringify(user));
             } catch (e) {
                 console.log('로컬 storage 작동하지 않음');

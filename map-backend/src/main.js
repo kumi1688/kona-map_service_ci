@@ -3,6 +3,7 @@ require('dotenv').config();
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
+import koaBody from "koa-body";
 import mongoose from 'mongoose';
 import api from './api';
 import jwtMiddleware from "./lib/jwtMiddleware";
@@ -25,12 +26,15 @@ mongoose
 
 
 const app = new Koa();
+
 const router = new Router();
 
 router.use('/api', api.routes());
+app.use(koaBody({multipart: true}));
 app.use(bodyParser());
 app.use(jwtMiddleware);
 app.use(router.routes()).use(router.allowedMethods());
+
 
 const buildDirectory = path.resolve(__dirname, '../../map-frontend/build');
 app.use(serve(buildDirectory));

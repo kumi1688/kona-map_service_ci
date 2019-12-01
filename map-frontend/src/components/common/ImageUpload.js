@@ -1,14 +1,15 @@
 import React from 'react';
 import ImageUploader from 'react-images-upload';
-import {Button} from "react-bootstrap";
+import {Button, Form} from "react-bootstrap";
 import client from "../../lib/api/client";
 
 class ImageUpload extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {pictures: [], selectedFiles: []};
+        this.state = {pictures: []};
         this.onDrop = this.onDrop.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.handleFileInput = this.handleFileInput.bind(this);
     }
 
     onDrop(picture) {
@@ -17,31 +18,47 @@ class ImageUpload extends React.Component {
         });
     }
 
-    onClick () {
+    handleFileInput(e) {
+        this.setState({
+            pictures: e.target.files[0],
+        })
+    }
+
+    onClick() {
         const formData = new FormData();
-        formData.append('file', this.state.selectedFile);
+        console.dir(this.state.pictures);
+        formData.append('file', this.state.pictures);
         console.dir(formData);
 
         return client.post("/api/upload", formData).then(res => {
-            alert('성공')
+            console.dir(res);
+            this.props.updateImageUrl(res.data.url);
+            alert(`${res.data.key} 업로드 성공`);
         }).catch(err => {
-            alert('실패')
-        })
+            alert('이미지 파일 업로드 실패');
+        });
     };
 
     render() {
         return (
             <>
+                {/*
                 <ImageUploader
                     withIcon={true}
                     buttonText='이미지 선택'
                     onChange={this.onDrop}
                     label=""
                     withPreview={true}
-                    imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                    imgExtension={['.jpg', '.gif', '.png', '.gif', 'jpeg']}
                     maxFileSize={5242880}
                 />
                 <Button variant="outline-info" onClick={this.onClick}>이미지 등록</Button>
+                */}
+
+                <input type="file" name="file" onChange={e => this.handleFileInput(e)}/>
+                <Button type="button" onClick={this.onClick}>업로드</Button>
+
+
             </>
         );
     }

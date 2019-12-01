@@ -19,11 +19,6 @@ const UserInfoOnMapContainer = ({zoom}) => {
         searchQueryOption: map.searchQuery.searchQueryOption
     }));
 
-    const onClick = () => {
-        if(!visible) setVisible(true);
-        else setVisible(false);
-    };
-
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);

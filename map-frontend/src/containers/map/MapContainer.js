@@ -24,18 +24,6 @@ const StyledMapContainerWrapper = styled.div`
     position: fixed;
 `;
 
-const StyledDropDownWrapper = styled.div`
-    z-index : 10;
-    position: fixed;
-    background-color : white;
-    right: 0;
-    margin : 40px 20px 40px 20px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-`;
-
 const circleOptions = {
     fillColor: '#ffff00',
     fillOpacity: 1,
@@ -60,7 +48,6 @@ const getPolyLineOption = (type) => {
         default :
             return polylineOptions.mainRoad;
     }
-    ;
 };
 
 
@@ -110,16 +97,6 @@ const MapContainer = () => {
                 addMarker(e);
             }
         }, [circle, insertInfoBox]);
-
-        const onCircleButtonClick = useCallback(() => {
-            if (!circle) setCircle(true);
-            else setCircle(false);
-        }, [circle]);
-
-        const onInfoInsertButtonClick = useCallback((e) => {
-            if (!insertInfoBox) setInsertInfoBox(true);
-            else setInsertInfoBox(false);
-        }, [insertInfoBox]);
 
         const onUserPlaceListClick = useCallback(() => {
             if (!userPlaceList) setUserPlaceList(true);

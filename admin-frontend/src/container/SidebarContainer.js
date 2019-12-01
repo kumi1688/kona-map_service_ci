@@ -16,6 +16,7 @@ import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
 import UserStatisticsContainer from "./UserStatisticsContainer";
+import UserManageContainer from "./UserManageContainer";
 
 const StyledSideBar = styled.div`
     height: 100%;
@@ -68,7 +69,7 @@ const SideBarContainter = ({history}) => {
                                 case "/" :
                                 case "/home":
                                 case "/userInfo/statistics" :
-                                case "/userInfo/post":
+                                case "/userInfo/manageUser":
                                 case "/userInfo/comment":
                                 case "/geo" :
                                     history.push(to);
@@ -185,7 +186,7 @@ const SideBarContainter = ({history}) => {
                     <main>
                         {/*<Route path={["/", "/home"]} exact component={MapPage}/>*/}
                         <Route path={"/userInfo/statistics"} exact component={UserStatisticsContainer}/>
-
+                        <Route path={"/userInfo/manageUser"} exact component={UserManageContainer}/>
                     </main>
                 </React.Fragment>
             )}/>

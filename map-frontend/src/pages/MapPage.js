@@ -1,8 +1,9 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import HeaderContainer from "../containers/common/HeaderContainer";
 import MapContainer from "../containers/map/MapContainer";
 import SideBarContainter from "../containers/map/SideBarContainer";
 import styled from "styled-components";
+import {useSelector} from "react-redux";
 
 const StyledMapPage = styled.div`
     
@@ -10,10 +11,11 @@ const StyledMapPage = styled.div`
 `;
 
 const MapPage = () => {
+
     return (
         <>
             <StyledMapPage>
-                <MapContainer />
+                <MapContainer/>
             </StyledMapPage>
         </>
     );

@@ -5,6 +5,8 @@ import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
 import {FormGroup, Form, FormLabel} from 'react-bootstrap';
 import UserInfoInsertForm from "./UserInfoInsertForm";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchUserData} from "../../modules/auth";
 
 //회원가입 or 로그인
 

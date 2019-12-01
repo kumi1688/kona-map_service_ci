@@ -1,7 +1,10 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useReducer, useState} from 'react';
 import {IoIosThumbsUp, IoIosThumbsDown} from 'react-icons/io';
+import {AiFillAlert} from 'react-icons/ai';
 import {Button, Form,Row} from "react-bootstrap";
 import styled from "styled-components";
+import {useDispatch, useSelector} from "react-redux";
+import {addWarning} from "../../modules/auth";
 
 const ButtonWrapper = styled.div`
     padding-left: 5px;
@@ -38,13 +41,41 @@ const CustomForm = ({label}) => {
     )
 };
 
-const EstimateContainer = () => {
-    const [userEstimate, setUserEstimate] = useState(null);
-    const [input, setInput] = useState(null);
+const initialState = {
+    warning : false
+};
 
-    useEffect(() => {
-        console.dir(input);
-    }, [input]);
+const EstimateReducer = (state, action) => {
+    switch (action.type) {
+        case 'reset' : {
+            return initialState;
+        }
+        case 'addWarning' : {
+            return {...state, warning : !state.warning};
+        }
+        default: {
+            throw new Error(`unexpected action.type: ${action.type}`)
+        }
+    }
+};
+
+const EstimateContainer = ({info}) => {
+    const [localState, setLocalState] = useReducer(EstimateReducer, initialState);
+    const {username} = useSelector(({user}) => ({
+        username: user.user.username
+    }));
+
+    const dispatch = useDispatch();
+
+    const onWarningClick = useCallback( () => {
+        if(info.username === username) return;
+        setLocalState({type:'addWarning'})}, [localState.warning]);
+
+    useEffect(()=>{
+        if(localState.warning){
+            dispatch(addWarning(info.username));
+        }
+    }, [localState.warning]);
 
     return (
         <>
@@ -58,6 +89,9 @@ const EstimateContainer = () => {
                     </ButtonWrapper>
                     <ButtonWrapper>
                         <Button><IoIosThumbsDown/>싫어요</Button>
+                    </ButtonWrapper>
+                    <ButtonWrapper>
+                        <Button onClick={onWarningClick}><AiFillAlert/>신고</Button>
                     </ButtonWrapper>
                     <ButtonWrapper>
                         <Button variant="outline-info">평가 등록</Button>

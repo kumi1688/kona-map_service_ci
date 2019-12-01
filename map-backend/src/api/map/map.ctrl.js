@@ -38,11 +38,11 @@ const userPlaceList = new UserPlace([
 
 exports.makeUserPlace = async ctx => {
     const { username, name, description, tags, position, detailedPosition, publishingDate,
-    primaryPositionType, secondaryPositionType, radius } = ctx.request.body;
+    primaryPositionType, secondaryPositionType, radius, imageUrl } = ctx.request.body;
     console.dir(ctx.request.body);
     const userPlace = new UserPlace({
         username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, radius
+        primaryPositionType, secondaryPositionType, radius, imageUrl
     });
     try{
         await userPlace.save();

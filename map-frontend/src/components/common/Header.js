@@ -1,15 +1,16 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components';
-import Button from "./Button";
-import {Navbar, Nav, Form, FormControl} from "react-bootstrap";
+
+import {Navbar, Nav, Form, FormControl, Button} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {clearMap, setSearchQuery} from "../../modules/map";
+import {FiMapPin, FaRoad} from "react-icons/all";
 
 const StyledHeader = styled.div`
     padding-left: 60px;
 `;
 
-const Header = ({user, onLogout}) => {
+const Header = ({user, onLogout, setAddInfo, setAddRoad}) => {
     const dispatch = useDispatch();
     const {searchQueryOnMap, isClearMap} = useSelector(({map}) => ({
         searchQueryOnMap: map.searchQuery.searchQueryOnMap,
@@ -53,11 +54,15 @@ const Header = ({user, onLogout}) => {
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand href="/map">KONA MAP SERVICE</Navbar.Brand>
                 <Nav className="mr-auto">
-                    {user && <Nav.Link href="/userInfo">유저 정보</Nav.Link>}
                     {user && <Nav.Link onClick={onLogout}>로그아웃</Nav.Link>}
                     {!user && <Nav.Link href="/login">로그인</Nav.Link>}
                 </Nav>
                 <Form inline>
+                    <Form.Group style={{paddingRight: 20}}>
+                        <Button><FiMapPin/></Button>
+                        <div style={{paddingLeft: 10}}/>
+                        <Button><FaRoad/></Button>
+                    </Form.Group>
                     <Form.Group>
                         <FormControl type="text" placeholder="Search" className="mr-sm-2"
                         value={optionValue} onChange={onChangeSearchQuery}/>
@@ -71,7 +76,8 @@ const Header = ({user, onLogout}) => {
                             <option value="tag">태그</option>
                             <option value="description">설명</option>
                         </Form.Control>
-                        <Button variant="outline-info" size="lg"
+                        <div style={{paddingLeft: 10}}/>
+                        <Button variant="primary"
                         onSubmit={onSubmit} onClick={onSubmit}>검색</Button>
                     </Form.Group>
                 </Form>

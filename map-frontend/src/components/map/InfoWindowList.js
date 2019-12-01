@@ -142,8 +142,6 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
                     setFilteredData(roadInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
             }
         } else {
-            console.dir(placeInfo);
-            console.dir(roadInfo);
             switch (searchQueryOption) {
                 case "name":
                     setFilteredBundlePlace(placeInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
@@ -382,7 +380,7 @@ const InfoWindowItem = ({info, zoom}) => {
                             <p>등록일 : {info.publishingDate}</p>
                         </>
                     )}
-                    {localInfo.visibleOnTabEstimate && <EstimateContainer/>}
+                    {localInfo.visibleOnTabEstimate && <EstimateContainer info={info}/>}
                     {localInfo.visibleOnTabComment &&
                     <CommentContainer info={info} setUpdateCommentList={updateComment}/>}
                 </>

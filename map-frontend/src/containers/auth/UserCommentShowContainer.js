@@ -19,7 +19,7 @@ const UserCommentShowContainer = () => {
         const fetchComment = async () => {
             setLoading(true);
             try {
-                const response = await client.get(`/api/comment/${username}`);
+                const response = await client.get(`/api/comment/findComment/${username}`);
                 setCommentList(response.data);
             } catch (e) {
                 console.dir(e);

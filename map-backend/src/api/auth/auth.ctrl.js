@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import User from '../../models/user';
+import UserPlace from "../../models/userPlace";
 
 export const register = async ctx => {
     const schema = Joi.object().keys({
@@ -19,23 +20,24 @@ export const register = async ctx => {
 
     const result = Joi.validate(ctx.request.body, schema);
     console.dir(ctx.request.body);
-    if(result.error){
+    if (result.error) {
         ctx.status = 400;
         ctx.body = result.error;
         return;
     }
 
 
-    const { username, password, firstLivingArea, secondLivingArea, gender, age, providingInfo } = ctx.request.body;
-    try{
+    const {username, password, firstLivingArea, secondLivingArea, gender, age, providingInfo} = ctx.request.body;
+    try {
         const exists = await User.findByUsername(username);
-        if( exists ) {
+        if (exists) {
             ctx.status = 409;
             return;
         }
 
         const user = new User({
-            username, firstLivingArea, secondLivingArea, gender, age, providingInfo
+            username, firstLivingArea, secondLivingArea, gender, age, providingInfo, warningCount: 0,
+            status: {watch : false, block: false}
         });
         await user.setPassword(password);
         await user.save();
@@ -44,32 +46,32 @@ export const register = async ctx => {
 
         const token = user.generateToken();
         ctx.cookies.set('access_token', token, {
-            maxAge: 1000* 60*60*24*7,
+            maxAge: 1000 * 60 * 60 * 24 * 7,
             httpOnly: true,
         });
-    } catch(e) {
+    } catch (e) {
         ctx.throw(500, e);
     }
 };
 
 export const login = async ctx => {
-    const { username, password } = ctx.request.body;
+    const {username, password} = ctx.request.body;
     console.dir('login try');
 
-    if(!username || !password ) {
+    if (!username || !password) {
         ctx.status = 401;
         return;
     }
 
-    try{
+    try {
         const user = await User.findByUsername(username);
-        if(!user){
+        if (!user) {
             ctx.staus = 401;
             return;
         }
 
         const valid = await user.checkPassword(password);
-        if(!valid){
+        if (!valid) {
             ctx.status = 401;
             return;
         }
@@ -77,18 +79,18 @@ export const login = async ctx => {
         ctx.body = user.serialize();
         const token = user.generateToken();
         ctx.cookies.set('access_token', token, {
-            maxAge: 1000*60*60*24*7,
+            maxAge: 1000 * 60 * 60 * 24 * 7,
             httpOnly: true,
         });
-        //
-    } catch(e){
+
+    } catch (e) {
         ctx.throw(500, e);
     }
 };
 
 export const check = async ctx => {
-    const { user } = ctx.state;
-    if(!user){
+    const {user} = ctx.state;
+    if (!user) {
         ctx.status = 401;
         return;
     }
@@ -100,33 +102,101 @@ export const logout = async ctx => {
 };
 
 export const userInfo = async ctx => {
-    const { username } = ctx.params;
+    const {username} = ctx.params;
+    console.dir(username);
+    if(username === undefined || username === null){
+        try{
+            const userInfo = await User.find().exec();
+            if(!userInfo){
+                ctx.status = 404;
+                return;
+            }
+            ctx.body = userInfo;
+        }catch(e){
+            ctx.throw(500, e);
+        }
+    }
+    else {
+        try {
+            const userInfo = await User.findByUsername(username).exec();
+            if (!userInfo) {
+                ctx.status = 404;
+                return;
+            }
+            ctx.body = userInfo;
+        } catch (e) {
+            ctx.throw(500, e);
+        }
+    }
+};
 
+export const addWarning = async ctx => {
+    const {username} = ctx.params;
+    try {
+        const result = await User.findByUsername(username);
+        //console.dir(result._doc._id);
+        //const result3 = await User.findById(result._doc._id);
+        //console.dir(result3);
+
+        const nextData = {...result, _doc: {...result._doc, warningCount: result._doc.warningCount + 1}};
+        //console.dir(nextData);
+        const result2 = await User.updateOne({_id: result._id}, {warningCount: result.warningCount+1}, {new: true}).exec();
+        ctx.body = result2;
+    } catch (e) {
+        ctx.throw(404, e);
+    }
+};
+
+export const setWatch = async ctx => {
+    const {username} = ctx.params;
+    const {status} = ctx.request.body;
     try{
-        const userInfo = await User.findByUsername(username).exec();
-        if(!userInfo){
+        const result = await User.findByUsername(username);
+        if(!result){
             ctx.status = 404;
             return;
         }
-        ctx.body = userInfo;
-    } catch(e){
+        const result2  = await User.updateOne({_id: result._id}, {status:
+                    {watch: status, block: result._doc.status.block}}, {new: true}).exec();
+        ctx.body = result2;
+    }catch(e){
+        ctx.throw(404, e);
+    }
+};
+
+export const setBlock = async ctx => {
+    const {username} = ctx.params;
+    const {status} = ctx.request.body;
+    try{
+        const result = await User.findByUsername(username);
+        if(!result){
+            ctx.status = 404;
+            return;
+        }
+        const result2  = await User.updateOne({_id: result._id}, {status:
+                {block: status, watch: result._doc.status.watch}}, {new: true}).exec();
+        ctx.body = result2;
+    }catch(e){
+        ctx.throw(404, e);
+    }
+};
+
+
+
+export const getTotalUserNumber = async ctx => {
+    try {
+        const userNumber = await User.getTotalNumber().exec();
+        ctx.body = userNumber.length;
+    } catch (e) {
         ctx.throw(500, e);
     }
 };
 
-export const getTotalUserNumber = async ctx => {
-    try{
-        const userNumber = await User.getTotalNumber().exec();
-        ctx.body = userNumber.length;
-    }catch(e){
-        ctx.throw(500, e);
-    }
-};
 export const getManNumber = async ctx => {
-    try{
+    try {
         const manNumber = await User.getManNumber().exec();
         ctx.body = manNumber.length;
-    } catch(e){
+    } catch (e) {
         ctx.throw(500, e);
     }
 };
@@ -149,24 +219,34 @@ const secondLivingArea = {
 
 const initialState = {
     total: 0,
-    gender : {man : 0, woman: 0},
-    age : {zero: 0, one: 0, two: 0, three: 0, four:0, five: 0, six: 0, seven: 0, eight: 0, nine: 0},
-    livingArea : {
-        seoul : new Array(secondLivingArea.seoul.length+1),
-        busan : new Array(secondLivingArea.busan.length+1),
-        daegu : new Array(secondLivingArea.daegu.length+1),
-        incheon : new Array(secondLivingArea.incheon.length+1),
-        gwangju : new Array(secondLivingArea.gwangju.length+1),
-        daejeon : new Array(secondLivingArea.daejeon.length+1),
-        ulsan : new Array(secondLivingArea.ulsan.length+1),
-        sejong : new Array(secondLivingArea.sejong.length+1),
+    gender: {man: 0, woman: 0},
+    age: {zero: 0, one: 0, two: 0, three: 0, four: 0, five: 0, six: 0, seven: 0, eight: 0, nine: 0},
+    livingArea: {
+        seoul: new Array(secondLivingArea.seoul.length + 1),
+        busan: new Array(secondLivingArea.busan.length + 1),
+        daegu: new Array(secondLivingArea.daegu.length + 1),
+        incheon: new Array(secondLivingArea.incheon.length + 1),
+        gwangju: new Array(secondLivingArea.gwangju.length + 1),
+        daejeon: new Array(secondLivingArea.daejeon.length + 1),
+        ulsan: new Array(secondLivingArea.ulsan.length + 1),
+        sejong: new Array(secondLivingArea.sejong.length + 1),
     }
 };
 
 const initArray = (arr) => {
-    for(let i = 0; i < arr.length; i++){
+    for (let i = 0; i < arr.length; i++) {
         arr[i] = 0;
-    };
+    }
+    ;
+};
+
+const initInitialState = () => {
+    initialState.total = 0;
+    initialState.age.zero = initialState.age.one = initialState.age.two = initialState.age.three =
+        initialState.age.four = initialState.age.five = initialState.age.six = initialState.age.seven =
+            initialState.age.eight = initialState.age.nine = 0;
+    initialState.gender.man = initialState.gender.woman = 0;
+    initLivingArea();
 };
 
 const initLivingArea = () => {
@@ -181,96 +261,117 @@ const initLivingArea = () => {
 };
 
 export const getUserStatistics = async ctx => {
-    try{
-        initLivingArea();
-        let statistics = initialState;
+    try {
+        initInitialState();
+        let statistics = {...initialState};
         const data = await User.find().exec();
         // 총 인원
         statistics.total = data.length;
 
-        data.forEach(function(element){
+        data.forEach(function (element) {
             //성별
-            if(element.gender === '남성') statistics.gender.man++;
+            if (element.gender === '남자') statistics.gender.man++;
             else statistics.gender.woman++;
 
             // 나이
-            switch(element.age){
-                case '0': statistics.age.zero++; break;
-                case '10': statistics.age.one++; break;
-                case '20': statistics.age.two++; break;
-                case '30': statistics.age.three++; break;
-                case '40': statistics.age.four++; break;
-                case '50': statistics.age.five++; break;
-                case '60': statistics.age.six++; break;
-                case '70': statistics.age.seven++; break;
-                case '80': statistics.age.eight++; break;
-                case '90': statistics.age.nine++; break;
-                default : break;
+            switch (element.age) {
+                case '0':
+                    statistics.age.zero++;
+                    break;
+                case '10':
+                    statistics.age.one++;
+                    break;
+                case '20':
+                    statistics.age.two++;
+                    break;
+                case '30':
+                    statistics.age.three++;
+                    break;
+                case '40':
+                    statistics.age.four++;
+                    break;
+                case '50':
+                    statistics.age.five++;
+                    break;
+                case '60':
+                    statistics.age.six++;
+                    break;
+                case '70':
+                    statistics.age.seven++;
+                    break;
+                case '80':
+                    statistics.age.eight++;
+                    break;
+                case '90':
+                    statistics.age.nine++;
+                    break;
+                default :
+                    break;
             }
 
             let i;
             // 사는 지역
-            switch(element.firstLivingArea){
+            switch (element.firstLivingArea) {
                 case '서울특별시' : {
-                    statistics.livingArea.seoul[statistics.livingArea.seoul.length-1]++;
-                  for(i = 0; i < secondLivingArea.seoul.length; i++) {
-                      if(secondLivingArea.seoul[i] === element.secondLivingArea )
-                          statistics.livingArea.seoul[i]++;
-                  }
-                  break;
+                    statistics.livingArea.seoul[statistics.livingArea.seoul.length - 1]++;
+                    for (i = 0; i < secondLivingArea.seoul.length; i++) {
+                        if (secondLivingArea.seoul[i] === element.secondLivingArea)
+                            statistics.livingArea.seoul[i]++;
+                    }
+                    break;
                 }
                 case '부산광역시' : {
-                    statistics.livingArea.busan[statistics.livingArea.seoul.busan-1]++;
-                    for(i = 0; i < secondLivingArea.busan.length; i++) {
-                        if(secondLivingArea.busan[i] === element.secondLivingArea )
+                    statistics.livingArea.busan[statistics.livingArea.seoul.busan - 1]++;
+                    for (i = 0; i < secondLivingArea.busan.length; i++) {
+                        if (secondLivingArea.busan[i] === element.secondLivingArea)
                             statistics.livingArea.busan[i]++;
                     }
                     break;
                 }
                 case '대구광역시' : {
-                    statistics.livingArea.daegu[statistics.livingArea.daegu.length-1]++;
-                    for(i = 0; i < secondLivingArea.daegu.length; i++) {
-                        if(secondLivingArea.daegu[i] === element.secondLivingArea )
+                    statistics.livingArea.daegu[statistics.livingArea.daegu.length - 1]++;
+                    for (i = 0; i < secondLivingArea.daegu.length; i++) {
+                        if (secondLivingArea.daegu[i] === element.secondLivingArea)
                             statistics.livingArea.daegu[i]++;
                     }
                     break;
                 }
                 case '인천광역시' : {
-                    statistics.livingArea.incheon[statistics.livingArea.incheon.length-1]++;
-                    for(i = 0; i < secondLivingArea.incheon.length; i++) {
-                        if(secondLivingArea.incheon[i] === element.secondLivingArea )
+                    statistics.livingArea.incheon[statistics.livingArea.incheon.length - 1]++;
+                    for (i = 0; i < secondLivingArea.incheon.length; i++) {
+                        if (secondLivingArea.incheon[i] === element.secondLivingArea)
                             statistics.livingArea.incheon[i]++;
                     }
                     break;
                 }
                 case '광주광역시' : {
-                    statistics.livingArea.gwangju[statistics.livingArea.gwangju.length-1]++;
-                    for(i = 0; i < secondLivingArea.gwangju.length; i++) {
-                        if(secondLivingArea.gwangju[i] === element.secondLivingArea )
+                    statistics.livingArea.gwangju[statistics.livingArea.gwangju.length - 1]++;
+                    for (i = 0; i < secondLivingArea.gwangju.length; i++) {
+                        if (secondLivingArea.gwangju[i] === element.secondLivingArea)
                             statistics.livingArea.gwangju[i]++;
                     }
                     break;
                 }
                 case '대전광역시 ' : {
-                    statistics.livingArea.daejeon[statistics.livingArea.daejeon.length-1]++;
-                    for(i = 0; i < secondLivingArea.daejeon.length; i++) {
-                        if(secondLivingArea.daejeon[i] === element.secondLivingArea )
+                    statistics.livingArea.daejeon[statistics.livingArea.daejeon.length - 1]++;
+                    for (i = 0; i < secondLivingArea.daejeon.length; i++) {
+                        if (secondLivingArea.daejeon[i] === element.secondLivingArea)
                             statistics.livingArea.daejeon[i]++;
                     }
                     break;
                 }
                 case '울산광역시' : {
-                    statistics.livingArea.ulsan[statistics.livingArea.ulsan.length-1]++;
-                    for(i = 0; i < secondLivingArea.ulsan.length; i++) {
-                        if(secondLivingArea.ulsan[i] === element.secondLivingArea )
+                    statistics.livingArea.ulsan[statistics.livingArea.ulsan.length - 1]++;
+                    for (i = 0; i < secondLivingArea.ulsan.length; i++) {
+                        if (secondLivingArea.ulsan[i] === element.secondLivingArea)
                             statistics.livingArea.ulsan[i]++;
                     }
                     break;
                 }
                 case '세종특별시' : {
-                    statistics.livingArea.sejong[statistics.livingArea.sejong.length-1]++;
-                    for(i = 0; i < secondLivingArea.sejong.length; i++) {
-                        if(secondLivingArea.sejong[i] === element.secondLivingArea )
+                    statistics.livingArea.sejong[statistics.livingArea.sejong.length - 1]++;
+                    for (i = 0; i < secondLivingArea.sejong.length; i++) {
+                        if (secondLivingArea.sejong[i] === element.secondLivingArea)
                             statistics.livingArea.sejong[i]++;
                     }
                     break;
@@ -279,7 +380,7 @@ export const getUserStatistics = async ctx => {
             // 지역별 통계 끝
         });
         ctx.body = statistics;
-    }catch(e){
+    } catch (e) {
         ctx.throw(500, e);
     }
 };

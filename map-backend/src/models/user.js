@@ -10,6 +10,8 @@ const UserSchema = new Schema({
     gender: String,
     age: String,
     providingInfo: Boolean,
+    warningCount: Number,
+    status: { block: Boolean, watch : Boolean }
     });
 
 UserSchema.methods.setPassword = async function(password){
