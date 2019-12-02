@@ -12,9 +12,12 @@ class ImageUpload extends React.Component {
         this.handleFileInput = this.handleFileInput.bind(this);
     }
 
-    onDrop(picture) {
+    onDrop(e) {
+        console.dir(e.target.files);
         this.setState({
-            pictures: this.state.pictures.concat(picture),
+            //pictures: this.state.pictures.concat(e.target.files),
+            //pictures: this.state.pictures.concat(e.target.files)
+            pictures: e.target.files
         });
     }
 
@@ -25,11 +28,36 @@ class ImageUpload extends React.Component {
     }
 
     onClick() {
-        const formData = new FormData();
-        console.dir(this.state.pictures);
-        formData.append('file', this.state.pictures);
-        console.dir(formData);
+        let formData = [this.state.pictures.length];
+        let i;
+        for (i = 0; i < this.state.pictures.length; i++) {
+            formData[i] = new FormData();
+            //console.dir(this.state.pictures[i]);
+            formData[i].append('file', this.state.pictures[i]);
+        }
 
+        console.dir(formData);
+        //formData.append('file', this.state.pictures);
+        //console.dir(formData);
+        let imageUrl = [];
+
+        const uploadImage = async () => {
+            const upload = async () => {
+                for (i = 0; i < formData.length; i++) {
+                    const result = await client.post('api/upload', formData[i]);
+                    imageUrl[i] = result.data.url;
+                    console.dir(result);
+                }
+            };
+            await upload().then( res => {
+                alert('업로드 성공');
+                this.props.updateImageUrl(imageUrl);
+            }  ).catch(err=> alert('업로드 실패'));
+        };
+
+        uploadImage();
+
+        /*
         return client.post("/api/upload", formData).then(res => {
             console.dir(res);
             this.props.updateImageUrl(res.data.url);
@@ -37,6 +65,7 @@ class ImageUpload extends React.Component {
         }).catch(err => {
             alert('이미지 파일 업로드 실패');
         });
+        */
     };
 
     render() {
@@ -55,7 +84,7 @@ class ImageUpload extends React.Component {
                 <Button variant="outline-info" onClick={this.onClick}>이미지 등록</Button>
                 */}
 
-                <input type="file" name="file" onChange={e => this.handleFileInput(e)}/>
+                <input type="file" name="file" multiple onChange={this.onDrop}/>
                 <Button type="button" onClick={this.onClick}>업로드</Button>
 
 

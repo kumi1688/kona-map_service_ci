@@ -59,9 +59,9 @@ const Header = ({user, onLogout, setAddInfo, setAddRoad}) => {
                 </Nav>
                 <Form inline>
                     <Form.Group style={{paddingRight: 20}}>
-                        <Button><FiMapPin/></Button>
+                        <Button onClick={setAddInfo}><FiMapPin/></Button>
                         <div style={{paddingLeft: 10}}/>
-                        <Button><FaRoad/></Button>
+                        <Button onClick={setAddRoad}><FaRoad/></Button>
                     </Form.Group>
                     <Form.Group>
                         <FormControl type="text" placeholder="Search" className="mr-sm-2"

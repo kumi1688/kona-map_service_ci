@@ -11,7 +11,9 @@ const UserStatisticsContainer = () => {
 
     useEffect(()=> {
         dispatch(fetchUserStatistics());
+
     }, []);
+
 
     if(!userStatistics) return null;
 

@@ -1,6 +1,7 @@
 import Comment from "../../models/comment";
 import UserPlace from "../../models/userPlace";
 import Joi from "joi";
+import comment from "./index";
 
 function makeCommentList(array) {
     let newCommentList = [];
@@ -107,7 +108,7 @@ export const findByObjectID = async ctx => {
 
 export const fetchCommentList = async ctx => {
   try{
-    const result = await comment.find().exec();
+    const result = await Comment.find().exec();
     if(!result){
         ctx.status = 404;
         return;
@@ -116,4 +117,19 @@ export const fetchCommentList = async ctx => {
   } catch(e){
       ctx.throw(500, e);
   }
+};
+
+export const deleteComment = async ctx => {
+    const {id} = ctx.params;
+    try{
+        const result2 = await Comment.find({_id: id}).exec();
+        const result = await Comment.findOneAndDelete(id).exec();
+        if(!result){
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = result;
+    }catch(e){
+        ctx.throw(500, e);
+    }
 };

@@ -68,6 +68,8 @@ const MapContainer = () => {
             isAddBookMark : map.isAddBookMark,
         }));
 
+        const initialPosition = {lat: 37.284315, lng: 127.044504};
+
         const [temp, setTemp] = useState(null);
         const [fetchedRoadList, setFetchedRoadList] = useState(null);
         const [uploadRoadList, setUploadRoadList] = useState([]);
@@ -78,6 +80,7 @@ const MapContainer = () => {
         const [zoom, setZoom] = useState(15);
         const [drawingMode, setDrawingMode] = useState(null);
         const [marker, setMarker] = useState(null);
+        const [center, setCenter] = useState(initialPosition);
         const [circle, setCircle] = useState(null);
         const [radius, setRadius] = useState(null);
         const [insertInfoBox, setInsertInfoBox] = useState(null);
@@ -89,7 +92,7 @@ const MapContainer = () => {
         const [isAddRoadInfo, setIsAddRoadInfo] = useState(null);
 
 
-        const initialPosition = {lat: 37.284315, lng: 127.044504};
+
 
         const onMapClick = useCallback(e => {
             console.dir('클릭');
@@ -173,6 +176,18 @@ const MapContainer = () => {
             //console.dir(e.getZoom());
         }, [map]);
 
+        const getCenter = useCallback( e=> {
+            const fetchCenter = async () => {
+                try{
+                    const response = await map.getCenter();
+                    setCenter(response);
+                }catch(e){
+                    console.dir(e);
+                }
+            };
+            fetchCenter();
+        }, [map]);
+
         const onZoomChanged = useCallback(e => {
             const fetchZoom = async () => {
                 try {
@@ -201,13 +216,9 @@ const MapContainer = () => {
                 setRoadList(roadList.concat(arr));
             }, [drawingMode]);
 
-        useEffect(() => {
-            console.dir(temp);
-        }, [temp]);
-
-        useEffect(() => {
-            console.dir(roadList);
-        }, [roadList]);
+        useEffect(() =>{
+            console.dir(center);
+        }, [center]);
 
         const onVisibleToggle = useCallback(
             () => {
@@ -266,10 +277,11 @@ const MapContainer = () => {
                                     width: '1350px'
                                 }}
                                 zoom={zoom}
-                                center={initialPosition}
+                                center={center}
                                 onClick={onMapClick}
                                 onLoad={getMapObject}
                                 onZoomChanged={onZoomChanged}
+                                onDragEnd={getCenter}
                                 onRightClick={onRightClick}
                                 options={{
                                     zoomControl: true,

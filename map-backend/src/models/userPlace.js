@@ -14,7 +14,8 @@ const UserPlaceSchema = new Schema({
     secondaryPositionType: String,
     radius: Number,
     commentList: [],
-    imageUrl : String,
+    imageUrl : [String],
+    block: Number,
 });
 
 UserPlaceSchema.statics.findByUsername = function(username){

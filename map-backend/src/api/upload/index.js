@@ -3,6 +3,6 @@ import * as uploadCtrl from './upload.ctrl';
 
 const upload = new Router();
 
-upload.post('/', uploadCtrl.upload3);
+upload.post('/', uploadCtrl.upload2);
 
 export default upload;

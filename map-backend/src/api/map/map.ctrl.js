@@ -39,10 +39,10 @@ const userPlaceList = new UserPlace([
 exports.makeUserPlace = async ctx => {
     const { username, name, description, tags, position, detailedPosition, publishingDate,
     primaryPositionType, secondaryPositionType, radius, imageUrl } = ctx.request.body;
-    console.dir(ctx.request.body);
+    //console.dir(ctx.request.body);
     const userPlace = new UserPlace({
         username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, radius, imageUrl
+        primaryPositionType, secondaryPositionType, radius, imageUrl, block: 0
     });
     try{
         await userPlace.save();
@@ -125,11 +125,11 @@ exports.findUserPlace = async ctx => {
 
 exports.makeUserRoad = async ctx => {
     const { username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, roadInfo } = ctx.request.body;
-    console.dir(ctx.request.body);
+        primaryPositionType, secondaryPositionType, roadInfo, imageUrl } = ctx.request.body;
+    //console.dir(ctx.request.body);
     const userRoad = new UserRoad({
         username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, roadInfo
+        primaryPositionType, secondaryPositionType, roadInfo, imageUrl, block: 0
     });
     try{
         await userRoad.save();
@@ -154,7 +154,7 @@ exports.findUserPlaceByType = async ctx => {
 };
 
 exports.updateUserRoadComment = async ctx => {
-    console.dir('----------------------------');
+    //console.dir('----------------------------');
     //console.dir(ctx.request.body);
 
     let arr = [];
@@ -176,7 +176,7 @@ exports.updateUserRoadComment = async ctx => {
     const {id} = ctx.params;
 
     try{
-        console.dir(arr);
+        //console.dir(arr);
         const road = await UserRoad.findByIdAndUpdate(id, {commentList: arr}, {
             new: true,
         }).exec();
@@ -200,9 +200,6 @@ export const checkOwnPost = (ctx, next) => {
 };
 
 export const updateUserPlaceComment = async ctx => {
-    console.dir('---------------------------');
-    console.dir(ctx.request.body);
-
     let arr = [];
     try{
         ctx.request.body.commentList.forEach(function(element){
@@ -222,7 +219,7 @@ export const updateUserPlaceComment = async ctx => {
     const {id} = ctx.params;
 
     try{
-        console.dir(arr);
+        //console.dir(arr);
         const road = await UserPlace.findByIdAndUpdate(id, {commentList: arr}, {
             new: true,
         }).exec();
@@ -232,6 +229,24 @@ export const updateUserPlaceComment = async ctx => {
         }
         ctx.body = road;
     } catch(e){
+        ctx.throw(500, e);
+    }
+};
+
+export const deleteComment = async ctx => {
+    const {userPlaceId, commentId} = ctx.request.body;
+    //console.dir(commentId);
+    try{
+        const result = await UserPlace.findOne(userPlaceId).exec();
+        const result2 = await UserPlace.findOneAndUpdate(userPlaceId,
+            {commentList: result._doc.commentList.filter(comment => comment._id !== commentId)}, {new:true});
+        console.dir(result2);
+        if(!result || !result2 ){
+            ctx.status = 404;
+            return;
+        }
+        ctx.status = 200;
+    }catch(e){
         ctx.throw(500, e);
     }
 };
@@ -264,3 +279,7 @@ exports.listUserBundle = async ctx => {
         ctx.throw(500, e);
     }
 };
+
+
+
+

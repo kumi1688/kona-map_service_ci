@@ -46,19 +46,17 @@ export const upload = ctx => {
     ctx.status = 200;
 };
 
-
-
-export const upload3 = async ctx => {
+export const upload2 = async ctx => {
     const file = ctx.request.files.file;
-    const { key, url } = await uploadFile({
+    const {key, url} = await uploadFile({
         fileName: file.name,
         filePath: file.path,
         fileType: file.type,
     });
-    ctx.body = { key, url };
+    ctx.body = {key, url};
 };
 
-const uploadFile = async ({ fileName, filePath, fileType }) => {
+const uploadFile = async ({fileName, filePath, fileType}) => {
     return new Promise((resolve, reject) => {
         aws.config.update({
             region: "ap-northeast-2",
@@ -74,7 +72,7 @@ const uploadFile = async ({ fileName, filePath, fileType }) => {
         });
 
         const stream = fs.createReadStream(filePath);
-        stream.on("error", function(err) {
+        stream.on("error", function (err) {
             reject(err);
         });
 
@@ -87,11 +85,11 @@ const uploadFile = async ({ fileName, filePath, fileType }) => {
                 Key: fileName,
                 ContentType: fileType,
             },
-            function(err, data) {
+            function (err, data) {
                 if (err) {
                     reject(err);
                 } else if (data) {
-                    resolve({ key: data.Key, url: data.Location });
+                    resolve({key: data.Key, url: data.Location});
                 }
             }
         );

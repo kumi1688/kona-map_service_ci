@@ -17,6 +17,8 @@ import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
 import UserStatisticsContainer from "./UserStatisticsContainer";
 import UserManageContainer from "./UserManageContainer";
+import UserPlaceStatisticsContainer from "./UserPlaceStatisticsContainer";
+import UserPlaceManageContainer from "./UserPlaceManageContainer";
 
 const StyledSideBar = styled.div`
     height: 100%;
@@ -71,6 +73,9 @@ const SideBarContainter = ({history}) => {
                                 case "/userInfo/statistics" :
                                 case "/userInfo/manageUser":
                                 case "/userInfo/comment":
+                                case "/placeInfo/managePlace":
+                                case "/placeInfo/manageRoad":
+                                case "/placeInfo/statistics":
                                 case "/geo" :
                                     history.push(to);
                                     route = true;
@@ -131,7 +136,7 @@ const SideBarContainter = ({history}) => {
                                         위치 게시글 통계
                                     </NavText>
                                 </NavItem>
-                                <NavItem eventKey="placeInfo/point">
+                                <NavItem eventKey="placeInfo/managePlace">
                                     <NavIcon>
                                         <FontAwesomeIcon icon={faMapMarker} size="2x"/>
                                     </NavIcon>
@@ -139,7 +144,7 @@ const SideBarContainter = ({history}) => {
                                         위치 게시글 관리
                                     </NavText>
                                 </NavItem>
-                                <NavItem eventKey="placeInfo/road">
+                                <NavItem eventKey="placeInfo/manageRoad">
                                     <NavIcon>
                                         <FontAwesomeIcon icon={faRoad} size="2x"/>
                                     </NavIcon>
@@ -147,7 +152,7 @@ const SideBarContainter = ({history}) => {
                                         경로 게시글 관리
                                     </NavText>
                                 </NavItem>
-                                <NavItem eventKey="placeInfo/building">
+                                <NavItem eventKey="placeInfo/adminBuilding">
                                     <NavIcon>
                                         <FontAwesomeIcon icon={faBuilding} size="2x"/>
                                     </NavIcon>
@@ -187,6 +192,9 @@ const SideBarContainter = ({history}) => {
                         {/*<Route path={["/", "/home"]} exact component={MapPage}/>*/}
                         <Route path={"/userInfo/statistics"} exact component={UserStatisticsContainer}/>
                         <Route path={"/userInfo/manageUser"} exact component={UserManageContainer}/>
+                        <Route path={"/placeInfo/statistics"} exact component={UserPlaceStatisticsContainer}/>
+                        <Route path={"/placeInfo/managePlace"} exact component={UserPlaceManageContainer}/>
+
                     </main>
                 </React.Fragment>
             )}/>

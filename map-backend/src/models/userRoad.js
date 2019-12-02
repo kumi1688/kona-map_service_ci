@@ -13,6 +13,8 @@ const UserRoadSchema = new Schema({
     secondaryPositionType: String,
     commentList: [],
     roadInfo: Object,
+    imageUrl: [String],
+    block: Number,
 });
 
 UserRoadSchema.statics.findByUsername = function(username){

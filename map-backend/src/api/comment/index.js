@@ -9,4 +9,6 @@ comment.get('/findComment/:username', commentCtrl.findByUsername);
 
 comment.get('/userList', commentCtrl.fetchCommentList);
 
+comment.delete('/deleteComment/:id', commentCtrl.deleteComment);
+
 export default comment;

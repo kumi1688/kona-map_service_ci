@@ -44,6 +44,7 @@ const initialState = {
     secondaryPositionType: "4차로",
     roadInfo : null,
     username : null,
+    imageUrl : null,
 };
 
 const infoReducer = (state, action) => {
@@ -89,6 +90,9 @@ const infoReducer = (state, action) => {
         case 'updateUserName' : {
             return {...state, username: action.username}
         }
+        case 'updateImageUrl' : {
+            return {...state, imageUrl: action.imageUrl}
+        }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
         }
@@ -123,6 +127,9 @@ const RoadModal = ( {roadPath}) => {
     const updateUserName = () => {
         setLocalInfo( {type: 'updateUserName', username: username});
     };
+    const updateImageUrl = (imageUrl) => {
+        setLocalInfo({type: 'updateImageUrl', imageUrl : imageUrl});
+    };
 
     const handleShow = useCallback(() => {
         if (!show) setShow(true);
@@ -143,6 +150,7 @@ const RoadModal = ( {roadPath}) => {
                     secondaryPositionType: localInfo.secondaryPositionType,
                     username: localInfo.username,
                     roadInfo: localInfo.roadInfo,
+                    imageUrl: localInfo.imageUrl,
                 }));
             };
             saveData();
@@ -172,7 +180,7 @@ const RoadModal = ( {roadPath}) => {
 
                     <Form.Group controlId="photo">
                         <Form.Label>사진</Form.Label>
-                        <ImageUpload/>
+                        <ImageUpload updateImageUrl={updateImageUrl}/>
                     </Form.Group>
 
                     <Form>

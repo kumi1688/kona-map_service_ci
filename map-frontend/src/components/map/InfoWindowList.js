@@ -18,6 +18,8 @@ import client from "../../lib/api/client";
 import ClusterMarkerContainer from "../../containers/map/ClusterMarkerContainer";
 import RoadViewContainer from "../../containers/map/RoadViewContainer";
 import CardComponent from "./CardComponent";
+import CarouselComponent from "./CarouselComponent";
+import styled from "styled-components";
 
 const getPrimaryPosition = (position) => {
     switch (position) {
@@ -46,16 +48,26 @@ const getPrimaryPosition = (position) => {
 
 const findIcon = primaryType => {
     switch (primaryType) {
-        case 'education': return schoolIcon;
-        case 'excercise': return stadiumIcon;
-        case 'hospital' : return hostpitalIcon;
-        case 'entertainment' : return amuseIcon;
-        case "food": return foodIcon;
-        case "transport" : return carIcon;
-        case "restPlace": return bedIcon;
-        case "convenience" : return convenientIcon;
-        case "hairshop" : return salonIcon;
-        default : return null;
+        case 'education':
+            return schoolIcon;
+        case 'excercise':
+            return stadiumIcon;
+        case 'hospital' :
+            return hostpitalIcon;
+        case 'entertainment' :
+            return amuseIcon;
+        case "food":
+            return foodIcon;
+        case "transport" :
+            return carIcon;
+        case "restPlace":
+            return bedIcon;
+        case "convenience" :
+            return convenientIcon;
+        case "hairshop" :
+            return salonIcon;
+        default :
+            return null;
     }
 };
 
@@ -93,6 +105,15 @@ const adjustMouseOverPosition = (position, zoom) => {
     }
     return customPosition;
 };
+
+const VerticalLine = styled.div`
+  border-left: 1px dotted blue;
+  height: 450px;
+  position: absolute;
+  left: 50%;
+  margin-left: -3px;
+  top: 0;
+`;
 
 const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
     const {searchQuery, searchQueryType, searchQueryOption} = useSelector(({map}) => ({
@@ -306,7 +327,7 @@ const InfoWindowItem = ({info, zoom}) => {
 
     return (
         <>
-            {localInfo.visibleMarkerMouseOver && <InfoWindow
+            {localInfo.visibleMarkerMouseOver && !localInfo.visibleInfoWindow && <InfoWindow
                 position={adjustMouseOverPosition(info.position, zoom)}>
                 <CardComponent info={info}/>
             </InfoWindow>}
@@ -315,75 +336,86 @@ const InfoWindowItem = ({info, zoom}) => {
                     visible={zoom <= 13 ? false : true}
                     onMouseOver={toggleMarKerMouseOver}
                     onMouseOut={toggleMarKerMouseOver}
-                    />
+            />
             {info.radius !== undefined && localInfo.visibleInfoWindow &&
             <Circle center={info.position} radius={info.radius}/>}
             {localInfo.visibleInfoWindow &&
-            <InfoWindow position={adjustMouseOverPosition(info.position, zoom)} onCloseClick={onCloseClick}>
-                <>
-                    <Nav fill justify variant="pills" defaultActiveKey="info-position">
-                        <Nav.Item>
-                            <Nav.Link eventKey="info-position"
-                                      onSelect={toggleTabPosition}
-                            >위치 정보</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="estimate-user"
-                                      onSelect={toggleTabEstimate}
-                            >사용자 평가</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="comment-user"
-                                      onSelect={toggleTabComment}
-                            >댓글</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="bookMark"
-                                      onSelect={addInfoToBookMark}
-                            >즐겨찾기추가
-                            </Nav.Link>
-                        </Nav.Item>
-                    </Nav>
-                    <hr/>
-                    {localInfo.visibleOnTabPosition && (
-                        <>
-                            <Form>
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="4" style={{textAlign: "center"}}>
-                                        이름
-                                    </Form.Label>
-                                    <ListGroup.Item>{info.name}</ListGroup.Item>
-                                </Form.Group>
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="4" style={{textAlign: "center"}}>
-                                        설명
-                                    </Form.Label>
-                                    <ListGroup.Item>{info.description}</ListGroup.Item>
-                                </Form.Group>
-                                <Form.Group as={Row} style={{textAlign: "center"}}>
-                                    <Form.Label column sm="4">
-                                        위치 타입
-                                    </Form.Label>
-                                    <ListGroup.Item>{getPrimaryPosition(info.primaryPositionType)}</ListGroup.Item>
-                                    <ListGroup.Item>{info.secondaryPositionType}</ListGroup.Item>
-                                </Form.Group>
-                                <Form.Group as={Row} style={{textAlign: "center"}}>
-                                    <Form.Label column sm="4">
-                                        태그
-                                    </Form.Label>
-                                    {info.tags.map((tag, index) => (<ListGroupItem key={index}>#{tag}</ListGroupItem>))}
-                                </Form.Group>
-                            </Form>
+            <InfoWindow position={adjustMouseOverPosition(info.position, zoom)} onCloseClick={onCloseClick}
+                        options={{maxWidth: "1200px", maxHeight: "600px"}}>
+                <div style={{width: 1100, height: 600}}>
+                    <Row>
+                        <Col>
+                            <div style={{width: 600, height: 600}}>
+                                <CarouselComponent info={info}/>
+                            </div>
+                        </Col>
+                        <Col>
+                            <div style={{width: 400, height: 600}}>
+                                <Nav fill justify variant="pills" defaultActiveKey="info-position">
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="info-position"
+                                                  onSelect={toggleTabPosition}
+                                        >위치 정보</Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="estimate-user"
+                                                  onSelect={toggleTabEstimate}
+                                        >사용자 평가</Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="comment-user"
+                                                  onSelect={toggleTabComment}
+                                        >댓글</Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="bookMark"
+                                                  onSelect={addInfoToBookMark}
+                                        >즐겨찾기추가
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                </Nav>
 
-
-                            {info.radius && <h3>{info.radius === undefined ? "반경 없음" : `반경 ${info.radius} m`}</h3>}
-                            <p>등록일 : {info.publishingDate}</p>
-                        </>
-                    )}
-                    {localInfo.visibleOnTabEstimate && <EstimateContainer info={info}/>}
-                    {localInfo.visibleOnTabComment &&
-                    <CommentContainer info={info} setUpdateCommentList={updateComment}/>}
-                </>
+                                <hr/>
+                                {localInfo.visibleOnTabPosition && (
+                                    <Form>
+                                        <Form.Group as={Row}>
+                                            <Form.Label column sm="4" style={{textAlign: "center"}}>
+                                                이름
+                                            </Form.Label>
+                                            <ListGroup.Item>{info.name}</ListGroup.Item>
+                                        </Form.Group>
+                                        <Form.Group as={Row}>
+                                            <Form.Label column sm="4" style={{textAlign: "center"}}>
+                                                설명
+                                            </Form.Label>
+                                            <ListGroup.Item>{info.description}</ListGroup.Item>
+                                        </Form.Group>
+                                        <Form.Group as={Row} style={{textAlign: "center"}}>
+                                            <Form.Label column sm="4">
+                                                위치 타입
+                                            </Form.Label>
+                                            <ListGroup.Item>{getPrimaryPosition(info.primaryPositionType)}</ListGroup.Item>
+                                            <ListGroup.Item>{info.secondaryPositionType}</ListGroup.Item>
+                                        </Form.Group>
+                                        <Form.Group as={Row} style={{textAlign: "center"}}>
+                                            <Form.Label column sm="4">
+                                                태그
+                                            </Form.Label>
+                                            {info.tags.map((tag, index) => (
+                                                <ListGroupItem key={index}>#{tag}</ListGroupItem>))}
+                                        </Form.Group>
+                                        {info.radius &&
+                                        <h3>{info.radius === undefined ? "반경 없음" : `반경 ${info.radius} m`}</h3>}
+                                        <p>등록일 : {info.publishingDate}</p>
+                                    </Form>
+                                )}
+                                {localInfo.visibleOnTabEstimate && <EstimateContainer info={info}/>}
+                                {localInfo.visibleOnTabComment &&
+                                <CommentContainer info={info} setUpdateCommentList={updateComment}/>}
+                            </div>
+                        </Col>
+                    </Row>
+                </div>
             </InfoWindow>}
         </>
     );

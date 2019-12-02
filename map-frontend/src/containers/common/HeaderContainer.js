@@ -1,7 +1,8 @@
-import React, {useReducer} from 'react';
+import React, {useEffect, useReducer} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import Header from '../../components/common/Header';
 import {logout} from "../../modules/user";
+import {addBookMark, setAddInfoOnMap, setAddRoadOnMap} from "../../modules/map";
 
 const initialState = {
     addInfoOnMap: false,
@@ -45,6 +46,16 @@ const HeaderContainer = () => {
     const setAddRoad = value => setLocalInfo({type: 'addRoadOnMap', addRoadOnMap: value});
     const setAddBookMark = value => setLocalInfo({type: 'addBookMark', addBookMark: value});
     const checkUserBlock = value => setLocalInfo({type: 'checkUserBlock', userBlock: value});
+
+    useEffect(() => {
+        dispatch(setAddInfoOnMap(localInfo.addInfoOnMap));
+    }, [localInfo.addInfoOnMap]);
+    useEffect(() => {
+        dispatch(setAddRoadOnMap(localInfo.addRoadOnMap));
+    }, [localInfo.addRoadOnMap]);
+    useEffect(() => {
+        dispatch(addBookMark(localInfo.addBookMark));
+    }, [localInfo.addBookMark]);
 
     return (
         <Header user={user} onLogout={onLogout} setAddInfo={setAddInfo} setAddRoad={setAddRoad}/>

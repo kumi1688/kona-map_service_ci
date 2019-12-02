@@ -66,7 +66,7 @@ const CommentEditor = ({info, setLocalCommentList, setUpdateCommentList, isClose
 
     return (
         <Row>
-            <Col xl="auto">
+            <Col>
                 <InputGroup className="mb-3">
                     <Form.Control
                         size="lg"
