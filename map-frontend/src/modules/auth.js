@@ -7,10 +7,12 @@ import user from "./user";
 
 const CHANGE_FIELD = 'auth/CHANGE_FIELD';
 const INITIALIZE_FORM = 'auth/INITIALIZE_FORM';
+const RESET_USER_DATA = 'auth/RESET_USER_DATA';
 
-const [REGISTER, REGISTER_SUCCESS, REGISTER_FAILURE] =  createRequestActionTypes('auth/REGISTER',);
+    const [REGISTER, REGISTER_SUCCESS, REGISTER_FAILURE] =  createRequestActionTypes('auth/REGISTER',);
 const [LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE] = createRequestActionTypes('auth/LOGIN');
 const [FETCH_USER_DATA, FETCH_USER_DATA_SUCCESS, FETCH_USER_DATA_FAILURE] = createRequestActionTypes('auth/FETCH_USER_DATA');
+
 const [ADD_WARNING, ADD_WARNING_SUCCESS, ADD_WARNING_FAILURE] = createRequestActionTypes('auth/ADD_WARNINING');
 
 export const changeField = createAction(
@@ -29,6 +31,7 @@ export const login = createAction(LOGIN, ({username, password}) => ({
     username, password,
 }));
 export const fetchUserData = createAction(FETCH_USER_DATA, username => username);
+export const resetUserData = createAction(RESET_USER_DATA);
 export const addWarning = createAction(ADD_WARNING, username=>username);
 
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
@@ -109,6 +112,11 @@ const auth = handleActions(
         [ADD_WARNING_FAILURE]: (state, {payload: error}) => ({
             ...state,
             authError : error
+        }),
+        [RESET_USER_DATA] : state => ({
+            ...state,
+            userInfo: null,
+            auth: null
         })
     },
     initialState,

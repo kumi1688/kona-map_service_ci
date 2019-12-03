@@ -15,6 +15,7 @@ const UserRoadSchema = new Schema({
     roadInfo: Object,
     imageUrl: [String],
     block: Number,
+    recommend: { good: Number, bad : Number, username : [String] }
 });
 
 UserRoadSchema.statics.findByUsername = function(username){

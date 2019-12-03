@@ -42,7 +42,8 @@ exports.makeUserPlace = async ctx => {
     //console.dir(ctx.request.body);
     const userPlace = new UserPlace({
         username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, radius, imageUrl, block: 0
+        primaryPositionType, secondaryPositionType, radius, imageUrl, block: 0,
+        recommend : {good: 0, bad: 0, username: []}
     });
     try{
         await userPlace.save();
@@ -129,7 +130,8 @@ exports.makeUserRoad = async ctx => {
     //console.dir(ctx.request.body);
     const userRoad = new UserRoad({
         username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, roadInfo, imageUrl, block: 0
+        primaryPositionType, secondaryPositionType, roadInfo, imageUrl, block: 0,
+        recommend : {good: 0, bad: 0, username: []}
     });
     try{
         await userRoad.save();
@@ -280,6 +282,39 @@ exports.listUserBundle = async ctx => {
     }
 };
 
+export const updateUserPlaceRecommend = async  ctx => {
+    const {id} = ctx.params;
+    const { good, bad, username } = ctx.request.body;
 
+    try{
+        const result = await UserPlace.find({_id: id}).exec();
+        if(!result){
+            ctx.status = 404;
+            return;
+        }
+
+        let inUserNameList = false;
+        result[0]._doc.recommend.username.forEach(function(element){
+           if(element === username)
+               inUserNameList = true;
+        });
+
+        if(inUserNameList) {
+            ctx.status = 400;
+            return;
+        }
+
+        console.dir(result);
+        const nextData = {...result[0]._doc, recommend : {
+            good: good ? result[0]._doc.recommend.good + 1 : result[0]._doc.recommend.good,
+            bad : bad ? result[0]._doc.recommend.bad + 1 : result[0]._doc.recommend.bad,
+            username : result[0]._doc.recommend.username.concat(username)
+            }};
+        const result2 = await UserPlace.findOneAndUpdate({_id: id}, nextData, {new: true});
+        ctx.body = result2;
+    }catch(e){
+        ctx.throw(500, e);
+    }
+};
 
 

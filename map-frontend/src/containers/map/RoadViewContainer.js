@@ -9,6 +9,7 @@ import EstimateContainer from "./EstimateContainer";
 import CommentContainer from "./CommentContainer";
 import {updateBookMark} from "../../modules/map";
 import CardComponent from "../../components/map/CardComponent";
+import CarouselComponent from "../../components/map/CarouselComponent";
 
 const getPrimaryPosition = (road) => {
     switch (road.primaryPositionType) {
@@ -157,74 +158,86 @@ const RoadViewListItem = ({road}) => {
 
     return (
         <>
-            {localInfo.visibleOnMouseOver && <InfoWindow position={getRoadInfoWindowPosition(road)}>
+            {localInfo.visibleOnMouseOver && !localInfo.visibleInfoWindow &&
+            <InfoWindow position={getRoadInfoWindowPosition(road)}>
                 <CardComponent info={road}/>
             </InfoWindow>}
             {localInfo.visibleInfoWindow && <InfoWindow position={getRoadInfoWindowPosition(road)}
-                                                        onCloseClick={onCloseClick}>
-                <>
-                    <Nav fill justify variant="pills" defaultActiveKey="info-position">
-                        <Nav.Item>
-                            <Nav.Link eventKey="info-position"
-                                      onSelect={onTabPositionClick}
-                            >위치 정보</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="estimate-user"
-                                      onSelect={onTabEstimateClick}
-                            >사용자 평가</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="comment-user"
-                                      onSelect={onTabCommentClick}
-                            >댓글</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="bookMark"
-                                      onSelect={addInfoToBookMark}
-                            >즐겨찾기추가
-                            </Nav.Link>
-                        </Nav.Item>
-                    </Nav>
-                    <hr/>
-                    {localInfo.visibleOnTabPosition && (
-                        <>
-                            <Form style={{paddingLeft: 30, paddingRight: 30}}>
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="4" style={{textAlign: "center"}}>
-                                        이름
-                                    </Form.Label>
-                                    <ListGroup.Item>{road.name}</ListGroup.Item>
-                                </Form.Group>
-                                <Row>
-                                    <Form.Label column sm="4" style={{textAlign: "center"}}>
-                                        설명
-                                    </Form.Label>
-                                    <Col>
-                                        <ListGroup.Item>{road.description}</ListGroup.Item>
-                                    </Col>
-                                </Row>
-                                <Form.Group as={Row} style={{textAlign: "center"}}>
-                                    <Form.Label column sm="4">
-                                        위치 타입
-                                    </Form.Label>
-                                    <ListGroup.Item>{getPrimaryPosition(road)}</ListGroup.Item>
-                                    <ListGroup.Item>{road.secondaryPositionType}</ListGroup.Item>
-                                </Form.Group>
-                                <Form.Group as={Row} style={{textAlign: "center"}}>
-                                    <Form.Label column sm="4">
-                                        태그
-                                    </Form.Label>
-                                    {road.tags.map((tag, index) => (<ListGroupItem key={index}>#{tag}</ListGroupItem>))}
-                                </Form.Group>
-                            </Form>
-                            <p>등록일 : {road.publishingDate}</p>
-                        </>
-                    )}
-                    {localInfo.visibleOnTabEstimate && <EstimateContainer/>}
-                    {localInfo.visibleOnTabComment &&
-                    <CommentContainer info={road} setUpdateCommentList={updateComment}/>}
-                </>
+                                                        onCloseClick={onCloseClick}
+                                                        options={{maxWidth: "1200px", maxHeight: "600px"}}>
+                <div style={{width: 1100, height: 600}}>
+                    <Row>
+                        <Col>
+                            <div style={{width: 600, height: 600}}>
+                                <CarouselComponent info={road}/>
+                            </div>
+                        </Col>
+                        <Col>
+                            <Nav fill justify variant="pills" defaultActiveKey="info-position">
+                                <Nav.Item>
+                                    <Nav.Link eventKey="info-position"
+                                              onSelect={onTabPositionClick}
+                                    >위치 정보</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link eventKey="estimate-user"
+                                              onSelect={onTabEstimateClick}
+                                    >사용자 평가</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link eventKey="comment-user"
+                                              onSelect={onTabCommentClick}
+                                    >댓글</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link eventKey="bookMark"
+                                              onSelect={addInfoToBookMark}
+                                    >즐겨찾기추가
+                                    </Nav.Link>
+                                </Nav.Item>
+                            </Nav>
+                            <hr/>
+                            {localInfo.visibleOnTabPosition && (
+                                <>
+                                    <Form style={{paddingLeft: 30, paddingRight: 30}}>
+                                        <Form.Group as={Row}>
+                                            <Form.Label column sm="4" style={{textAlign: "center"}}>
+                                                이름
+                                            </Form.Label>
+                                            <ListGroup.Item>{road.name}</ListGroup.Item>
+                                        </Form.Group>
+                                        <Row>
+                                            <Form.Label column sm="4" style={{textAlign: "center"}}>
+                                                설명
+                                            </Form.Label>
+                                            <Col>
+                                                <ListGroup.Item>{road.description}</ListGroup.Item>
+                                            </Col>
+                                        </Row>
+                                        <Form.Group as={Row} style={{textAlign: "center"}}>
+                                            <Form.Label column sm="4">
+                                                위치 타입
+                                            </Form.Label>
+                                            <ListGroup.Item>{getPrimaryPosition(road)}</ListGroup.Item>
+                                            <ListGroup.Item>{road.secondaryPositionType}</ListGroup.Item>
+                                        </Form.Group>
+                                        <Form.Group as={Row} style={{textAlign: "center"}}>
+                                            <Form.Label column sm="4">
+                                                태그
+                                            </Form.Label>
+                                            {road.tags.map((tag, index) => (
+                                                <ListGroupItem key={index}>#{tag}</ListGroupItem>))}
+                                        </Form.Group>
+                                    </Form>
+                                    <p>등록일 : {road.publishingDate}</p>
+                                </>
+                            )}
+                            {localInfo.visibleOnTabEstimate && <EstimateContainer/>}
+                            {localInfo.visibleOnTabComment &&
+                            <CommentContainer info={road} setUpdateCommentList={updateComment}/>}
+                        </Col>
+                    </Row>
+                </div>
             </InfoWindow>}
             <Polyline path={road.roadInfo} options={selectPolyLineOption(road)} onMouseOver={onMouseOver}
                       onMouseOut={onMouseOver} onClick={onRoadClick}/>

@@ -2,39 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b55483f0-f3b4-4970-8d54-adbd54dcfa86" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/UserPlaceManageComponent.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/UserPlaceStatisticsComponent.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/container/UserPlaceManageContainer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/container/UserPlaceStatisticsContainer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/container/UserRoadManageContainer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/api/admin.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/modules/userPlace.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/modules/userRoad.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../map-backend/src/api/admin/admin.ctrl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../map-backend/src/api/admin/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../map-frontend/src/components/map/CarouselComponent.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/container/SidebarContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/container/SidebarContainer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/container/UserStatisticsContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/container/UserStatisticsContainer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/comment/comment.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/comment/comment.ctrl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/comment/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/comment/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/UserPlaceManageComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserPlaceManageComponent.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../map-backend/src/api/map/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/map/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../map-backend/src/api/map/map.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/map/map.ctrl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/upload/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/upload/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/upload/upload.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/upload/upload.ctrl.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../map-backend/src/models/userPlace.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/models/userPlace.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../map-backend/src/models/userRoad.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/models/userRoad.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/common/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/components/common/Header.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/common/ImageUpload.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/components/common/ImageUpload.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/map/CardComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/components/map/CardComponent.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/map/CommentEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/components/map/CommentEditor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/map/InfoWindowList.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/components/map/InfoWindowList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/map/RoadModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/components/map/RoadModal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/auth/LoginForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/containers/auth/LoginForm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/common/HeaderContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/containers/common/HeaderContainer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/map/CommentContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/containers/map/CommentContainer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/map/MapContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/containers/map/MapContainer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/map/EstimateContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/containers/map/EstimateContainer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/map/RoadViewContainer.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/containers/map/RoadViewContainer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../map-frontend/src/modules/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/modules/auth.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -110,7 +89,7 @@
       <workItem from="1574820459633" duration="16887000" />
       <workItem from="1575059094590" duration="17792000" />
       <workItem from="1575234471171" duration="1468000" />
-      <workItem from="1575249920176" duration="5643000" />
+      <workItem from="1575249920176" duration="8704000" />
     </task>
     <task id="LOCAL-00001" summary="Iteration5 add admin page &amp;&amp; set layout, sideBar, Header">
       <created>1574928198031</created>

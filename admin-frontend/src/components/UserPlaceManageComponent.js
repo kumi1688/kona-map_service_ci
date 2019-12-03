@@ -13,6 +13,8 @@ const UserPlaceListItem = ({userPlace}) => {
             <td>{userPlace.tags.map((tag, index) => <li key={index}>{tag}</li>)}</td>
             <td>{userPlace.publishingDate}</td>
             <td>{userPlace.username}</td>
+            <td>{userPlace.block ? userPlace.block : 0}</td>
+            <td><Button variant="danger">차단</Button></td>
         </tr>
     );
 };
@@ -31,7 +33,8 @@ const UserPlaceList = ({userPlaceList}) => {
                 <th className="table-warning">태그</th>
                 <th className="table-warning">등록일</th>
                 <th className="table-warning">등록자 이름</th>
-                <th className="table-warning">경고/차단</th>
+                <th className="table-warning">신고</th>
+                <th className="table-warning">차단</th>
             </tr>
             </thead>
             <tbody>

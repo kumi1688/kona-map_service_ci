@@ -20,6 +20,8 @@ map.patch('/userRoad/comment/:id', checkLoggedIn, mapCtrl.updateUserRoadComment)
 
 map.patch('/userPlace/comment/:id', checkLoggedIn, mapCtrl.updateUserPlaceComment);
 
+map.patch('/userPlace/recommend/:id', checkLoggedIn, mapCtrl.updateUserPlaceRecommend);
+
 map.patch('/userPlace/deleteComment', checkLoggedIn, mapCtrl.deleteComment);
 
 map.post('/userBundle', checkLoggedIn, mapCtrl.makeUserBundle);

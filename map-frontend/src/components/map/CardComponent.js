@@ -42,7 +42,7 @@ const CardComponent = ({info}) => {
     return (
         <Row>
             <Carousel style={{width: '20rem', height: '20rem'}}>
-                {info.imageUrl.map(url => (
+                {info.imageUrl ? info.imageUrl.map(url => (
                     <Carousel.Item key={url}>
                         <img
                             key={url}
@@ -50,7 +50,7 @@ const CardComponent = ({info}) => {
                             src={url}
                             alt="Third slide"
                         />
-                    </Carousel.Item>))}
+                    </Carousel.Item>)) : null}
             </Carousel>
 
             <Card style={{width: '20rem', height: '15rem'}}>

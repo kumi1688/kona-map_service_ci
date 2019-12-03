@@ -1,8 +1,10 @@
-import React, {useEffect, useReducer} from 'react';
+import React, {useCallback, useEffect, useReducer} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import Header from '../../components/common/Header';
 import {logout} from "../../modules/user";
+import {withRouter} from 'react-router-dom';
 import {addBookMark, setAddInfoOnMap, setAddRoadOnMap} from "../../modules/map";
+import {resetUserData} from "../../modules/auth";
 
 const initialState = {
     addInfoOnMap: false,
@@ -34,13 +36,25 @@ const infoReducer = (state, action) => {
     }
 };
 
-const HeaderContainer = () => {
+const HeaderContainer = ({location, history}) => {
     const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
-    const {user} = useSelector(({user}) => ({user: user.user}));
+    const {user, userInfo} = useSelector(({user, auth}) => ({
+        user: user.user,
+        userInfo: auth.userInfo
+    }));
     const dispatch = useDispatch();
+
     const onLogout = () => {
+        dispatch(resetUserData());
         dispatch(logout());
+        alert('로그아웃되었습니다');
+        history.push('/login');
     };
+
+    useEffect(() => {
+        if(!userInfo && location.pathname !== '/login'){
+        }
+    }, [location, userInfo]);
 
     const setAddInfo = value => setLocalInfo({type: 'addInfoOnMap', addInfoOnMap: value});
     const setAddRoad = value => setLocalInfo({type: 'addRoadOnMap', addRoadOnMap: value});
@@ -62,4 +76,4 @@ const HeaderContainer = () => {
     );
 };
 
-export default HeaderContainer;
+export default withRouter(HeaderContainer);
