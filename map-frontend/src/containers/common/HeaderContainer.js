@@ -3,7 +3,7 @@ import {useSelector, useDispatch} from "react-redux";
 import Header from '../../components/common/Header';
 import {logout} from "../../modules/user";
 import {withRouter} from 'react-router-dom';
-import {addBookMark, setAddInfoOnMap, setAddRoadOnMap} from "../../modules/map";
+import {addBookMark, setAddBuildingOnMap, setAddInfoOnMap, setAddRoadOnMap} from "../../modules/map";
 import {resetUserData} from "../../modules/auth";
 
 const initialState = {
@@ -11,6 +11,7 @@ const initialState = {
     addRoadOnMap: false,
     addBookMark: false,
     userBlock: false,
+    addBuildingOnMap : false,
 };
 
 const infoReducer = (state, action) => {
@@ -29,6 +30,9 @@ const infoReducer = (state, action) => {
         }
         case 'checkUserBlock' : {
             return {...state, userBlock: action.userBlock}
+        }
+        case 'addBuildingOnMap' : {
+            return {...state, addBuildingOnMap: action.addBuildingOnMap}
         }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
@@ -56,10 +60,11 @@ const HeaderContainer = ({location, history}) => {
         }
     }, [location, userInfo]);
 
-    const setAddInfo = value => setLocalInfo({type: 'addInfoOnMap', addInfoOnMap: value});
-    const setAddRoad = value => setLocalInfo({type: 'addRoadOnMap', addRoadOnMap: value});
+    const setAddInfo = () => setLocalInfo({type: 'addInfoOnMap', addInfoOnMap: !localInfo.addInfoOnMap});
+    const setAddRoad = () => setLocalInfo({type: 'addRoadOnMap', addRoadOnMap: !localInfo.addRoadOnMap});
     const setAddBookMark = value => setLocalInfo({type: 'addBookMark', addBookMark: value});
     const checkUserBlock = value => setLocalInfo({type: 'checkUserBlock', userBlock: value});
+    const setAddBuilding = () => setLocalInfo({type: 'addBuildingOnMap', addBuildingOnMap: !localInfo.addBuildingOnMap});
 
     useEffect(() => {
         dispatch(setAddInfoOnMap(localInfo.addInfoOnMap));
@@ -68,11 +73,16 @@ const HeaderContainer = ({location, history}) => {
         dispatch(setAddRoadOnMap(localInfo.addRoadOnMap));
     }, [localInfo.addRoadOnMap]);
     useEffect(() => {
+        dispatch(setAddBuildingOnMap(localInfo.addBuildingOnMap));
+    }, [localInfo.addBuildingOnMap]);
+    useEffect(() => {
         dispatch(addBookMark(localInfo.addBookMark));
     }, [localInfo.addBookMark]);
 
+
     return (
-        <Header user={user} onLogout={onLogout} setAddInfo={setAddInfo} setAddRoad={setAddRoad}/>
+        <Header user={user} onLogout={onLogout} setAddInfo={setAddInfo} setAddRoad={setAddRoad}
+        setAddBuilding={setAddBuilding}/>
     );
 };
 

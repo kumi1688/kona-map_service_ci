@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import {Navbar, Nav, Form, FormControl, Button} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {clearMap, setSearchQuery} from "../../modules/map";
-import {FiMapPin, FaRoad} from "react-icons/all";
+import {FiMapPin, FaRoad, FaRegBuilding} from "react-icons/all";
 
 const StyledHeader = styled.div`
     padding-left: 60px;
 `;
 
-const Header = ({user, onLogout, setAddInfo, setAddRoad}) => {
+const Header = ({user, onLogout, setAddInfo, setAddRoad, setAddBuilding}) => {
     const dispatch = useDispatch();
     const {searchQueryOnMap, isClearMap} = useSelector(({map}) => ({
         searchQueryOnMap: map.searchQuery.searchQueryOnMap,
@@ -58,10 +58,12 @@ const Header = ({user, onLogout, setAddInfo, setAddRoad}) => {
                     {!user && <Nav.Link href="/login">로그인</Nav.Link>}
                 </Nav>
                 <Form inline>
-                    <Form.Group style={{paddingRight: 20}}>
+                    <Form.Group style={{paddingRight: 10}}>
                         <Button onClick={setAddInfo}><FiMapPin/></Button>
-                        <div style={{paddingLeft: 10}}/>
+                        <div style={{paddingRight: 10}}/>
                         <Button onClick={setAddRoad}><FaRoad/></Button>
+                        <div style={{paddingRight: 10}}/>
+                        <Button onClick={setAddBuilding}><FaRegBuilding/></Button>
                     </Form.Group>
                     <Form.Group>
                         <FormControl type="text" placeholder="Search" className="mr-sm-2"

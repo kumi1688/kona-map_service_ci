@@ -63,4 +63,25 @@ const sightSeeingRoad = {
     geodesic: true
 };
 
+const rectangleOption = {
+    strokeColor: '#FF0000',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#FF0000',
+    fillOpacity: 0.35,
+    draggable: true,
+    editable: true
+};
+
+const circleOption = {
+    fillColor: '#ffff00',
+    fillOpacity: 1,
+    strokeWeight: 5,
+    clickable: false,
+    editable: true,
+    zIndex: 1
+};
+
 export const polylineOptions = {mainRoad, smallRoad, travelRoad, foodRoad, sightSeeingRoad};
+export const rectangleOptions = {rectangleOption};
+export const circleOptions = {circleOption}

@@ -45,6 +45,7 @@ const initialState = {
     roadInfo : null,
     username : null,
     imageUrl : null,
+    youtubeUrl: null,
 };
 
 const infoReducer = (state, action) => {
@@ -68,6 +69,9 @@ const infoReducer = (state, action) => {
                     lng: parseFloat(action.gridPosition.lng)
                 }
             }
+        }
+        case 'updateYoutubeUrl' : {
+            return {...state, youtubeUrl: action.youtubeUrl}
         }
         case 'updateRoadInfo' : {
             return {...state, roadInfo : action.roadInfo}
@@ -130,6 +134,9 @@ const RoadModal = ( {roadPath}) => {
     const updateImageUrl = (imageUrl) => {
         setLocalInfo({type: 'updateImageUrl', imageUrl : imageUrl});
     };
+    const updateYoutubeUrl = (e) => {
+        setLocalInfo({type: 'updateYoutubeUrl', youtubeUrl: e.target.value});
+    };
 
     const handleShow = useCallback(() => {
         if (!show) setShow(true);
@@ -151,6 +158,7 @@ const RoadModal = ( {roadPath}) => {
                     username: localInfo.username,
                     roadInfo: localInfo.roadInfo,
                     imageUrl: localInfo.imageUrl,
+                    youtubeUrl : localInfo.youtubeUrl
                 }));
             };
             saveData();
@@ -165,10 +173,6 @@ const RoadModal = ( {roadPath}) => {
     useEffect(() => {
         updateUserName(username);
     }, [username]);
-
-    useEffect(() => {
-        console.dir(localInfo);
-    }, [localInfo]);
 
 
     return (
@@ -187,6 +191,11 @@ const RoadModal = ( {roadPath}) => {
                         <Form.Group controlId="name">
                             <Form.Label>이름</Form.Label>
                             <Form.Control placeholder="이름을 입력해주세요" name="updateName" onChange={updateName}/>
+                        </Form.Group>
+
+                        <Form.Group controlId="name">
+                            <Form.Label>이름</Form.Label>
+                            <Form.Control placeholder="유투브 url" name="updateUrl" onChange={updateYoutubeUrl}/>
                         </Form.Group>
 
                         <Form.Group controlId="description">

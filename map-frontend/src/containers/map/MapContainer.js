@@ -16,10 +16,11 @@ import RoadControlContainer from "./RoadControlContainer";
 import RoadModal from "../../components/map/RoadModal";
 import RoadViewContainer from "./RoadViewContainer";
 import RoadDropDownButton from "../../components/map/RoadDropDownButton";
-import {polylineOptions} from "../../components/map/RoadColor";
+import {polylineOptions, rectangleOptions, circleOptions} from "../../components/map/RoadColor";
 import RoadRemarkContainer from "../../components/map/RoadRemarkContainer";
 import BookMarkConainer from "./BookMarkContainer";
 import InfoViewerContainer from "./InfoViewerContainer";
+import BuildingRemarkContainer from "./BuildingRemarkContainer";
 
 const StyledMapContainerWrapper = styled.div`
     position: fixed;
@@ -37,13 +38,18 @@ const mapContainerStyle={
     }
 };
 
-const circleOptions = {
-    fillColor: '#ffff00',
-    fillOpacity: 1,
-    strokeWeight: 5,
-    clickable: false,
-    editable: true,
-    zIndex: 1
+const initialState = {
+    name: '',
+    description: '',
+    gridPosition: {lat: 0, lng: 0},
+    detailedPosition: '',
+    tags: [],
+    primaryPositionType: "mainRoad",
+    secondaryPositionType: "4차로",
+    roadInfo : null,
+    username : null,
+    imageUrl : null,
+    youtubeUrl: null,
 };
 
 const getPolyLineOption = (type) => {
@@ -68,7 +74,7 @@ const MapContainer = () => {
         const dispatch = useDispatch();
         const {
             username, searchQueryOnMap, currentUserLocation, isAddInfo, isAddRoad, roadType,
-            searchQueryType, isClearMap, isAddBookMark, isMarkerClicked
+            searchQueryType, isClearMap, isAddBookMark, isMarkerClicked, isAddBuilding
         } = useSelector(({map, user}) => ({
             searchQueryOnMap: map.searchQuery.searchQueryOnMap,
             searchQueryType: map.searchQuery.searchQueryType,
@@ -79,7 +85,8 @@ const MapContainer = () => {
             roadType: map.roadType,
             isClearMap: map.isClearMap,
             isAddBookMark : map.isAddBookMark,
-            isMarkerClicked: map.isMarkerClicked
+            isMarkerClicked: map.isMarkerClicked,
+            isAddBuilding: map.isAddBuilding
         }));
 
         const initialPosition = {lat: 37.284315, lng: 127.044504};
@@ -106,8 +113,6 @@ const MapContainer = () => {
         const [isAddRoadInfo, setIsAddRoadInfo] = useState(null);
 
 
-
-
         const onMapClick = useCallback(e => {
             console.dir('클릭');
             if (circle || insertInfoBox) {
@@ -132,11 +137,13 @@ const MapContainer = () => {
                 }
             }, [radius]);
 
-        const onRightClick = useCallback(
-            e => {
-                console.dir(e);
-                setDrawingMode('');
-            }, [drawingMode]);
+        const onRightClick = useCallback((e) => {
+                setDrawingMode(null);
+            },[drawingMode]);
+
+        useEffect(() => {
+            setDrawingMode('');
+        }, [drawingMode]);
 
         useEffect(() => {
             if (!userLocOnMap) setUserLocOnMap(currentUserLocation);
@@ -153,20 +160,28 @@ const MapContainer = () => {
         }, [zoom]);
 
         useEffect(() => {
-            console.dir(isAddRoad);
-        }, [isAddRoad]);
-
-        useEffect(() => {
             if (!currentUserLocation) setUserLocOnMap(true);
         }, [currentUserLocation]);
 
         const onCompleteRectangleInDrawingManager = useCallback(
             e => {
-                setLeftUpperPoint({lng: parseFloat(e.bounds.ka.g), lat: parseFloat(e.bounds.pa.h)});
-                setRightDownPoint({lng: parseFloat(e.bounds.ka.h), lat: parseFloat(e.bounds.pa.g)});
-                setDrawingMode(null);
-            }, [leftUpperPoint, rightDownPoint]
-        );
+                setTemp(e);
+                console.dir(e);
+            }, [drawingMode]);
+
+        useEffect(() => {
+            console.dir(temp);
+            const getBounds = async () => {
+                try{
+                    const result = await temp.getBounds();
+                    console.dir(result);
+                }catch(e){
+                    console.dir(e);
+                }
+            }
+            getBounds();
+        }, [temp]);
+
 
         const getPolyLineObject = useCallback(e => {
             setPolyLineObject(e);
@@ -215,8 +230,8 @@ const MapContainer = () => {
         }, [map]);
 
         useEffect(() => {
+            setDrawingMode('');
             console.dir(drawingMode);
-            setDrawingMode(null);
         }, [drawingMode]);
 
         const onPolylineComplete = useCallback(
@@ -246,6 +261,19 @@ const MapContainer = () => {
                 else setIsAddRoadInfo(false);
             }, [roadList]);
 
+        const rectangleFunction = useCallback(() => {
+            const removeRectangle = async () => {
+                try{
+                    if(!await temp.getMap()) {
+                        console.dir(await temp.getBounds());
+                        temp.setMap(map);
+                    }
+                    else await temp.setMap(null);
+                }catch(e){console.dir(e)};
+            };
+            removeRectangle();
+        }, [temp]);
+
         const saveRoadList = useCallback(() => {
             console.dir(roadList);
             if (roadList) {
@@ -266,18 +294,17 @@ const MapContainer = () => {
                 else setFetchedRoadList(false);
             }, [fetchedRoadList]);
 
-        useEffect(() => {
-            console.dir(process.env);
-        }, []);
-
         return (
             <Row>
                 {circle && <MapCircleInfo setRadius={setRadius} onKeyPress={onKeyPressForRadius}
                                           radius={radius}/>}
                 {isAddRoad && <RoadDropDownButton addRoadInfo={addRoadInfo}/>}
                 {searchQueryOnMap && searchQueryType === 'road' && <RoadRemarkContainer/>}
+
                 {isAddBookMark && <BookMarkConainer/>}
                 {isMarkerClicked && <InfoViewerContainer/>}
+                {isAddBuilding && <BuildingRemarkContainer/>}
+
 
                 <StyledMapContainerWrapper>
                     <Col>
@@ -303,11 +330,12 @@ const MapContainer = () => {
                                     gestureHandling: "cooperative",
                                 }}
                             >
-                                {!drawingMode && <DrawingManager onRectangleComplete={onCompleteRectangleInDrawingManager}
+                                { !drawingMode && <DrawingManager onRectangleComplete={onCompleteRectangleInDrawingManager}
                                                                  drawingMode={drawingMode}
                                                                  options={{
                                                                      polylineOptions: getPolyLineOption(roadType),
-                                                                     circleOptions: circleOptions
+                                                                     circleOptions: circleOptions.circleOption,
+                                                                     rectangleOptions: rectangleOptions.rectangleOption
                                                                  }}
                                                                  onPolylineComplete={onPolylineComplete}
                                                                  onLoad={getPolyLineObject}
@@ -330,6 +358,7 @@ const MapContainer = () => {
                         <Button variant="outline-info" onClick={onVisibleToggle}>경로 보여주기</Button>
                         <Button variant="outline-info" onClick={onUserPlaceListClick}>유저 위치(리스트)</Button>
                         <Button variant="outline-info" onClick={fetchRoad}>경로 가져오기</Button>
+                        <Button variant="outline-info" onClick={rectangleFunction}>사각형 제거하기</Button>
                     </Col>
 
                     <Col>

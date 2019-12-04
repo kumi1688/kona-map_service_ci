@@ -11,6 +11,7 @@ const SET_COMMENT_LIST  = 'map/SET_COMMENT_LIST';
 const SET_COMMENT = 'map/SET_COMMENT';
 const SET_ADD_INFO_ON_MAP = 'map/SET_ADD_INFO_ON_MAP';
 const SET_ADD_ROAD_ON_MAP = 'map/SET_ADD_ROAD_ON_MAP';
+const SET_ADD_BUILDING_ON_MAP = 'map/SET_ADD_BUILDING_ON_MAP';
 const SET_ROAD_TYPE_ON_MAP = 'map/SET_ROAD_TYPE_ON_MAP';
 const CLEAR_MAP = 'map/CLEAR_MAP';
 const UPDATE_BOOK_MARK = 'map/UPDATE_BOOK_MARK';
@@ -23,6 +24,7 @@ export const list = createAction(LIST, info => info);
 export const post = createAction(POST_USER_PLACE, ({name, description, tags, position, detailedPosition}) => ({
     name, description, tags, position, detailedPosition,
 }));
+export const setAddBuildingOnMap = createAction(SET_ADD_BUILDING_ON_MAP, value=>value);
 export const fetchPlaceInfo = createAction(FETCH_PLACE_INFO, data=> data);
 export const setSearchQuery = createAction(SET_SEARCH_QUERY,
     ({searchQuery, searchQueryType, searchQueryOnMap, searchQueryOption}) => ({
@@ -69,6 +71,7 @@ const initialState = {
     comment: null,
     isAddInfo: false,
     isAddRoad: false,
+    isAddBuilding: false,
     isMarkerClicked : false,
     roadType: 'mainRoad',
     info: {
@@ -142,6 +145,10 @@ const map = handleActions(
             ...state,
             roadType: roadType
         }),
+        [SET_ADD_BUILDING_ON_MAP] : (state, {payload: value}) => ({
+            ...state,
+            isAddBuilding: value,
+        }),
         [CLEAR_MAP] : (state, {payload: isClearMap}) => ({
            ...state,
             isClearMap: isClearMap
@@ -172,6 +179,7 @@ const map = handleActions(
             ...state,
             error: error
         }),
+
     },
     initialState,
 );
