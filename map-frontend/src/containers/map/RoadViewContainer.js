@@ -9,7 +9,7 @@ import EstimateContainer from "./EstimateContainer";
 import CommentContainer from "./CommentContainer";
 import {updateBookMark} from "../../modules/map";
 import CardComponent from "../../components/map/CardComponent";
-import CarouselComponent from "../../components/map/CarouselComponent";
+import CarouselContainer from "./CarouselContainer";
 
 const getPrimaryPosition = (road) => {
     switch (road.primaryPositionType) {
@@ -169,7 +169,7 @@ const RoadViewListItem = ({road}) => {
                     <Row>
                         <Col>
                             <div style={{width: 600, height: 600}}>
-                                <CarouselComponent info={road}/>
+                                <CarouselContainer info={road}/>
                             </div>
                         </Col>
                         <Col>

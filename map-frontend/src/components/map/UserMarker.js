@@ -1,10 +1,10 @@
 import React, {useCallback, useState} from 'react';
 import { Marker} from '@react-google-maps/api';
-import MarkerModal from "../common/MarkerModal";
+import MarkerModal from "./MarkerModal";
 import AlertComponent from "../common/AlertComponent";
 
 const UserMarker = ({position, circle, setCircle, onKeyPressForRadius, setRadius, radius, animation}) => {
-    const [leftClick, setLeftClick] = useState(null);
+    const [leftClick, setLeftClick] = useState(false);
     const [alertStatus, setAlertStatus] = useState(false);
 
     const onLeftClick = useCallback(() => {

@@ -19,6 +19,7 @@ import UserStatisticsContainer from "./UserStatisticsContainer";
 import UserManageContainer from "./UserManageContainer";
 import UserPlaceStatisticsContainer from "./UserPlaceStatisticsContainer";
 import UserPlaceManageContainer from "./UserPlaceManageContainer";
+import UserRoadManageContainer from "./UserRoadManageContainer";
 
 const StyledSideBar = styled.div`
     height: 100%;
@@ -152,7 +153,7 @@ const SideBarContainter = ({history}) => {
                                         경로 게시글 관리
                                     </NavText>
                                 </NavItem>
-                                <NavItem eventKey="placeInfo/adminBuilding">
+                                <NavItem eventKey="placeInfo/manageBuilding">
                                     <NavIcon>
                                         <FontAwesomeIcon icon={faBuilding} size="2x"/>
                                     </NavIcon>
@@ -194,6 +195,7 @@ const SideBarContainter = ({history}) => {
                         <Route path={"/userInfo/manageUser"} exact component={UserManageContainer}/>
                         <Route path={"/placeInfo/statistics"} exact component={UserPlaceStatisticsContainer}/>
                         <Route path={"/placeInfo/managePlace"} exact component={UserPlaceManageContainer}/>
+                        <Route path={"/placeInfo/manageRoad"} exact component={UserRoadManageContainer}/>
 
                     </main>
                 </React.Fragment>

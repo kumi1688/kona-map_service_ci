@@ -15,12 +15,15 @@ const SET_ROAD_TYPE_ON_MAP = 'map/SET_ROAD_TYPE_ON_MAP';
 const CLEAR_MAP = 'map/CLEAR_MAP';
 const UPDATE_BOOK_MARK = 'map/UPDATE_BOOK_MARK';
 const START_ADD_BOOK_MARK = 'map/START_ADD_BOOK_MARK';
+const SET_INFO_VIEWER = 'map/SET_INFO_VIEWER';
+const [FETCH_PLACE_INFO, FETCH_PLACE_INFO_SUCCESS, FETCH_PLACE_INFO_FAILURE] = createRequestActionTypes('map/FETCH_PLACE_INFO');
 
 // 액션에 할당된 파라미터의 값이 어떤것인지 알 수 없기 때문에 파라미터로 전달받은 값을 action의 payload로 설정함
 export const list = createAction(LIST, info => info);
 export const post = createAction(POST_USER_PLACE, ({name, description, tags, position, detailedPosition}) => ({
     name, description, tags, position, detailedPosition,
 }));
+export const fetchPlaceInfo = createAction(FETCH_PLACE_INFO, data=> data);
 export const setSearchQuery = createAction(SET_SEARCH_QUERY,
     ({searchQuery, searchQueryType, searchQueryOnMap, searchQueryOption}) => ({
     searchQuery, searchQueryType, searchQueryOnMap, searchQueryOption
@@ -30,6 +33,7 @@ export const updateBookMark = createAction(UPDATE_BOOK_MARK, ({buildingList, roa
     ({buildingList, roadList, placeList}));
 export const addBookMark = createAction(START_ADD_BOOK_MARK, isStart => isStart);
 
+export const setInfoViewer = createAction(SET_INFO_VIEWER, value=>value);
 export const setCurrentUserLocation = createAction(SET_CURRENT_USER_LOCATION, location => location);
 export const setCommentList = createAction(SET_COMMENT_LIST, (commentList) => (commentList) );
 export const setComment = createAction(SET_COMMENT, comment => comment);
@@ -41,10 +45,12 @@ export const setRoadTypeOnMap = createAction(SET_ROAD_TYPE_ON_MAP, roadType => r
 
 const listUserPlaceSaga = createRequestSaga(LIST, mapAPI.list);
 const postUserPlaceSaga = createRequestSaga(POST_USER_PLACE, mapAPI.post);
+const fetchPlaceInfoSaga = createRequestSaga(FETCH_PLACE_INFO, mapAPI.fetchPlaceInfo);
 
 export function* mapSaga() {
     yield takeLatest(LIST, listUserPlaceSaga);
     yield takeLatest(POST_USER_PLACE, postUserPlaceSaga);
+    yield takeLatest(FETCH_PLACE_INFO, fetchPlaceInfoSaga);
 }
 
 const initialState = {
@@ -63,6 +69,7 @@ const initialState = {
     comment: null,
     isAddInfo: false,
     isAddRoad: false,
+    isMarkerClicked : false,
     roadType: 'mainRoad',
     info: {
         name: '',
@@ -76,6 +83,8 @@ const initialState = {
         secondaryPositionType: '',
         radius: 0,
     },
+    placeInfo: null,
+    roadInfo: null,
     isAddBookMark: false,
     bookMark : {
         buildingList: [],
@@ -150,8 +159,19 @@ const map = handleActions(
         [START_ADD_BOOK_MARK] : (state, {payload : isStart}) => ({
             ...state,
             isAddBookMark : isStart,
-        })
-
+        }),
+        [SET_INFO_VIEWER] : (state, {payload: value}) => ({
+            ...state,
+            isMarkerClicked: value,
+        }),
+        [FETCH_PLACE_INFO_SUCCESS] : (state, {payload: data}) => ({
+            ...state,
+            placeInfo: data
+        }),
+        [FETCH_PLACE_INFO_FAILURE] : (state, {payload: error}) => ({
+            ...state,
+            error: error
+        }),
     },
     initialState,
 );

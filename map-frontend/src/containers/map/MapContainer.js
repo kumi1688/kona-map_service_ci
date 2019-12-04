@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react'
 import {
     GoogleMap,
     DrawingManager,
-    LoadScriptNext,
+    LoadScriptNext, InfoWindow,
 } from '@react-google-maps/api'
 import {Row, Col, Button} from 'react-bootstrap';
 import UserMarker from "../../components/map/UserMarker";
@@ -19,10 +19,23 @@ import RoadDropDownButton from "../../components/map/RoadDropDownButton";
 import {polylineOptions} from "../../components/map/RoadColor";
 import RoadRemarkContainer from "../../components/map/RoadRemarkContainer";
 import BookMarkConainer from "./BookMarkContainer";
+import InfoViewerContainer from "./InfoViewerContainer";
 
 const StyledMapContainerWrapper = styled.div`
     position: fixed;
 `;
+
+const mapContainerStyle={
+    withoutInfoWindow : {
+        width: '1350px',
+        height: '550px'
+    },
+    withInfoWindow : {
+        width: '600px',
+        height: '550px'
+
+    }
+};
 
 const circleOptions = {
     fillColor: '#ffff00',
@@ -55,7 +68,7 @@ const MapContainer = () => {
         const dispatch = useDispatch();
         const {
             username, searchQueryOnMap, currentUserLocation, isAddInfo, isAddRoad, roadType,
-            searchQueryType, isClearMap, isAddBookMark
+            searchQueryType, isClearMap, isAddBookMark, isMarkerClicked
         } = useSelector(({map, user}) => ({
             searchQueryOnMap: map.searchQuery.searchQueryOnMap,
             searchQueryType: map.searchQuery.searchQueryType,
@@ -66,6 +79,7 @@ const MapContainer = () => {
             roadType: map.roadType,
             isClearMap: map.isClearMap,
             isAddBookMark : map.isAddBookMark,
+            isMarkerClicked: map.isMarkerClicked
         }));
 
         const initialPosition = {lat: 37.284315, lng: 127.044504};
@@ -263,6 +277,7 @@ const MapContainer = () => {
                 {isAddRoad && <RoadDropDownButton addRoadInfo={addRoadInfo}/>}
                 {searchQueryOnMap && searchQueryType === 'road' && <RoadRemarkContainer/>}
                 {isAddBookMark && <BookMarkConainer/>}
+                {isMarkerClicked && <InfoViewerContainer/>}
 
                 <StyledMapContainerWrapper>
                     <Col>
@@ -272,10 +287,8 @@ const MapContainer = () => {
                             libraries={[`drawing`]}>
 
                             <GoogleMap
-                                mapContainerStyle={{
-                                    height: '550px',
-                                    width: '1350px'
-                                }}
+                                mapContainerStyle={isMarkerClicked ?
+                                    mapContainerStyle.withInfoWindow: mapContainerStyle.withoutInfoWindow}
                                 zoom={zoom}
                                 center={center}
                                 onClick={onMapClick}

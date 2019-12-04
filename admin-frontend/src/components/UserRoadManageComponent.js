@@ -2,25 +2,24 @@ import React from "react";
 import {Button, Row, Table} from "react-bootstrap";
 
 
-const UserPlaceListItem = ({userPlace}) => {
+const UserRoadListItem = ({userRoad}) => {
     return(
         <tr align="middle">
-            <td>{userPlace.name}</td>
-            <td>{userPlace.description}</td>
-            <td>{userPlace.detailedPosition}</td>
-            <td>{userPlace.position.lat}<br/>{userPlace.position.lng}</td>
-            <td>{userPlace.primaryPositionType}<br/>{userPlace.secondaryPositionType}</td>
-            <td>{userPlace.tags.map((tag, index) => <li key={index}>{tag}</li>)}</td>
-            <td>{userPlace.publishingDate}</td>
-            <td>{userPlace.username}</td>
-            <td>{userPlace.block ? userPlace.block : 0}</td>
+            <td>{userRoad.name}</td>
+            <td>{userRoad.description}</td>
+            <td>{userRoad.detailedPosition}</td>
+            <td>{userRoad.primaryPositionType}<br/>{userRoad.secondaryPositionType}</td>
+            <td>{userRoad.tags.map((tag, index) => (<li key={index}>{tag}</li>))}</td>
+            <td>{userRoad.publishingDate}</td>
+            <td>{userRoad.username}</td>
+            <td>{userRoad.block ? userRoad.block : 0}</td>
             <td><Button variant="danger">차단</Button></td>
         </tr>
     );
 };
 
 
-const UserPlaceList = ({userPlaceList}) => {
+const UserRoadList = ({userRoadList}) => {
     return(
         <Table striped bordered hover variant="white">
             <thead>
@@ -28,7 +27,6 @@ const UserPlaceList = ({userPlaceList}) => {
                 <th className="table-warning">이름</th>
                 <th className="table-warning">설명</th>
                 <th className="table-warning">상세한 설명</th>
-                <th className="table-warning">위치</th>
                 <th className="table-warning">분류</th>
                 <th className="table-warning">태그</th>
                 <th className="table-warning">등록일</th>
@@ -38,14 +36,14 @@ const UserPlaceList = ({userPlaceList}) => {
             </tr>
             </thead>
             <tbody>
-            {userPlaceList.map(place => (<UserPlaceListItem key={place._id} userPlace={place}/>))}
+            {userRoadList.map(road => (<UserRoadListItem key={road._id} userRoad={road}/>))}
             </tbody>
         </Table>
     )
 };
 
-const UserPlaceManageComponent = ({userPlaceList})=> {
-    return ( <UserPlaceList userPlaceList={userPlaceList}/> );
+const UserRoadManageComponent = ({userRoadList})=> {
+    return ( <UserRoadList userRoadList={userRoadList}/> );
 };
 
-export default UserPlaceManageComponent;
+export default UserRoadManageComponent;

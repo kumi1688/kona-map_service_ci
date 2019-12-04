@@ -38,12 +38,14 @@ const userPlaceList = new UserPlace([
 
 exports.makeUserPlace = async ctx => {
     const { username, name, description, tags, position, detailedPosition, publishingDate,
-    primaryPositionType, secondaryPositionType, radius, imageUrl } = ctx.request.body;
-    //console.dir(ctx.request.body);
+    primaryPositionType, secondaryPositionType, radius, imageUrl, youtubeUrl } = ctx.request.body;
+
+    let index = youtubeUrl.indexOf('v=');
+    let youtubeVideoId = youtubeUrl.substring(index+2, youtubeUrl.length);
     const userPlace = new UserPlace({
         username, name, description, tags, position, detailedPosition, publishingDate,
         primaryPositionType, secondaryPositionType, radius, imageUrl, block: 0,
-        recommend : {good: 0, bad: 0, username: []}
+        recommend : {good: 0, bad: 0, username: []}, youtubeVideoId
     });
     try{
         await userPlace.save();
@@ -126,12 +128,13 @@ exports.findUserPlace = async ctx => {
 
 exports.makeUserRoad = async ctx => {
     const { username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, roadInfo, imageUrl } = ctx.request.body;
-    //console.dir(ctx.request.body);
+        primaryPositionType, secondaryPositionType, roadInfo, imageUrl, youtubeUrl } = ctx.request.body;
+    let index = youtubeUrl.indexOf('v=');
+    let youtubeVideoId = youtubeUrl.substring(index+2, youtubeUrl.length);
     const userRoad = new UserRoad({
         username, name, description, tags, position, detailedPosition, publishingDate,
         primaryPositionType, secondaryPositionType, roadInfo, imageUrl, block: 0,
-        recommend : {good: 0, bad: 0, username: []}
+        recommend : {good: 0, bad: 0, username: []}, youtubeVideoId
     });
     try{
         await userRoad.save();
@@ -255,10 +258,12 @@ export const deleteComment = async ctx => {
 
 export const makeUserBundle = async ctx => {
     const { username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, roadList, placeList, buildingList } = ctx.request.body;
+        primaryPositionType, secondaryPositionType, roadList, placeList, buildingList, youtubeUrl } = ctx.request.body;
+    let index = youtubeUrl.indexOf('v=');
+    let youtubeVideoId = youtubeUrl.substring(index+2, youtubeUrl.length);
     const userBundle = new UserBundle({
         username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, roadList, placeList, buildingList
+        primaryPositionType, secondaryPositionType, roadList, placeList, buildingList, youtubeVideoId
     });
     try{
         await userBundle.save();

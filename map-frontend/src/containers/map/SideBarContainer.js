@@ -3,6 +3,7 @@ import MapPage from "../../pages/MapPage";
 import UserInfoPage from "../../pages/UserInfoPage";
 import {withRouter} from 'react-router-dom';
 import DirectionPage from "../../pages/DirectionPage";
+import YoutubePage from "../../pages/YoutubePage";
 import SideNav, {Nav, NavItem, NavIcon, NavText} from '@trendmicro/react-sidenav';
 import {Route} from 'react-router-dom';
 import {
@@ -266,6 +267,7 @@ const SideBarContainter = ({history}) => {
                             <Route path={["/", "/login"]} exact component={LoginPage}/>
                             <Route path={"/register"} exact component={RegisterPage}/>
                             <Route path={"/board"} exact component={BoardComponent}/>
+                            <Route path={"/youtube"} exact component={YoutubePage}/>
                         </main>
                     </React.Fragment>
                 )}/>

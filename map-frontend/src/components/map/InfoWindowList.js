@@ -12,39 +12,15 @@ import bedIcon from '../../lib/styles/MarkerImage/icons/bed.png';
 import convenientIcon from '../../lib/styles/MarkerImage/icons/convenience-store.png';
 import salonIcon from '../../lib/styles/MarkerImage/icons/salon.png';
 import {useDispatch, useSelector} from "react-redux";
-import {updateBookMark} from "../../modules/map";
+import {updateBookMark, setInfoViewer, fetchPlaceInfo} from "../../modules/map";
 import EstimateContainer from "../../containers/map/EstimateContainer";
 import client from "../../lib/api/client";
 import ClusterMarkerContainer from "../../containers/map/ClusterMarkerContainer";
 import RoadViewContainer from "../../containers/map/RoadViewContainer";
 import CardComponent from "./CardComponent";
-import CarouselComponent from "./CarouselComponent";
+import CarouselContainer from "../../containers/map/CarouselContainer";
 import styled from "styled-components";
-
-const getPrimaryPosition = (position) => {
-    switch (position) {
-        case "excercise":
-            return '운동';
-        case "education":
-            return '교육';
-        case 'entertainment' :
-            return '오락';
-        case "food":
-            return '음식';
-        case "transport" :
-            return '교통';
-        case "restPlace":
-            return "숙소";
-        case "hospital" :
-            return "병원";
-        case "convenience" :
-            return "편의시설"
-        case "hairshop" :
-            return "미용시설";
-        default :
-            return "없음";
-    }
-}
+import BasicInfoViewerContainer from "../../containers/map/BasicInfoViewerContainer";
 
 const findIcon = primaryType => {
     switch (primaryType) {
@@ -126,8 +102,6 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
     const [filteredBundlePlace, setFilteredBundlePlace] = useState(null);
 
     useEffect(() => {
-        console.dir(placeInfo);
-        console.dir(searchQuery);
         if (searchQueryType === 'place') {
             switch (searchQueryOption) {
                 case "name":
@@ -187,10 +161,6 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
         }
     }, [searchQuery, searchQueryType, searchQueryOption]);
 
-    useEffect(() => {
-        console.dir(filteredData);
-    }, [filteredData]);
-
     if (searchQueryType !== 'bundle' && !filteredData) return null;
     if (searchQueryType === 'bundle' && (!filteredBundlePlace || !filteredBundleRoad)) return null;
 
@@ -242,6 +212,9 @@ const InfoWindowReducer = (state, action) => {
         case 'addBookMark' : {
             return {...state, isInBookMark: action.isInBookMark}
         }
+        case 'setInfoWindowObject' : {
+            return {...state, infoWindowObject: action.infoWindowObject}
+        }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
         }
@@ -258,16 +231,18 @@ const initialState = {
     isCloseBox: true,
     loading: false,
     isInBookMark: false,
+    infoWindowObject: null,
 };
 
 const InfoWindowItem = ({info, zoom}) => {
     const [localInfo, setLocalInfo] = useReducer(InfoWindowReducer, initialState);
-    const {username, isAddBookMark, buildingList, roadList, placeList} = useSelector(({user, map}) => ({
+    const {username, isAddBookMark, buildingList, roadList, placeList, isMarkerClicked} = useSelector(({user, map}) => ({
         username: user.user.username,
         isAddBookMark: map.isAddBookMark,
         buildingList: map.bookMark.buildingList,
         roadList: map.bookMark.roadList,
-        placeList: map.bookMark.placeList
+        placeList: map.bookMark.placeList,
+        isMarkerClicked: map.isMarkerClicked
     }));
     const dispatch = useDispatch();
 
@@ -275,7 +250,12 @@ const InfoWindowItem = ({info, zoom}) => {
         setLocalInfo({type: 'toggleMouseOverWindow'})
     }, [localInfo]);
     const toggleInfoWindow = useCallback(() => {
-        setLocalInfo({type: 'toggleInfoWindow'})
+        if(!isMarkerClicked) {
+            dispatch(fetchPlaceInfo(info._id));
+            dispatch(setInfoViewer(true));
+        }
+        else dispatch(setInfoViewer(false));
+        //setLocalInfo({type: 'toggleInfoWindow'})
     }, [localInfo]);
     const toggleTabEstimate = useCallback(() => {
         setLocalInfo({type: 'toggleTabEstimate'})
@@ -293,6 +273,10 @@ const InfoWindowItem = ({info, zoom}) => {
     const updateLocalBookMark = useCallback((value) => {
         setLocalInfo({type: 'addBookMark', isInBookMark: value})
     }, [localInfo]);
+    const setInfoWindowObject = useCallback((object) => {
+        setLocalInfo(
+            {type: 'setInfoWindowObject', infoWindowObject: object})
+    }, [localInfo.infoWindowObject]);
 
     const addInfoToBookMark = useCallback(() => {
         if (!localInfo.isInBookMark && isAddBookMark) {
@@ -303,11 +287,9 @@ const InfoWindowItem = ({info, zoom}) => {
         }
     }, [isAddBookMark]);
 
-    useEffect(() => {
-        console.dir(localInfo.isInBookMark);
-    }, [localInfo.isInBookMark]);
 
     const onCloseClick = useCallback(() => {
+        if(isMarkerClicked) dispatch(setInfoViewer(false));
         const uploadComment = async () => {
             setLoading(true);
             try {
@@ -321,7 +303,7 @@ const InfoWindowItem = ({info, zoom}) => {
             setLoading(false);
         };
         uploadComment();
-    }, [localInfo]);
+    }, [localInfo, isMarkerClicked]);
 
     if (!info) return null;
 
@@ -341,16 +323,16 @@ const InfoWindowItem = ({info, zoom}) => {
             <Circle center={info.position} radius={info.radius}/>}
             {localInfo.visibleInfoWindow &&
             <InfoWindow position={adjustMouseOverPosition(info.position, zoom)} onCloseClick={onCloseClick}
-                        options={{maxWidth: "1200px", maxHeight: "600px"}}>
+                        options={{maxWidth: "1000px", maxHeight: "1200px", minHeight : 1000}} onLoad={setInfoWindowObject}>
                 <div style={{width: 1100, height: 600}}>
                     <Row>
                         <Col>
                             <div style={{width: 600, height: 600}}>
-                                <CarouselComponent info={info}/>
+                                <CarouselContainer info={info}/>
                             </div>
                         </Col>
                         <Col>
-                            <div style={{width: 400, height: 600}}>
+                            <div style={{width: 450, height: 600, paddingBottom: 20}}>
                                 <Nav fill justify variant="pills" defaultActiveKey="info-position">
                                     <Nav.Item>
                                         <Nav.Link eventKey="info-position"
@@ -375,40 +357,7 @@ const InfoWindowItem = ({info, zoom}) => {
                                     </Nav.Item>
                                 </Nav>
 
-                                <hr/>
-                                {localInfo.visibleOnTabPosition && (
-                                    <Form>
-                                        <Form.Group as={Row}>
-                                            <Form.Label column sm="4" style={{textAlign: "center"}}>
-                                                이름
-                                            </Form.Label>
-                                            <ListGroup.Item>{info.name}</ListGroup.Item>
-                                        </Form.Group>
-                                        <Form.Group as={Row}>
-                                            <Form.Label column sm="4" style={{textAlign: "center"}}>
-                                                설명
-                                            </Form.Label>
-                                            <ListGroup.Item>{info.description}</ListGroup.Item>
-                                        </Form.Group>
-                                        <Form.Group as={Row} style={{textAlign: "center"}}>
-                                            <Form.Label column sm="4">
-                                                위치 타입
-                                            </Form.Label>
-                                            <ListGroup.Item>{getPrimaryPosition(info.primaryPositionType)}</ListGroup.Item>
-                                            <ListGroup.Item>{info.secondaryPositionType}</ListGroup.Item>
-                                        </Form.Group>
-                                        <Form.Group as={Row} style={{textAlign: "center"}}>
-                                            <Form.Label column sm="4">
-                                                태그
-                                            </Form.Label>
-                                            {info.tags.map((tag, index) => (
-                                                <ListGroupItem key={index}>#{tag}</ListGroupItem>))}
-                                        </Form.Group>
-                                        {info.radius &&
-                                        <h3>{info.radius === undefined ? "반경 없음" : `반경 ${info.radius} m`}</h3>}
-                                        <p>등록일 : {info.publishingDate}</p>
-                                    </Form>
-                                )}
+                                {localInfo.visibleOnTabPosition && <BasicInfoViewerContainer info={info}/>}
                                 {localInfo.visibleOnTabEstimate && <EstimateContainer info={info}/>}
                                 {localInfo.visibleOnTabComment &&
                                 <CommentContainer info={info} setUpdateCommentList={updateComment}/>}
