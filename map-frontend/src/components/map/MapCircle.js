@@ -32,7 +32,7 @@ export const MapCircleInfo = ({onKeyPress, setRadius, radius}) => {
         return () => {
             setInput('');
         }
-    },);
+    }, [radius]);
 
     return (
         <StyledCircleWrapper>
@@ -59,7 +59,7 @@ const MapCircle = ({position, radius}) => {
                 center={position}
                 // required
                 options={{
-                    strokeColor: '#FF0000',
+                    strokeColor: '#ff0000',
                     strokeOpacity: 0.8,
                     strokeWeight: 2,
                     fillColor: '#9fff51',

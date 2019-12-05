@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useReducer, useState} from 'react'
 import {
     GoogleMap,
     DrawingManager,
@@ -38,20 +38,6 @@ const mapContainerStyle={
     }
 };
 
-const initialState = {
-    name: '',
-    description: '',
-    gridPosition: {lat: 0, lng: 0},
-    detailedPosition: '',
-    tags: [],
-    primaryPositionType: "mainRoad",
-    secondaryPositionType: "4차로",
-    roadInfo : null,
-    username : null,
-    imageUrl : null,
-    youtubeUrl: null,
-};
-
 const getPolyLineOption = (type) => {
     switch (type) {
         case 'mainRoad' :
@@ -69,6 +55,26 @@ const getPolyLineOption = (type) => {
     }
 };
 
+const initialState = {
+    radius: 0,
+};
+
+const infoReducer = (state, action) => {
+    switch (action.type) {
+        case 'reset': {
+            return initialState
+        }
+        case 'updateName': {
+            return {...state, name: action.name}
+        }
+        case 'updateRadius' : {
+            return {...state, radius: action.radius}
+        }
+        default: {
+            throw new Error(`unexpected action.type: ${action.type}`)
+        }
+    }
+};
 
 const MapContainer = () => {
         const dispatch = useDispatch();
@@ -90,8 +96,7 @@ const MapContainer = () => {
         }));
 
         const initialPosition = {lat: 37.284315, lng: 127.044504};
-
-        const [temp, setTemp] = useState(null);
+        const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
         const [fetchedRoadList, setFetchedRoadList] = useState(null);
         const [uploadRoadList, setUploadRoadList] = useState([]);
         const [roadList, setRoadList] = useState([]);
@@ -112,6 +117,9 @@ const MapContainer = () => {
         const [visibleRoad, setVisibleRoad] = useState(null);
         const [isAddRoadInfo, setIsAddRoadInfo] = useState(null);
 
+        const updateRadius = useCallback((value) => {
+            setLocalInfo({type: 'updateRadius', radius: value})
+        }, [localInfo.radius]);
 
         const onMapClick = useCallback(e => {
             console.dir('클릭');
@@ -133,9 +141,9 @@ const MapContainer = () => {
             e => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    setRadius(parseInt(e.target.value, 10));
+                    updateRadius(parseInt(e.target.value, 10));
                 }
-            }, [radius]);
+            }, [localInfo.radius]);
 
         const onRightClick = useCallback((e) => {
                 setDrawingMode(null);
@@ -165,23 +173,8 @@ const MapContainer = () => {
 
         const onCompleteRectangleInDrawingManager = useCallback(
             e => {
-                setTemp(e);
                 console.dir(e);
             }, [drawingMode]);
-
-        useEffect(() => {
-            console.dir(temp);
-            const getBounds = async () => {
-                try{
-                    const result = await temp.getBounds();
-                    console.dir(result);
-                }catch(e){
-                    console.dir(e);
-                }
-            }
-            getBounds();
-        }, [temp]);
-
 
         const getPolyLineObject = useCallback(e => {
             setPolyLineObject(e);
@@ -241,7 +234,6 @@ const MapContainer = () => {
                 e.getPath().g.forEach(function (element) {
                     arr = arr.concat({lat: element.lat(), lng: element.lng()});
                 });
-                setTemp(arr);
                 setRoadList(roadList.concat(arr));
             }, [drawingMode]);
 
@@ -261,33 +253,6 @@ const MapContainer = () => {
                 else setIsAddRoadInfo(false);
             }, [roadList]);
 
-        const rectangleFunction = useCallback(() => {
-            const removeRectangle = async () => {
-                try{
-                    if(!await temp.getMap()) {
-                        console.dir(await temp.getBounds());
-                        temp.setMap(map);
-                    }
-                    else await temp.setMap(null);
-                }catch(e){console.dir(e)};
-            };
-            removeRectangle();
-        }, [temp]);
-
-        const saveRoadList = useCallback(() => {
-            console.dir(roadList);
-            if (roadList) {
-                setUploadRoadList(uploadRoadList.concat({
-                    roadInfo: roadList,
-                    username: username,
-                }));
-            }
-        }, [roadList, uploadRoadList]);
-
-        useEffect(() => {
-            console.dir(uploadRoadList);
-        }, [uploadRoadList]);
-
         const fetchRoad = useCallback(
             () => {
                 if (!fetchedRoadList) setFetchedRoadList(true);
@@ -296,8 +261,8 @@ const MapContainer = () => {
 
         return (
             <Row>
-                {circle && <MapCircleInfo setRadius={setRadius} onKeyPress={onKeyPressForRadius}
-                                          radius={radius}/>}
+                {circle && <MapCircleInfo setRadius={updateRadius} onKeyPress={onKeyPressForRadius}
+                                          radius={localInfo.radius}/>}
                 {isAddRoad && <RoadDropDownButton addRoadInfo={addRoadInfo}/>}
                 {searchQueryOnMap && searchQueryType === 'road' && <RoadRemarkContainer/>}
 
@@ -340,10 +305,10 @@ const MapContainer = () => {
                                                                  onPolylineComplete={onPolylineComplete}
                                                                  onLoad={getPolyLineObject}
                                 />}
-                                {circle && <MapCircle position={userPosition} radius={radius}/>}
+                                {circle && <MapCircle position={userPosition} radius={localInfo.radius}/>}
                                 {insertInfoBox && <UserMarker position={userPosition} circle={circle}
                                                               setCircle={setCircle} onKeyPress={onKeyPressForRadius}
-                                                              setRadius={setRadius} radius={radius}
+                                                              setRadius={updateRadius} radius={localInfo.radius}
                                 />}
 
                                 {searchQueryOnMap && !isClearMap && <UserInfoOnMapContainer zoom={zoom}/>}
@@ -354,11 +319,6 @@ const MapContainer = () => {
                             </GoogleMap>
                         </LoadScriptNext>
                         {isAddRoadInfo && <RoadModal roadPath={roadList}/>}
-                        <Button variant="outline-info" onClick={RemovePolyLine}>경로 삭제하기</Button>
-                        <Button variant="outline-info" onClick={onVisibleToggle}>경로 보여주기</Button>
-                        <Button variant="outline-info" onClick={onUserPlaceListClick}>유저 위치(리스트)</Button>
-                        <Button variant="outline-info" onClick={fetchRoad}>경로 가져오기</Button>
-                        <Button variant="outline-info" onClick={rectangleFunction}>사각형 제거하기</Button>
                     </Col>
 
                     <Col>
