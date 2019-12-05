@@ -10,7 +10,8 @@ const UserInfoOnMapContainer = ({zoom}) => {
     const [placeInfo, setPlaceInfo] = useState(null);
     const [roadInfo, setRoadInfo] = useState(null);
     const [bundleInfo, setBundleInfo] = useState(null);
-    const [visible, setVisible] = useState(null);
+    const [buildingInfo, setBuildingInfo] = useState(null);
+
     const dispatch = useDispatch();
     const { commentList,searchQuery, searchQueryType, searchQueryOption } = useSelector(({map, loading}) => ({
         commentList : map.commentList,
@@ -30,6 +31,9 @@ const UserInfoOnMapContainer = ({zoom}) => {
                 } else if ( searchQueryType === 'road'){
                     const response = await client.get('/api/map/userRoad');
                     setRoadInfo(response.data);
+                } else if ( searchQueryType === 'building'){
+                    const response = await client.get('/api/map/userBuilding');
+                    setBuildingInfo(response.data);
                 } else{
                     const response = await client.get('api/map/userBundle');
                     setBundleInfo(response.data);
@@ -43,7 +47,6 @@ const UserInfoOnMapContainer = ({zoom}) => {
     }, [searchQueryType]);
 
     useEffect(() => {
-        console.dir(placeInfo);
         if(placeInfo) dispatch(setCommentList(placeInfo));
     }, [placeInfo]);
 
@@ -51,18 +54,27 @@ const UserInfoOnMapContainer = ({zoom}) => {
         console.dir(bundleInfo);
     }, [bundleInfo]);
 
+    useEffect(() => {
+        console.dir(buildingInfo);
+    }, [buildingInfo]);
+
     if (loading) return <h2>로딩중...</h2>;
     if (searchQueryType === 'place' && !placeInfo ) return null;
     if (searchQueryType === 'road' && !roadInfo) return null;
+    if (searchQueryType === 'building' && !buildingInfo) return null;
     if( searchQueryType === 'bundle' && !bundleInfo) return null;
 
     return (
         <>
-            {searchQueryType === 'place' && <InfoWindowList placeInfo={placeInfo} roadInfo={null} zoom={zoom}/>}
-            {searchQueryType === 'road' && <InfoWindowList roadInfo={roadInfo} placeInfo={null} zoom={zoom}/>}
+            {searchQueryType === 'place' && <InfoWindowList placeInfo={placeInfo} roadInfo={null}
+                                                            buildingInfo={null} zoom={zoom}/>}
+            {searchQueryType === 'road' && <InfoWindowList roadInfo={roadInfo} placeInfo={null}
+                                                           buildingInfo={null} zoom={zoom}/>}
+            {searchQueryType === 'building' && <InfoWindowList buildingInfo={buildingInfo} roadInfo={null}
+                                                               placeInfo={null} zoom={zoom}/>}
             {searchQueryType === 'bundle'&&
             bundleInfo.map(bundle => (<InfoWindowList placeInfo={bundle.placeList} roadInfo={bundle.roadList}
-                zoom={zoom} key={bundle._id}/>))}
+                buildingInfo={null} zoom={zoom} key={bundle._id}/>))}
         </>
     );
 };

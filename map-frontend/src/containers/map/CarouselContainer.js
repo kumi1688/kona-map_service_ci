@@ -58,10 +58,9 @@ const CarouselContainer = ({info}) => {
                         <Nav.Link eventKey="estimate-user" onSelect={toggleTabYoutube}>동영상</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link eventKey="comment-user" onSelect={toggleTabMap}>지도</Nav.Link>
+                        <Nav.Link eventKey="comment-user" onSelect={toggleTabMap}>{info.buildingPosition ? "약도" : "지도" }</Nav.Link>
                     </Nav.Item>
                 </Nav>
-
             </div>
             <div>
                 {localInfo.visibleOnTabPictures &&
@@ -78,6 +77,17 @@ const CarouselContainer = ({info}) => {
                 </Carousel>}
                 {localInfo.visibleOnTabYoutube &&
                 <YoutubeContainer youtubeVideoId={info.youtubeVideoId}/>}
+                {localInfo.visibleOnTabMap && info.roughMapUrl &&
+                <Carousel>
+                    {info.roughMapUrl.map(url => (
+                        <Carousel.Item key={url}>
+                            <img width="100%"
+                                 height="auto"
+                                 src={url}
+                                 />
+                        </Carousel.Item>
+                    ))}
+                </Carousel>}
             </div>
         </div>
     );

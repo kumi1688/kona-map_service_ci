@@ -6,23 +6,34 @@ import ImageUpload from "../common/ImageUpload";
 import AlertComponent from "../common/AlertComponent";
 import MapTagBox from "./MapTagBox";
 
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
 const selectOptions = {
     'mainRoad': ['4차로', '3차로', '2차로', '포장도로'],
-    'smallRoad' : ['지름길', '오솔길', '산길', '나무길'],
-    'travelRoad' : ['홀로 여행', '도보여행', '테마여행', '자전거여행', '반려견과 함께 여행'],
-    'foodRoad': [ '한식', '양식', '중식', '혼합', '기타'],
-    'sightSeeingRoad' : ['문화', '건축물', '음악'],
+    'smallRoad': ['지름길', '오솔길', '산길', '나무길'],
+    'travelRoad': ['홀로 여행', '도보여행', '테마여행', '자전거여행', '반려견과 함께 여행'],
+    'foodRoad': ['한식', '양식', '중식', '혼합', '기타'],
+    'sightSeeingRoad': ['문화', '건축물', '음악'],
 };
 
 const SecondarySelect = ({primarySelect}) => {
     let secondOption;
     switch (primarySelect) {
-        case 'mainRoad' : secondOption = selectOptions.mainRoad; break;
-        case 'smallRoad' : secondOption = selectOptions.smallRoad; break;
-        case 'travelRoad': secondOption = selectOptions.travelRoad; break;
-        case 'foodRoad' : secondOption = selectOptions.foodRoad; break;
-        case 'sightSeeingRoad' : secondOption = selectOptions.sightSeeingRoad; break;
+        case 'mainRoad' :
+            secondOption = selectOptions.mainRoad;
+            break;
+        case 'smallRoad' :
+            secondOption = selectOptions.smallRoad;
+            break;
+        case 'travelRoad':
+            secondOption = selectOptions.travelRoad;
+            break;
+        case 'foodRoad' :
+            secondOption = selectOptions.foodRoad;
+            break;
+        case 'sightSeeingRoad' :
+            secondOption = selectOptions.sightSeeingRoad;
+            break;
         default :
             secondOption = selectOptions.mainRoad;
     }
@@ -37,15 +48,17 @@ const SecondarySelect = ({primarySelect}) => {
 const initialState = {
     name: '',
     description: '',
-    gridPosition: {lat: 0, lng: 0},
     detailedPosition: '',
     tags: [],
     primaryPositionType: "mainRoad",
     secondaryPositionType: "4차로",
-    roadInfo : null,
-    username : null,
-    imageUrl : null,
+    username: null,
+    imageUrl: null,
+    roughMapUrl : null,
     youtubeUrl: null,
+    buildingPosition: null,
+    floor: null,
+    floorArray: [],
 };
 
 const infoReducer = (state, action) => {
@@ -74,7 +87,7 @@ const infoReducer = (state, action) => {
             return {...state, youtubeUrl: action.youtubeUrl}
         }
         case 'updateRoadInfo' : {
-            return {...state, roadInfo : action.roadInfo}
+            return {...state, roadInfo: action.roadInfo}
         }
         case 'updateTags': {
             return {...state, tags: action.tags}
@@ -97,13 +110,25 @@ const infoReducer = (state, action) => {
         case 'updateImageUrl' : {
             return {...state, imageUrl: action.imageUrl}
         }
+        case 'updateBuildingPosition' : {
+            return {...state, buildingPosition: action.buildingPosition}
+        }
+        case 'updateFloor': {
+            return {...state, floor: action.floor}
+        }
+        case 'updateRoughMap': {
+            return {...state, roughMapUrl: action.roughMapUrl}
+        }
+        case 'setFloorArray': {
+            return {...state, floorArray: action.arr};
+        }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
         }
     }
 };
 
-const RoadModal = ( {roadPath}) => {
+const BuildingModal = ({buildingList, closeModal}) => {
     const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
     const [visibleAlert, setVisibleAlert] = useState(false);
     const [show, setShow] = useState(true);
@@ -111,8 +136,11 @@ const RoadModal = ( {roadPath}) => {
         username: user.user.username,
     }));
 
-    const reset = () => setLocalInfo({type: 'reset'});
-    const updateName = (e) => setLocalInfo({type: 'updateName', name: e.target.value});
+    const reset = (index) => setLocalInfo({type: 'reset'});
+    const updateName = useCallback((e) => {
+        setLocalInfo({type: 'updateName', name: e.target.value});
+    }, []);
+
     const updateDescription = e => setLocalInfo({type: 'updateDescription', description: e.target.value});
     const updateDetailedDescription = e => setLocalInfo({
         type: 'updateDetailedPosition',
@@ -125,18 +153,33 @@ const RoadModal = ( {roadPath}) => {
     const updateSecondaryPositionType = e => {
         setLocalInfo({type: 'updateSecondaryPositionType', secondaryPositionType: e.target.value});
     };
-    const updateRoadInfo = value => {
-        setLocalInfo( {type: 'updateRoadInfo', roadInfo: value});
-    };
     const updateUserName = () => {
-        setLocalInfo( {type: 'updateUserName', username: username});
+        setLocalInfo({type: 'updateUserName', username: username});
     };
     const updateImageUrl = (imageUrl) => {
-        setLocalInfo({type: 'updateImageUrl', imageUrl : imageUrl});
+        setLocalInfo({type: 'updateImageUrl', imageUrl: imageUrl});
+    };
+    const updateRoughMap = (roughMapUrl) => {
+        setLocalInfo({type: 'updateRoughMap', roughMapUrl: roughMapUrl});
     };
     const updateYoutubeUrl = (e) => {
         setLocalInfo({type: 'updateYoutubeUrl', youtubeUrl: e.target.value});
     };
+    const updateBuildingList = () => {
+        setLocalInfo({type: 'updateBuildingPosition', buildingPosition: buildingList});
+    };
+    const updateFloor = (e) => {
+        setLocalInfo({type: 'updateFloor', floor: e.target.value});
+        let arr = [];
+        for (let i = 0; i < localInfo.floor; i++) {
+            arr = arr.concat();
+        }
+        setLocalInfo({type: 'setFloorArray', arr: arr});
+    };
+
+    useEffect(() => {
+        console.dir(localInfo.floorArray);
+    }, [localInfo.floorArray]);
 
     const handleShow = useCallback(() => {
         if (!show) setShow(true);
@@ -148,7 +191,7 @@ const RoadModal = ( {roadPath}) => {
             e.preventDefault();
             console.dir(localInfo);
             const saveData = async () => {
-                await client.post('/api/map/userRoad', ({
+                await client.post('/api/map/userBuilding', ({
                     name: localInfo.name,
                     description: localInfo.description,
                     tags: localInfo.tags,
@@ -156,42 +199,68 @@ const RoadModal = ( {roadPath}) => {
                     primaryPositionType: localInfo.primaryPositionType,
                     secondaryPositionType: localInfo.secondaryPositionType,
                     username: localInfo.username,
-                    roadInfo: localInfo.roadInfo,
                     imageUrl: localInfo.imageUrl,
-                    youtubeUrl : localInfo.youtubeUrl
+                    roughMapUrl: localInfo.roughMapUrl,
+                    youtubeUrl: localInfo.youtubeUrl,
+                    buildingPosition: localInfo.buildingPosition,
+                    floor: localInfo.floor,
+
                 }));
             };
             saveData();
             setVisibleAlert(true);
             handleShow();
-        }, [localInfo]);
-
-    useEffect(() =>{
-        updateRoadInfo(roadPath);
-    }, []);
+        }, [localInfo, handleShow]);
 
     useEffect(() => {
         updateUserName(username);
-    }, [username]);
+        updateBuildingList();
+        console.dir(localInfo.floor);
+    }, [username, localInfo.floor]);
+
+    useEffect(() => {
+        return () => {
+            console.dir('hello');
+        };
+    }, []);
+
+    useEffect(() => {
+        console.dir(localInfo.buildingList);
+    }, [localInfo.buildingList]);
 
 
     return (
         <>
             <Modal show={show} centered animation autoFocus restoreFocus
+                   onExited={closeModal}
                    size="lg">
                 <ModalTitle><strong>위치 정보 입력</strong></ModalTitle>
                 <ModalBody>
-
-                    <Form.Group controlId="photo">
-                        <Form.Label>사진</Form.Label>
-                        <ImageUpload updateImageUrl={updateImageUrl}/>
-                    </Form.Group>
-
                     <Form>
+                        <Form.Group controlId="floor">
+                            <Form.Label>층수</Form.Label>
+                            <Form.Control placeholder="층수를 입력해주세요" onChange={updateFloor}/>
+                        </Form.Group>
+
+                        <Form.Group controlId="photo">
+                            <Form.Label>사진</Form.Label>
+                            <ImageUpload updateImageUrl={updateImageUrl}/>
+                        </Form.Group>
+
+                        <Form.Group controlId="photo">
+                            <Form.Label>약도</Form.Label>
+                            <ImageUpload updateImageUrl={updateRoughMap}/>
+                        </Form.Group>
+                    </Form>
+                    <Form>
+
+
                         <Form.Group controlId="name">
                             <Form.Label>이름</Form.Label>
                             <Form.Control placeholder="이름을 입력해주세요" name="updateName" onChange={updateName}/>
                         </Form.Group>
+
+
 
                         <Form.Group controlId="name">
                             <Form.Label>유튜브</Form.Label>
@@ -235,15 +304,17 @@ const RoadModal = ( {roadPath}) => {
                         </Form.Group>
                         <MapTagBox updateTags={updateTags}/>
                     </Form>
+
+
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={handleShow}>닫기</Button>
                     <Button color="primary" onClick={onSubmit}>등록</Button>
                 </ModalFooter>
             </Modal>
-            {visibleAlert && <AlertComponent text="경로가 등록되었습니다"/>}
+            {visibleAlert && <AlertComponent text="건물이 등록되었습니다"/>}
         </>
     );
 };
 
-export default RoadModal;
+export default BuildingModal;

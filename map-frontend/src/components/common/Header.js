@@ -33,7 +33,7 @@ const Header = ({user, onLogout, setAddInfo, setAddRoad, setAddBuilding}) => {
 
     const onChangeSearchQueryType = useCallback(
         e => {
-            console.dir(e.target.value);
+            //console.dir(e.target.value);
             setType(e.target.value);
         }, [type]);
 
@@ -71,6 +71,7 @@ const Header = ({user, onLogout, setAddInfo, setAddRoad, setAddBuilding}) => {
                         <Form.Control as="select" value={type} onChange={onChangeSearchQueryType}>
                             <option value="place">위치 검색</option>
                             <option value="road">경로 검색</option>
+                            <option value="building">건물 검색</option>
                             <option value="bundle">모음 검색</option>
                         </Form.Control>
                         <Form.Control as="select" value={option} onChange={onChangeSearchOption}>

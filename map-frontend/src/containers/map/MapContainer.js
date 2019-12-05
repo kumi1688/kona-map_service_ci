@@ -2,13 +2,12 @@ import React, {useCallback, useEffect, useReducer, useState} from 'react'
 import {
     GoogleMap,
     DrawingManager,
-    LoadScriptNext, InfoWindow,
+    LoadScriptNext, InfoWindow, Rectangle,
 } from '@react-google-maps/api'
 import {Row, Col, Button} from 'react-bootstrap';
 import UserMarker from "../../components/map/UserMarker";
 import MarkerInfo from "../../components/map/MarkerInfo";
 import MapCircle, {MapCircleInfo} from "../../components/map/MapCircle";
-import UserPlaceContainer from "./UserPlaceContainer";
 import {useSelector, useDispatch} from "react-redux";
 import UserInfoOnMapContainer from "./UserInfoOnMapContainer";
 import styled from "styled-components";
@@ -21,17 +20,18 @@ import RoadRemarkContainer from "../../components/map/RoadRemarkContainer";
 import BookMarkConainer from "./BookMarkContainer";
 import InfoViewerContainer from "./InfoViewerContainer";
 import BuildingRemarkContainer from "./BuildingRemarkContainer";
+import BuildingModal from "../../components/map/BuildingModal";
 
 const StyledMapContainerWrapper = styled.div`
     position: fixed;
 `;
 
-const mapContainerStyle={
-    withoutInfoWindow : {
+const mapContainerStyle = {
+    withoutInfoWindow: {
         width: '1350px',
         height: '550px'
     },
-    withInfoWindow : {
+    withInfoWindow: {
         width: '600px',
         height: '550px'
 
@@ -55,8 +55,23 @@ const getPolyLineOption = (type) => {
     }
 };
 
+const initialPosition = {lat: 37.284315, lng: 127.044504};
+
 const initialState = {
     radius: 0,
+    fetchedRoadList: null,
+    userPosition: {lat: null, lng: null},
+    map: null,
+    currentUserLocation: null,
+    drawingMode: null,
+    circle: null,
+    insertInfoBox : null,
+    userLocOnMap : null,
+    center : initialPosition,
+    zoom: 15,
+    isAddRoadInfo: false,
+    isAddBuildingInfo: false,
+    rectangleList : [],
 };
 
 const infoReducer = (state, action) => {
@@ -69,6 +84,48 @@ const infoReducer = (state, action) => {
         }
         case 'updateRadius' : {
             return {...state, radius: action.radius}
+        }
+        case "updateFetchedRoadList": {
+            return {...state, fetchedRoadList: action.fetchedRoadList}
+        }
+        case 'updateUserPosition' : {
+            return {...state, userPosition: action.userPosition}
+        }
+        case 'updateMap' : {
+            return {...state, map: action.map}
+        }
+        case 'updateCurrentUserLocation' : {
+            return {...state, currentUserLocation: action.currentUserLocation}
+        }
+        case 'updateDrawingMode': {
+            return {...state, drawingMode: action.drawingMode}
+        }
+        case 'updateCircle' : {
+            return {...state, circle: action.circle}
+        }
+        case 'updateInsertInfoBox': {
+            return {...state, insertInfoBox: action.insertInfoBox}
+        }
+        case 'updateUserLocOnMap': {
+            return {...state, userLocOnMap: action.userLocOnMap}
+        }
+        case 'updateCenter' : {
+            return {...state, center : action.center}
+        }
+        case 'updateZoom' : {
+            return {...state, zoom : action.zoom}
+        }
+        case 'updateIsAddRoadInfo' : {
+            return {...state, isAddRoadInfo: action.isAddRoadInfo}
+        }
+        case 'updateIsAddBuildingInfo': {
+            return {...state, isAddBuildingInfo: !state.isAddBuildingInfo}
+        }
+        case 'updateRectangle' : {
+            return {...state, rectangleList : state.rectangleList.concat(action.rectangle)}
+        }
+        case 'resetRectangle' : {
+            return {...state, rectangleList: []}
         }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
@@ -90,52 +147,79 @@ const MapContainer = () => {
             username: user.user.username,
             roadType: map.roadType,
             isClearMap: map.isClearMap,
-            isAddBookMark : map.isAddBookMark,
+            isAddBookMark: map.isAddBookMark,
             isMarkerClicked: map.isMarkerClicked,
             isAddBuilding: map.isAddBuilding
         }));
 
-        const initialPosition = {lat: 37.284315, lng: 127.044504};
         const [localInfo, setLocalInfo] = useReducer(infoReducer, initialState);
-        const [fetchedRoadList, setFetchedRoadList] = useState(null);
         const [uploadRoadList, setUploadRoadList] = useState([]);
         const [roadList, setRoadList] = useState([]);
-        const [userLocOnMap, setUserLocOnMap] = useState(null);
-        const [map, setMap] = useState(null);
         const [polyLineObject, setPolyLineObject] = useState(null);
-        const [zoom, setZoom] = useState(15);
-        const [drawingMode, setDrawingMode] = useState(null);
-        const [marker, setMarker] = useState(null);
-        const [center, setCenter] = useState(initialPosition);
-        const [circle, setCircle] = useState(null);
-        const [radius, setRadius] = useState(null);
-        const [insertInfoBox, setInsertInfoBox] = useState(null);
-        const [leftUpperPoint, setLeftUpperPoint] = useState(null);
-        const [rightDownPoint, setRightDownPoint] = useState(null);
-        const [userPlaceList, setUserPlaceList] = useState(null);
-        const [userPosition, setUserPosition] = useState({lat: null, lng: null});
         const [visibleRoad, setVisibleRoad] = useState(null);
-        const [isAddRoadInfo, setIsAddRoadInfo] = useState(null);
 
         const updateRadius = useCallback((value) => {
             setLocalInfo({type: 'updateRadius', radius: value})
-        }, [localInfo.radius]);
+        }, []);
+
+        const updateFetchedRoadList = useCallback((value) => {
+            setLocalInfo({type: 'updateFetchedRoadList', fetchedRoadList: value});
+        }, []);
+
+        const updateUserPosition = useCallback((e) => {
+            setLocalInfo({type: 'updateUserPosition', userPosition: {lat: e.latLng.lat(), lng: e.latLng.lng()}});
+        }, []);
+
+        const getMapObject = useCallback((e) => {
+            setLocalInfo({type: 'updateMap', map: e});
+        }, []);
+
+        const updateDrawingMode = useCallback((value) => {
+            setLocalInfo({type: 'updateDrawingMode', drawingMode: value});
+        }, []);
+
+        const updateCircle = useCallback((value) => {
+            setLocalInfo({type : 'updateCircle', circle: value});
+        }, []);
+
+        const updateInsertInfoBox = useCallback((value) => {
+            setLocalInfo({type: 'updateInsertInfoBox', insertInfoBox: value})
+        }, []);
+
+        const updateUserLocOnMap = useCallback((value) => {
+            setLocalInfo({type: 'updateUserLocOnMap', userLocOnMap: value})
+        }, []);
+
+        const updateCenter = useCallback((value) => {
+            setLocalInfo({type: 'updateCenter', center : value});
+        }, []);
+
+        const updateZoom = useCallback((value) => {
+            setLocalInfo({type: 'updateZoom', zoom: value});
+        }, []);
+
+        const updateIsAddRoadInfo = useCallback((value) => {
+            setLocalInfo({type: 'updateIsAddRoadInfo', isAddRoadInfo: value});
+        }, []);
+
+        const updateRectangle = useCallback((e) => {
+            setLocalInfo({type: 'updateRectangle', rectangle: e});
+        }, []);
+
+        const updateIsAddBuildingInfo = useCallback(() => {
+            setLocalInfo({type: 'updateIsAddBuildingInfo'});
+        }, []);
 
         const onMapClick = useCallback(e => {
             console.dir('클릭');
-            if (circle || insertInfoBox) {
+            if (localInfo.circle || localInfo.insertInfoBox) {
                 addMarker(e);
             }
-        }, [circle, insertInfoBox]);
-
-        const onUserPlaceListClick = useCallback(() => {
-            if (!userPlaceList) setUserPlaceList(true);
-            else setUserPlaceList(false);
-        }, [userPlaceList]);
+        }, [localInfo.circle, localInfo.insertInfoBox]);
 
         const addMarker = useCallback((e) => {
-            setUserPosition({lat: e.latLng.lat(), lng: e.latLng.lng()});
-        }, [userPosition]);
+            updateUserPosition(e);
+        }, [localInfo.userPosition, updateUserPosition]);
 
         const onKeyPressForRadius = useCallback(
             e => {
@@ -143,38 +227,32 @@ const MapContainer = () => {
                     e.preventDefault();
                     updateRadius(parseInt(e.target.value, 10));
                 }
-            }, [localInfo.radius]);
+            }, [updateRadius]);
 
         const onRightClick = useCallback((e) => {
-                setDrawingMode(null);
-            },[drawingMode]);
+            updateDrawingMode(null);
+        }, [updateDrawingMode]);
 
         useEffect(() => {
-            setDrawingMode('');
-        }, [drawingMode]);
+            updateDrawingMode('');
+        }, [localInfo.drawingMode, updateDrawingMode]);
 
         useEffect(() => {
-            if (!userLocOnMap) setUserLocOnMap(currentUserLocation);
-            else setUserLocOnMap(false);
-        }, [currentUserLocation]);
+            if (!localInfo.userLocOnMap) updateUserLocOnMap(currentUserLocation);
+        }, [currentUserLocation, updateUserLocOnMap, localInfo.userLocOnMap]);
 
         useEffect(() => {
-            if (isAddInfo) setInsertInfoBox(true);
-            else setInsertInfoBox(false);
-        }, [isAddInfo]);
+            if (isAddInfo) updateInsertInfoBox(true);
+            else updateInsertInfoBox(false);
+        }, [isAddInfo, updateInsertInfoBox]);
 
         useEffect(() => {
-            console.dir(zoom);
-        }, [zoom]);
+            console.dir(localInfo.zoom);
+        }, [localInfo.zoom]);
 
         useEffect(() => {
-            if (!currentUserLocation) setUserLocOnMap(true);
-        }, [currentUserLocation]);
-
-        const onCompleteRectangleInDrawingManager = useCallback(
-            e => {
-                console.dir(e);
-            }, [drawingMode]);
+            console.dir(localInfo.rectangleList);
+        }, [localInfo.rectangleList]);
 
         const getPolyLineObject = useCallback(e => {
             setPolyLineObject(e);
@@ -193,83 +271,62 @@ const MapContainer = () => {
             removePolyLine();
         }, [polyLineObject, roadList]);
 
-        const getMapObject = useCallback(e => {
-            setMap(e);
-            //console.dir(e.getZoom());
-        }, [map]);
-
-        const getCenter = useCallback( e=> {
+        const getCenter = useCallback(e => {
             const fetchCenter = async () => {
-                try{
-                    const response = await map.getCenter();
-                    setCenter(response);
-                }catch(e){
+                try {
+                    const response = await localInfo.map.getCenter();
+                    updateCenter(response);
+                } catch (e) {
                     console.dir(e);
                 }
             };
             fetchCenter();
-        }, [map]);
+        }, [localInfo.map, updateCenter]);
 
         const onZoomChanged = useCallback(e => {
             const fetchZoom = async () => {
                 try {
-                    const response = await map.getZoom();
-                    setZoom(response);
+                    const response = await localInfo.map.getZoom();
+                    updateZoom(response);
                 } catch (e) {
                     console.dir(e);
                 }
             };
             fetchZoom();
-        }, [map]);
-
-        useEffect(() => {
-            setDrawingMode('');
-            console.dir(drawingMode);
-        }, [drawingMode]);
+        }, [localInfo.map, updateZoom]);
 
         const onPolylineComplete = useCallback(
             e => {
-                console.dir(e.getPath());
+                //console.dir(e.getPath());
                 let arr = [];
                 e.getPath().g.forEach(function (element) {
                     arr = arr.concat({lat: element.lat(), lng: element.lng()});
                 });
                 setRoadList(roadList.concat(arr));
-            }, [drawingMode]);
+            }, [setRoadList, roadList]);
 
-        useEffect(() =>{
-            console.dir(center);
-        }, [center]);
-
-        const onVisibleToggle = useCallback(
-            () => {
-                if (!visibleRoad) setVisibleRoad(true);
-                else setVisibleRoad(false);
-            }, [visibleRoad]);
+        const onRectangleComplete = useCallback( e => {
+            const rectangle = { east : e.bounds.ka.h, west : e.bounds.ka.g,
+                                north: e.bounds.pa.h, south: e.bounds.pa.g };
+            updateRectangle(rectangle);
+        }, [updateRectangle]);
 
         const addRoadInfo = useCallback(
             () => {
-                if (!isAddRoadInfo) setIsAddRoadInfo(true);
-                else setIsAddRoadInfo(false);
-            }, [roadList]);
-
-        const fetchRoad = useCallback(
-            () => {
-                if (!fetchedRoadList) setFetchedRoadList(true);
-                else setFetchedRoadList(false);
-            }, [fetchedRoadList]);
+                if (!localInfo.isAddRoadInfo) updateIsAddRoadInfo(true);
+                else updateIsAddRoadInfo(false);
+            }, [updateIsAddRoadInfo, localInfo.isAddRoadInfo]);
 
         return (
             <Row>
-                {circle && <MapCircleInfo setRadius={updateRadius} onKeyPress={onKeyPressForRadius}
+                {localInfo.circle && <MapCircleInfo setRadius={updateRadius} onKeyPress={onKeyPressForRadius}
                                           radius={localInfo.radius}/>}
                 {isAddRoad && <RoadDropDownButton addRoadInfo={addRoadInfo}/>}
                 {searchQueryOnMap && searchQueryType === 'road' && <RoadRemarkContainer/>}
 
                 {isAddBookMark && <BookMarkConainer/>}
                 {isMarkerClicked && <InfoViewerContainer/>}
-                {isAddBuilding && <BuildingRemarkContainer/>}
-
+                {isAddBuilding && <BuildingRemarkContainer addBuildingInfo={updateIsAddBuildingInfo} />}
 
                 <StyledMapContainerWrapper>
                     <Col>
@@ -280,9 +337,9 @@ const MapContainer = () => {
 
                             <GoogleMap
                                 mapContainerStyle={isMarkerClicked ?
-                                    mapContainerStyle.withInfoWindow: mapContainerStyle.withoutInfoWindow}
-                                zoom={zoom}
-                                center={center}
+                                    mapContainerStyle.withInfoWindow : mapContainerStyle.withoutInfoWindow}
+                                zoom={localInfo.zoom}
+                                center={localInfo.center}
                                 onClick={onMapClick}
                                 onLoad={getMapObject}
                                 onZoomChanged={onZoomChanged}
@@ -295,36 +352,35 @@ const MapContainer = () => {
                                     gestureHandling: "cooperative",
                                 }}
                             >
-                                { !drawingMode && <DrawingManager onRectangleComplete={onCompleteRectangleInDrawingManager}
-                                                                 drawingMode={drawingMode}
-                                                                 options={{
-                                                                     polylineOptions: getPolyLineOption(roadType),
-                                                                     circleOptions: circleOptions.circleOption,
-                                                                     rectangleOptions: rectangleOptions.rectangleOption
-                                                                 }}
-                                                                 onPolylineComplete={onPolylineComplete}
-                                                                 onLoad={getPolyLineObject}
+
+
+                                {!localInfo.drawingMode && <DrawingManager drawingMode={localInfo.drawingMode}
+                                                                           options={{
+                                                                               polylineOptions: getPolyLineOption(roadType),
+                                                                               circleOptions: circleOptions.circleOption,
+                                                                               rectangleOptions: rectangleOptions.rectangleOption
+                                                                           }}
+                                                                           onRectangleComplete={onRectangleComplete}
+                                                                           onPolylineComplete={onPolylineComplete}
+                                                                           onLoad={getPolyLineObject}
                                 />}
-                                {circle && <MapCircle position={userPosition} radius={localInfo.radius}/>}
-                                {insertInfoBox && <UserMarker position={userPosition} circle={circle}
-                                                              setCircle={setCircle} onKeyPress={onKeyPressForRadius}
+                                {localInfo.circle && <MapCircle position={localInfo.userPosition} radius={localInfo.radius}/>}
+                                {localInfo.insertInfoBox && <UserMarker position={localInfo.userPosition} circle={localInfo.circle}
+                                                              setCircle={updateCircle} onKeyPress={onKeyPressForRadius}
                                                               setRadius={updateRadius} radius={localInfo.radius}
                                 />}
 
-                                {searchQueryOnMap && !isClearMap && <UserInfoOnMapContainer zoom={zoom}/>}
-                                {userLocOnMap && <UserMarker position={userLocOnMap} circle={-1} animation={true}/>}
-                                {fetchedRoadList && <RoadViewContainer/>}
+                                {searchQueryOnMap && !isClearMap && <UserInfoOnMapContainer zoom={localInfo.zoom}/>}
+                                {localInfo.userLocOnMap && <UserMarker position={localInfo.userLocOnMap} circle={-1} animation={true}/>}
+                                {localInfo.fetchedRoadList && <RoadViewContainer/>}
                                 {visibleRoad &&
-                                <RoadControlContainer uploadRoadList={uploadRoadList} roadList={roadList} map={map}/>}
+                                <RoadControlContainer uploadRoadList={uploadRoadList} roadList={roadList}
+                                                      map={localInfo.map}/>}
                             </GoogleMap>
                         </LoadScriptNext>
-                        {isAddRoadInfo && <RoadModal roadPath={roadList}/>}
-                    </Col>
-
-                    <Col>
-                        {marker && <MarkerInfo position={userPosition}/>}
-                        {userPlaceList && <UserPlaceContainer/>}
-
+                        {localInfo.isAddRoadInfo && <RoadModal roadPath={roadList}/>}
+                        {localInfo.isAddBuildingInfo && <BuildingModal buildingList={localInfo.rectangleList}
+                                                                       closeModal={updateIsAddBuildingInfo}/>}
                     </Col>
                 </StyledMapContainerWrapper>
             </Row>

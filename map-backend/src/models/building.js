@@ -9,16 +9,18 @@ const BuildingSchema = new Schema({
     detailedPosition: String,
     tags: [String],
     type: {point : Boolean, rectangle : Boolean, cicle : Boolean },
-    position: {lat: Number, lng: Number},
     publishingDate: { type : Date, default: Date.now },
     primaryPositionType: String,
     secondaryPositionType: String,
     radius: Number,
     commentList: [],
     imageUrl : [String],
+    roughMapUrl: [String],
     block: Number,
     recommend: { good: Number, bad : Number, username: [String] },
     youtubeVideoId: String,
+    buildingPosition: [],
+    floor : Number,
 });
 
 BuildingSchema.statics.findByUsername = function(username){
@@ -29,6 +31,6 @@ BuildingSchema.statics.findByObjectID = function(objectID){
     return this.findById({objectID});
 };
 
-const building = mongoose.model('Building', BuildingSchema);
+const UserBuilding = mongoose.model('UserBuilding', BuildingSchema);
 
-export default building;
+export default UserBuilding;

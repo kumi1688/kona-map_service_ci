@@ -17,7 +17,7 @@ const StyledBuildingRemarkWrapper = styled.div`
     border : dashed black;
 `;
 
-const BuildingRemarkContainer = () => {
+const BuildingRemarkContainer = ({addBuildingInfo}) => {
     const {isClearMap} = useSelector(({map}) => ({
         isClearMap : map.isClearMap,
     }));
@@ -32,7 +32,7 @@ const BuildingRemarkContainer = () => {
     return (
         <StyledBuildingRemarkWrapper>
             <Button onClick={onClick}>지도초기화</Button>
-            <Button variant="outline-primary">건물 저장하기</Button>
+            <Button variant="outline-primary" onClick={addBuildingInfo}>건물 저장하기</Button>
         </StyledBuildingRemarkWrapper>
     )
 };

@@ -4,6 +4,7 @@ import Comment from "../../models/comment";
 import UserRoad from "../../models/userRoad";
 import sanitizeHtml from "sanitize-html";
 import UserBundle from "../../models/userBundle";
+import UserBuilding from "../../models/building";
 
 const post = new Post([
     {
@@ -256,14 +257,33 @@ export const deleteComment = async ctx => {
     }
 };
 
+export const makeUserBuilding = async ctx => {
+    const { username, name, description, tags, position, detailedPosition, publishingDate,
+        primaryPositionType, secondaryPositionType, imageUrl, youtubeUrl, buildingPosition,
+        roughMapUrl } = ctx.request.body;
+    let index = youtubeUrl.indexOf('v=');
+    let youtubeVideoId = youtubeUrl.substring(index+2, youtubeUrl.length);
+    const userRoad = new UserBuilding({
+        username, name, description, tags, position, detailedPosition, publishingDate,
+        primaryPositionType, secondaryPositionType, imageUrl, block: 0, buildingPosition,
+        recommend : {good: 0, bad: 0, username: []}, youtubeVideoId, roughMapUrl
+    });
+    try{
+        await userRoad.save();
+        ctx.body = userRoad;
+    } catch(e) {
+        ctx.throw(500, e);
+    }
+};
+
 export const makeUserBundle = async ctx => {
     const { username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, roadList, placeList, buildingList, youtubeUrl } = ctx.request.body;
+        primaryPositionType, secondaryPositionType, roadList, placeList, buildingPosition, youtubeUrl } = ctx.request.body;
     let index = youtubeUrl.indexOf('v=');
     let youtubeVideoId = youtubeUrl.substring(index+2, youtubeUrl.length);
     const userBundle = new UserBundle({
         username, name, description, tags, position, detailedPosition, publishingDate,
-        primaryPositionType, secondaryPositionType, roadList, placeList, buildingList, youtubeVideoId
+        primaryPositionType, secondaryPositionType, roadList, placeList, buildingPosition, youtubeVideoId
     });
     try{
         await userBundle.save();
@@ -273,6 +293,18 @@ export const makeUserBundle = async ctx => {
     }
 };
 
+export const listUserBuilding = async ctx => {
+    try{
+        const userBuilding = await UserBuilding.find().exec();
+        if(!userBuilding){
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = userBuilding;
+    }catch(e){
+        ctx.throw(500, e);
+    }
+};
 
 exports.listUserBundle = async ctx => {
     try{

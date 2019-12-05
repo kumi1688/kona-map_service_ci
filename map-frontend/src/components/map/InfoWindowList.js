@@ -21,6 +21,7 @@ import CardComponent from "./CardComponent";
 import CarouselContainer from "../../containers/map/CarouselContainer";
 import styled from "styled-components";
 import BasicInfoViewerContainer from "../../containers/map/BasicInfoViewerContainer";
+import BuildingViewContainer from "../../containers/map/BuildingViewContainer";
 
 const findIcon = primaryType => {
     switch (primaryType) {
@@ -91,7 +92,7 @@ const VerticalLine = styled.div`
   top: 0;
 `;
 
-const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
+const InfoWindowList = ({placeInfo, roadInfo, buildingInfo, zoom}) => {
     const {searchQuery, searchQueryType, searchQueryOption} = useSelector(({map}) => ({
         searchQueryType: map.searchQuery.searchQueryType,
         searchQuery: map.searchQuery.searchQuery,
@@ -136,6 +137,23 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
                 default:
                     setFilteredData(roadInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
             }
+        } else if ( searchQueryType === 'building' ){ // 건물 검색
+            switch (searchQueryOption) {
+                case "name":
+                    setFilteredData(buildingInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "tag":
+                    setFilteredData(buildingInfo.filter(inf => (inf.tags.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "description":
+                    setFilteredData(buildingInfo.filter(inf => (inf.description.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                case "position":
+                    setFilteredData(buildingInfo.filter(inf => (inf.detailedPosition.indexOf(searchQuery)) !== -1 ? inf : null));
+                    break;
+                default:
+                    setFilteredData(buildingInfo.filter(inf => (inf.name.indexOf(searchQuery)) !== -1 ? inf : null));
+            }
         } else {
             switch (searchQueryOption) {
                 case "name":
@@ -170,6 +188,7 @@ const InfoWindowList = ({placeInfo, roadInfo, zoom}) => {
             {searchQueryType === 'place' && filteredData.map((inf) => (
                 <InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}}
             {searchQueryType === 'road' && <RoadViewContainer roadList={filteredData}/>}
+            {searchQueryType === 'building' && <BuildingViewContainer buildingList={filteredData}/>}
             {searchQueryType === 'bundle' && <RoadViewContainer roadList={filteredBundleRoad}/>}
             {searchQueryType === 'bundle' && filteredBundlePlace.map((inf) => (
                 <InfoWindowItem zoom={zoom} key={inf._id} info={inf}/>))}

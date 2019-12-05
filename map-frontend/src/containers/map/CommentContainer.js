@@ -44,6 +44,7 @@ const CommentList = ({info, newComment, setLocalCommentList}) => {
         username: user.user.username
     }));
 
+
     return (
         <>
             {newComment && newComment.map((inf) => (
@@ -58,6 +59,10 @@ const CommentList = ({info, newComment, setLocalCommentList}) => {
 
 const CommentContainer = ({info, isCloseBox, setUpdateCommentList}) => {
     const [localCommentList, setLocalCommentList] = useState(info.commentList);
+
+    useEffect(() => {
+        console.dir(info);
+    }, [])
 
     return (
         <>
