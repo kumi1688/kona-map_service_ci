@@ -16,7 +16,11 @@ map.get('/userBundle', mapCtrl.listUserBundle);
 
 map.get('/userRoad', mapCtrl.listUserRoads);
 
+map.get('/userRoad/:id', mapCtrl.findUserRoad);
+
 map.get('/userBuilding', mapCtrl.listUserBuilding);
+
+map.get('/userBuilding/:id', mapCtrl.findUserBuilding);
 
 map.get('/userRoad/username/:username', mapCtrl.findUserRoadByUserName);
 

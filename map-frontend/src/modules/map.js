@@ -18,6 +18,8 @@ const UPDATE_BOOK_MARK = 'map/UPDATE_BOOK_MARK';
 const START_ADD_BOOK_MARK = 'map/START_ADD_BOOK_MARK';
 const SET_INFO_VIEWER = 'map/SET_INFO_VIEWER';
 const [FETCH_PLACE_INFO, FETCH_PLACE_INFO_SUCCESS, FETCH_PLACE_INFO_FAILURE] = createRequestActionTypes('map/FETCH_PLACE_INFO');
+const [FETCH_ROAD_INFO, FETCH_ROAD_INFO_SUCCESS, FETCH_ROAD_INFO_FAILURE] = createRequestActionTypes('map/FETCH_ROAD_INFO');
+const [FETCH_BUILDING_INFO, FETCH_BUILDING_INFO_SUCCESS, FETCH_BUILDING_INFO_FAILURE] = createRequestActionTypes('map/FETCH_BUILDING_INFO');
 
 // 액션에 할당된 파라미터의 값이 어떤것인지 알 수 없기 때문에 파라미터로 전달받은 값을 action의 payload로 설정함
 export const list = createAction(LIST, info => info);
@@ -26,6 +28,8 @@ export const post = createAction(POST_USER_PLACE, ({name, description, tags, pos
 }));
 export const setAddBuildingOnMap = createAction(SET_ADD_BUILDING_ON_MAP, value=>value);
 export const fetchPlaceInfo = createAction(FETCH_PLACE_INFO, data=> data);
+export const fetchRoadInfo = createAction(FETCH_ROAD_INFO, data=>data);
+export const fetchBuildingInfo = createAction(FETCH_BUILDING_INFO, data=>data);
 export const setSearchQuery = createAction(SET_SEARCH_QUERY,
     ({searchQuery, searchQueryType, searchQueryOnMap, searchQueryOption}) => ({
     searchQuery, searchQueryType, searchQueryOnMap, searchQueryOption
@@ -48,11 +52,15 @@ export const setRoadTypeOnMap = createAction(SET_ROAD_TYPE_ON_MAP, roadType => r
 const listUserPlaceSaga = createRequestSaga(LIST, mapAPI.list);
 const postUserPlaceSaga = createRequestSaga(POST_USER_PLACE, mapAPI.post);
 const fetchPlaceInfoSaga = createRequestSaga(FETCH_PLACE_INFO, mapAPI.fetchPlaceInfo);
+const fetchRoadInfoSaga = createRequestSaga(FETCH_ROAD_INFO, mapAPI.fetchRoadInfo);
+const fetchBuildingInfoSaga = createRequestSaga(FETCH_BUILDING_INFO, mapAPI.fetchBuildingInfo);
 
 export function* mapSaga() {
     yield takeLatest(LIST, listUserPlaceSaga);
     yield takeLatest(POST_USER_PLACE, postUserPlaceSaga);
     yield takeLatest(FETCH_PLACE_INFO, fetchPlaceInfoSaga);
+    yield takeLatest(FETCH_ROAD_INFO, fetchRoadInfoSaga);
+    yield takeLatest(FETCH_BUILDING_INFO, fetchBuildingInfoSaga);
 }
 
 const initialState = {
@@ -88,6 +96,7 @@ const initialState = {
     },
     placeInfo: null,
     roadInfo: null,
+    buildingInfo: null,
     isAddBookMark: false,
     bookMark : {
         buildingList: [],
@@ -179,6 +188,24 @@ const map = handleActions(
             ...state,
             error: error
         }),
+        [FETCH_ROAD_INFO_SUCCESS] : (state, {payload: data}) => ({
+            ...state,
+            roadInfo: data,
+            error: null
+        }),
+        [FETCH_ROAD_INFO_FAILURE] : (state, {payload: error}) => ({
+            ...state,
+            error: error
+        }),
+        [FETCH_BUILDING_INFO_SUCCESS] : (state, {payload: data}) => ({
+            ...state,
+            buildingInfo: data,
+            error: null
+        }),
+        [FETCH_BUILDING_INFO_FAILURE] : (state, {payload: error}) => ({
+            ...state,
+            error: error
+        })
 
     },
     initialState,

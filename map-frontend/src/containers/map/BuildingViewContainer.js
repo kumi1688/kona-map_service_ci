@@ -7,7 +7,7 @@ import {Form, ListGroup, ListGroupItem, Nav, Row, Col} from "react-bootstrap";
 import {polylineOptions, rectangleOptions} from "../../components/map/RoadColor";
 import EstimateContainer from "./EstimateContainer";
 import CommentContainer from "./CommentContainer";
-import {updateBookMark} from "../../modules/map";
+import {fetchBuildingInfo, setInfoViewer, updateBookMark} from "../../modules/map";
 import CardComponent from "../../components/map/CardComponent";
 import CarouselContainer from "./CarouselContainer";
 
@@ -64,7 +64,8 @@ const BuildingViewListItem = ({building}) => {
     const [localInfo, setLocalInfo] = useReducer(buildingReducer, initialState);
     const [loading, setLoading] = useState(false);
 
-    const {username, buildingList, placeList, roadList, isAddBookMark} = useSelector(({user, map}) => ({
+    const {username, buildingList, placeList, roadList, isAddBookMark, isMarkerClicked} = useSelector(({user, map}) => ({
+        isMarkerClicked: map.isMarkerClicked,
         isAddBookMark: map.isAddBookMark,
         username: user.user.username,
         buildingList: map.bookMark.buildingList,
@@ -73,7 +74,13 @@ const BuildingViewListItem = ({building}) => {
     }));
     const dispatch = useDispatch();
 
-    const onBuildingClick = useCallback(() => setLocalInfo({type: 'toggleInfoWindow'}), [localInfo]);
+    const onBuildingClick = useCallback(() => {
+        if(!isMarkerClicked){
+            dispatch(setInfoViewer(true));
+            dispatch(fetchBuildingInfo(building._id));
+        }
+        //setLocalInfo({type: 'toggleInfoWindow'})
+    }, [localInfo, isMarkerClicked]);
     const onMouseOver = useCallback(() => setLocalInfo({type: 'toggleMouseOverWindow'}), [localInfo]);
     const onTabPositionClick = useCallback(() => setLocalInfo({type: 'toggleTabPosition'}), [localInfo]);
     const onTabEstimateClick = useCallback(() => setLocalInfo({type: 'toggleTabEstimate'}), [localInfo]);

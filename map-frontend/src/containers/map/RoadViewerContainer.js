@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useReducer} from 'react';
+import React, {useCallback, useReducer} from 'react';
 import styled from "styled-components";
 import {Button, Col, Nav, Row} from "react-bootstrap";
 import CarouselContainer from "./CarouselContainer";
@@ -16,11 +16,6 @@ const StyledWrapper = styled.div`
     right: 0;
     border-left : 2px solid;
     border-top : 2px solid;
-`;
-
-const BottomLine = styled.div`
-    padding-top: 5px;
-    border-bottom: black solid;
 `;
 
 const InfoWindowReducer = (state, action) => {
@@ -46,9 +41,6 @@ const InfoWindowReducer = (state, action) => {
         case 'addBookMark' : {
             return {...state, isInBookMark: action.isInBookMark}
         }
-        case 'updateFilteredData': {
-            return {...state, filteredData: action.filteredData}
-        }
         default: {
             throw new Error(`unexpected action.type: ${action.type}`)
         }
@@ -61,18 +53,13 @@ const initialState = {
     toggleTabComment: false,
     isInBookMark: false,
     commentList: [],
-    filteredData : null,
 };
 
-const InfoViewerContainer = () => {
+const RoadViewerContainer = () => {
     const [localInfo, setLocalInfo] = useReducer(InfoWindowReducer, initialState);
-    const {placeInfo, roadInfo, buildingInfo, searchQueryType} = useSelector(({map}) => ({
-        searchQueryType: map.searchQuery.searchQueryType,
-        roadInfo : map.roadInfo,
-        placeInfo: map.placeInfo,
-        buildingInfo: map.buildingInfo,
+    const {roadInfo} = useSelector(({map}) => ({
+        roadInfo: map.roadInfo
     }));
-
     const dispatch = useDispatch();
     const toggleTabEstimate = useCallback(() => {
         setLocalInfo({type: 'toggleTabEstimate'})
@@ -84,44 +71,25 @@ const InfoViewerContainer = () => {
         setLocalInfo({type: 'toggleTabPosition'})
     }, [localInfo]);
     const updateComment = useCallback((value) =>
-        setLocalInfo({type: 'updateComment', comment: value}),
+            setLocalInfo({type: 'updateComment', comment: value}),
         [localInfo]);
-    const updateFilteredData = useCallback((data) => {
-        console.dir(data);
-        setLocalInfo({type: 'updateFilteredData', filteredData: data});
-    },[]);
     const onCloseClick = useCallback(() => {
         dispatch(setInfoViewer(false));
-    }, [dispatch]);
+    }, []);
 
-    useEffect(() => {
-        console.dir(searchQueryType);
-        if(searchQueryType === 'place' && placeInfo) updateFilteredData(placeInfo);
-        if(searchQueryType === 'road' && roadInfo) updateFilteredData(roadInfo);
-        if(searchQueryType === 'building' && buildingInfo) updateFilteredData(buildingInfo);
-
-    }, [placeInfo, roadInfo, buildingInfo, searchQueryType]);
-
-    useEffect(() => {
-        console.dir(localInfo.filteredData);
-    }, [localInfo.filteredData]);
-
-    if(searchQueryType === 'road' && !localInfo.filteredData) return null;
-    if(searchQueryType === 'place' && !localInfo.filteredData) return null;
-    if(searchQueryType === 'building' && !localInfo.filteredData) return null;
-    if(!localInfo.filteredData) return null;
+    if(!roadInfo) return null;
 
     return (
         <StyledWrapper>
-            <div style={{width: 1000, height: 700}}>
+            <div style={{width: 1000, height: 400}}>
                 <Row>
                     <Col>
-                        <div style={{width: 500, height: 700}}>
-                            <CarouselContainer info={localInfo.filteredData}/>
+                        <div style={{width: 500, height: 400}}>
+                            <CarouselContainer info={roadInfo}/>
                         </div>
                     </Col>
                     <Col>
-                        <div style={{width: 450, height: 700, paddingBottom: 20}}>
+                        <div style={{width: 450, height: 400, paddingBottom: 20}}>
                             <Nav fill justify variant="pills" defaultActiveKey="info-position">
                                 <Nav.Item>
                                     <Nav.Link eventKey="info-position"
@@ -130,28 +98,27 @@ const InfoViewerContainer = () => {
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link eventKey="estimate-user"
-                                            onSelect={toggleTabEstimate}
+                                              onSelect={toggleTabEstimate}
                                     >평가</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link eventKey="comment-user"
-                                            onSelect={toggleTabComment}
+                                              onSelect={toggleTabComment}
                                     >댓글</Nav.Link>
                                 </Nav.Item>
-                                <Button variant="white" size="xl"><FaStar/></Button>
-                                <Button variant="white" onClick={onCloseClick} size="xl"><IoIosClose/></Button>
+                                <Button variant="white"><FaStar/></Button>
+                                <Button variant="white" onClick={onCloseClick}><IoIosClose/></Button>
                             </Nav>
-                            <BottomLine/>
-                            {localInfo.visibleOnTabPosition && <BasicInfoViewerContainer info={localInfo.filteredData}/>}
-                            {localInfo.visibleOnTabEstimate && <EstimateContainer info={localInfo.filteredData}/>}
+                            {localInfo.visibleOnTabPosition && <BasicInfoViewerContainer info={roadInfo}/>}
+                            {localInfo.visibleOnTabEstimate && <EstimateContainer info={roadInfo}/>}
                             {localInfo.visibleOnTabComment &&
-                            <CommentContainer info={localInfo.filteredData} setUpdateCommentList={updateComment}/>}
+                            <CommentContainer info={roadInfo} setUpdateCommentList={updateComment}/>}
                         </div>
                     </Col>
                 </Row>
             </div>
         </StyledWrapper>
-);
+    );
 };
 
-export default InfoViewerContainer;
+export default RoadViewerContainer;

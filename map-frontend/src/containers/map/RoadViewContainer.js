@@ -7,7 +7,7 @@ import {Form, ListGroup, ListGroupItem, Nav, Row, Col} from "react-bootstrap";
 import {polylineOptions} from "../../components/map/RoadColor";
 import EstimateContainer from "./EstimateContainer";
 import CommentContainer from "./CommentContainer";
-import {updateBookMark} from "../../modules/map";
+import {fetchRoadInfo, setInfoViewer, updateBookMark} from "../../modules/map";
 import CardComponent from "../../components/map/CardComponent";
 import CarouselContainer from "./CarouselContainer";
 
@@ -112,16 +112,24 @@ const RoadViewListItem = ({road}) => {
     const [localInfo, setLocalInfo] = useReducer(roadReducer, initialState);
     const [loading, setLoading] = useState(false);
 
-    const {username, buildingList, placeList, roadList, isAddBookMark} = useSelector(({user, map}) => ({
+    const {username, buildingList, placeList, roadList, isAddBookMark,
+    isMarkerClicked} = useSelector(({user, map}) => ({
         isAddBookMark: map.isAddBookMark,
         username: user.user.username,
         buildingList: map.bookMark.buildingList,
         placeList: map.bookMark.placeList,
         roadList: map.bookMark.roadList,
+        isMarkerClicked: map.isMarkerClicked
     }));
     const dispatch = useDispatch();
 
-    const onRoadClick = useCallback(() => setLocalInfo({type: 'toggleInfoWindow'}), [localInfo]);
+    const onRoadClick = useCallback(() => {
+        if(!isMarkerClicked) {
+            dispatch(setInfoViewer(true));
+            dispatch(fetchRoadInfo(road._id));
+        }
+        //setLocalInfo({type: 'toggleInfoWindow'});
+    }, [localInfo]);
     const onMouseOver = useCallback(() => setLocalInfo({type: 'toggleMouseOverWindow'}), [localInfo]);
     const onTabPositionClick = useCallback(() => setLocalInfo({type: 'toggleTabPosition'}), [localInfo]);
     const onTabEstimateClick = useCallback(() => setLocalInfo({type: 'toggleTabEstimate'}), [localInfo]);
@@ -143,7 +151,7 @@ const RoadViewListItem = ({road}) => {
             }
             setLoading(false);
         };
-        uploadComment();
+        //uploadComment();
     }, [localInfo]);
 
     const addInfoToBookMark = useCallback(() => {

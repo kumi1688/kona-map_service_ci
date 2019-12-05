@@ -28,12 +28,12 @@ const StyledMapContainerWrapper = styled.div`
 
 const mapContainerStyle = {
     withoutInfoWindow: {
-        width: '1350px',
-        height: '550px'
+        width: '1550px',
+        height: '700px'
     },
     withInfoWindow: {
         width: '600px',
-        height: '550px'
+        height: '700px'
 
     }
 };

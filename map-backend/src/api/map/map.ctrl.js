@@ -306,6 +306,34 @@ export const listUserBuilding = async ctx => {
     }
 };
 
+export const findUserRoad = async ctx => {
+    const {id} = ctx.params;
+  try{
+      const result = await UserRoad.findOne({_id: id}).exec();
+      if(!result){
+          ctx.status = 404;
+          return;
+      }
+      ctx.body = result;
+  }catch(e){
+      ctx.throw(500,e);
+  }
+};
+
+export const findUserBuilding = async ctx => {
+    const {id} = ctx.params;
+    try{
+        const result = await UserBuilding.findOne({_id: id}).exec();
+        if(!result){
+            ctx.status = 404;
+            return;
+        }
+        ctx.body = result;
+    }catch(e){
+        ctx.throw(500, e);
+    }
+};
+
 exports.listUserBundle = async ctx => {
     try{
         const userBundle = await UserBundle.find().exec();

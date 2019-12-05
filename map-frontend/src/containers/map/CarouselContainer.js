@@ -7,6 +7,11 @@ const StyledWrapper = styled.div`
     z-index: 10;
 `;
 
+const BottomLine = styled.div`
+    padding-top: 5px;
+    border-bottom: black solid;
+`;
+
 const InfoWindowReducer = (state, action) => {
     switch (action.type) {
         case 'reset' : {
@@ -49,7 +54,7 @@ const CarouselContainer = ({info}) => {
 
     return (
         <div>
-            <div style={{paddingBottom: 10}}>
+            <div >
                 <Nav fill justify variant="pills" defaultActiveKey="info-position">
                     <Nav.Item>
                         <Nav.Link eventKey="info-position" onSelect={toggleTabPictures}>사진</Nav.Link>
@@ -62,6 +67,7 @@ const CarouselContainer = ({info}) => {
                     </Nav.Item>
                 </Nav>
             </div>
+            <BottomLine/>
             <div>
                 {localInfo.visibleOnTabPictures &&
                 <Carousel>

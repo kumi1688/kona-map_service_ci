@@ -332,14 +332,17 @@ const InfoWindowItem = ({info, zoom}) => {
                 position={adjustMouseOverPosition(info.position, zoom)}>
                 <CardComponent info={info}/>
             </InfoWindow>}
+
             <Marker position={info.position} onClick={toggleInfoWindow}
                     icon={zoom > 13 ? findIcon(info.primaryPositionType) : null}
                     visible={zoom <= 13 ? false : true}
                     onMouseOver={toggleMarKerMouseOver}
                     onMouseOut={toggleMarKerMouseOver}
             />
+
             {info.radius !== undefined && localInfo.visibleInfoWindow &&
             <Circle center={info.position} radius={info.radius}/>}
+
             {localInfo.visibleInfoWindow &&
             <InfoWindow position={adjustMouseOverPosition(info.position, zoom)} onCloseClick={onCloseClick}
                         options={{maxWidth: "1000px", maxHeight: "1200px", minHeight : 1000}} onLoad={setInfoWindowObject}>
