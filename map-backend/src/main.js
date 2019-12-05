@@ -7,7 +7,6 @@ import koaBody from "koa-body";
 import mongoose from 'mongoose';
 import api from './api';
 import jwtMiddleware from "./lib/jwtMiddleware";
-import createFakeData from "./createFakeData";
 import serve from 'koa-static';
 import path from 'path';
 import send from 'koa-send';
