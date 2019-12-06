@@ -2,36 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b55483f0-f3b4-4970-8d54-adbd54dcfa86" name="Default Changelist" comment="Iteration5 add admin page &amp;&amp; set layout, sideBar, Header">
+      <change afterPath="$PROJECT_DIR$/../map-frontend/.travis.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/map/map.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/api/map/map.ctrl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/posts/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/api/posts/posts.ctrl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/createFakeData.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-backend/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-backend/src/models/post.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/post/AskRemoveModal.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/post/PostActionButtons.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/post/PostViewer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/posts/Pagination.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/posts/PostList.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/write/Editor.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/write/TagBox.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/components/write/WriteActionButtons.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/post/PostViewerContainer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/posts/PaginationContainer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/posts/PostListContainer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/write/EditorContainer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/write/TagBoxContainer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/containers/write/WriteActionButtonContainer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/lib/api/posts.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/modules/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../map-frontend/src/modules/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/modules/post.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/modules/posts.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/modules/write.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/pages/PostListPage.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../map-frontend/src/pages/PostPage.js" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -108,7 +80,7 @@
       <workItem from="1575059094590" duration="17792000" />
       <workItem from="1575234471171" duration="1468000" />
       <workItem from="1575249920176" duration="12077000" />
-      <workItem from="1575539302206" duration="2705000" />
+      <workItem from="1575539302206" duration="3305000" />
     </task>
     <task id="LOCAL-00001" summary="Iteration5 add admin page &amp;&amp; set layout, sideBar, Header">
       <created>1574928198031</created>
