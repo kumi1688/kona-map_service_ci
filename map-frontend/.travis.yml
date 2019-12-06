@@ -1,19 +1,9 @@
-language: node.js
-node_js:
-  - "node"
-
 sudo: required
-
 services:
   - docker
 
-install:
-  - npm install
+before_install:
+  - docker build -t mia/docker-react -f Dockerfile.dev .
 
 script:
-  - npm run build
-
-after_success:
-  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-  - docker build -t zych1751/react-test .
-  - docker push zych1751/react-test
+  - docker run mia/docker-react npm run test -- --coverage
